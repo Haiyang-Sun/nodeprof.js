@@ -41,7 +41,7 @@ this.functionEnter(iid, func, receiver, args, builtinName) {
 
 
 Examples can be found:
-[1](https://github.com/Haiyang-Sun/nodeprof/blob/master/src/ch.usi.inf.nodeprof/js/analysis/extra-features/extra.js), [2](https://github.com/Haiyang-Sun/nodeprof/blob/master/src/ch.usi.inf.nodeprof/js/analysis/builtin-feature/analysis.js)
+[1](https://github.com/Haiyang-Sun/nodeprof.js/blob/master/src/ch.usi.inf.nodeprof/js/analysis/extra-features/extra.js), [2](https://github.com/Haiyang-Sun/nodeprof.js/blob/master/src/ch.usi.inf.nodeprof/js/analysis/builtin-feature/analysis.js)
 
 
 ### Jalangi features not yet supported

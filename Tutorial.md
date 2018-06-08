@@ -14,7 +14,7 @@ Get dependent projects and build:
 ```
 $ mkdir workspace-nodeprof;
 $ cd workspace-nodeprof;
-$ git clone https://github.com/Haiyang-Sun/nodeprof.git;
+$ git clone https://github.com/Haiyang-Sun/nodeprof.js.git;
 $ cd nodeprof;
 $ mx sforceimports
 $ mx build
@@ -31,7 +31,7 @@ $ mx test
 
 - ``` mx unittests ``` runs all unit tests
 
-- ``` mx test-specific analysisName [benchmarkName] ``` will automatically search Jalangi analysis defined in ```src/ch.usi.inf.nodeprof/js/analysis/analysisName``` and load them. [click here for more details](https://github.com/Haiyang-Sun/nodeprof/tree/release/src/ch.usi.inf.nodeprof/js/analysis) and compare the output of the run with expected output.
+- ``` mx test-specific analysisName [benchmarkName] ``` will automatically search Jalangi analysis defined in ```src/ch.usi.inf.nodeprof/js/analysis/analysisName``` and load them. [click here for more details](https://github.com/Haiyang-Sun/nodeprof.js/tree/master/src/ch.usi.inf.nodeprof/js/analysis) and compare the output of the run with expected output.
 If benchmarkName is specified, only test files inside nodeprof/src/ch.usi.inf.nodeprof.test/js/benchmarkName will be tested.
 
 - ``` mx test-specific [analysisName] --all ``` will test all available test cases (to analysisName if analysisName is specified)
