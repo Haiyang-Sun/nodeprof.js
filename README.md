@@ -23,13 +23,13 @@ Run tests:
 mx test
 ```
 
-Detailed explanation can be found in the [Tutorial](https://github.com/Haiyang-Sun/nodeprof/blob/master/Tutorial.md);
+Detailed explanation can be found in the [Tutorial](https://github.com/Haiyang-Sun/nodeprof.js/blob/master/Tutorial.md);
 
 ## Goals
 The goals of NodeProf are:
 
 * Use AST-level instrumentation which can benefit from the partial evaluation of the Graal compiler and have a much lower overhead compared to source-code instrumentation framework such as Jalangi
-* Compatible to analysis written in Jalangi [detail](https://github.com/Haiyang-Sun/nodeprof/blob/master/Difference.md).
+* Compatible to analysis written in Jalangi [detail](https://github.com/Haiyang-Sun/nodeprof.js/blob/master/Difference.md).
 * Comprehensive coverage for NPM modules and Node.js libraries.
 * Compliant to the latest ECMAScript specification (thanks to Graal.js)
 
