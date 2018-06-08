@@ -1,0 +1,15 @@
+gathering data...
+-------------Fix Array Refactor Report-------------
+Array created at the following locations may be special-typed:
+[****]typedArray: 0
+---------------------------------------------------
+Following arrays can not be typed:
+---------------------------
+Report of making non-contiguous array:
+...
+Number of putting non-contiguous array statements: 0
+[****]NonContArray: 0
+Why: In order to handle large and sparse arrays, there are two types of array storage internally:
+	 * Fast Elements: linear storage for compact key sets
+	 * Dictionary Elements: hash table storage otherwise
+It's best not to cause the array storage to flip from one type to another.

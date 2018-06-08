@@ -1,0 +1,2 @@
+pre var a = 0;
+post var a = 0;

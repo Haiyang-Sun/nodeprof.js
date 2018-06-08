@@ -1,0 +1,8 @@
+invoking (src/ch.usi.inf.nodeprof.test/js/minitests/builtin.js:1:71:6:2) Promise
+builtin used Promise
+invoking (src/ch.usi.inf.nodeprof.test/js/minitests/builtin.js:4:5:4:16) 
+invoking (src/ch.usi.inf.nodeprof.test/js/minitests/builtin.js:7:1:7:28) then
+builtin used Promise.prototype.then
+builtin used Promise
+invoking (src/ch.usi.inf.nodeprof.test/js/minitests/builtin.js:7:13:7:27) bound log
+10

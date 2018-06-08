@@ -1,0 +1,4 @@
+invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/element.js:17:1:17:10)
+[]
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element.js:17:1:17:8)  base type: object  offset type: number  val type: function
+invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element.js:17:1:17:10)

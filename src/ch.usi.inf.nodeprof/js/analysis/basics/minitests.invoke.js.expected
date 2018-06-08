@@ -1,0 +1,3 @@
+invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:15)
+[ 42, 'bar' ]
+invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:15)

@@ -1,0 +1,11 @@
+invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:5:1:5:11)
+[ 1, 2, 3 ]
+invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:5:1:5:11)
+invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:7:9:7:23)
+[ 4, 5, 6 ]
+putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:2:3:2:26)  base type: object  offset type: string  val type: function
+invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:7:9:7:23)
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:9:1:9:6)  base type: object  offset type: string  val type: function
+invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:9:1:9:13)
+[ 7, 8, 9 ]
+invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:9:1:9:13)
