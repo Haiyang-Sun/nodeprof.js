@@ -85,7 +85,7 @@ def _testJalangi(args, analysisHome, analysis, force=False, svm = False, testsui
                     else:
                         print("Fail @"+analysis);
                         if not force:
-                            return;
+                            sys.exit(1);
 
                 #mx.logv('Executing original jalangi')
                 #o.data = '';

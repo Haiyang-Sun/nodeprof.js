@@ -13,7 +13,7 @@ Get dependent projects and build:
 mkdir workspace-nodeprof
 cd workspace-nodeprof
 git clone https://github.com/Haiyang-Sun/nodeprof.js.git
-cd nodeprof
+cd nodeprof.js
 mx sforceimports
 mx build
 ```

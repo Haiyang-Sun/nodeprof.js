@@ -12,10 +12,10 @@ git clone https://github.com/graalvm/mx.git
 Get dependent projects and build:
 
 ```
-$ mkdir workspace-nodeprof;
-$ cd workspace-nodeprof;
-$ git clone https://github.com/Haiyang-Sun/nodeprof.js.git;
-$ cd nodeprof;
+$ mkdir workspace-nodeprof
+$ cd workspace-nodeprof
+$ git clone https://github.com/Haiyang-Sun/nodeprof.js.git
+$ cd nodeprof.js
 $ mx sforceimports
 $ mx build
 ```
