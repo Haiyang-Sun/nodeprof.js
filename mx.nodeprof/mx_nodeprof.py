@@ -51,10 +51,12 @@ def _testJalangi(args, analysisHome, analysis, force=False, svm = False, testsui
                         print("downloaded analysis file "+f + " from "+url)
                 else:
                     continue;
+            analysisOpt += ["--analysis"];
             analysisOpt += [join(analysisHome, f)];
     else:
         for analysisJS in os.listdir(analysisHome):
             if analysisJS.endswith(".js"):
+                analysisOpt += ["--analysis"];
                 analysisOpt += [join(analysisHome, analysisJS)];
     if not analysisOpt:
         return;

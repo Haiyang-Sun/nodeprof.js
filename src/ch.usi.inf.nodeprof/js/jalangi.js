@@ -155,21 +155,52 @@ process.on('SIGINT', function(){
 process.on('exit', function () { J$.endExecution(); });
 
 path=require('path');
-while(process.argv.length > 3) {
-  var toLoad = process.argv[2];
-  try{
-    require(path.resolve(toLoad));
-  }catch(e1){
-    console.log("error loading "+process.argv[2]);
-    console.trace(e1);
-    process.exit(-1);
+
+
+// jalangi.js [--analysis XXX]* [testFile [testArgs]*]
+function loadAnalysis(){
+  var analysisArr = [];
+  var analysisFlag = false;
+  var arg0 = process.argv[0];
+  var i = 2; //0 => node, 1 => jalangi.js
+  for(; i < process.argv.length; i++){
+    var arg = process.argv[i];
+    if(arg == '--analysis'){
+      analysisFlag = true;
+    }else {
+      if(analysisFlag){
+        analysisArr.push(arg);
+        analysisFlag = false;
+      }else {
+        //the real app code
+        process.argv[i] = path.resolve(process.argv[i]);
+        break;
+      }
+    }
   }
-  process.argv = process.argv.slice(1);
+  if(i == process.argv.length){
+    throw "no main program is given";
+  }
+  analysisArr.forEach((analysis) =>{
+    try{
+      require(path.resolve(analysis));
+    }catch(e){
+      console.log("error loading analysis "+analysis);
+      console.trace(e);
+      process.exit(-1);
+    }
+  });
+
+  //remove the analysis part in the argv
+  process.argv = process.argv.slice(i);
+
+  //put back the entry program
+  process.argv.unshift(arg0);
 }
-if(process.argv.length == 3) {
-  process.argv = process.argv.slice(1);
-  process.argv[1] = path.resolve(process.argv[1]);
+try{
+  loadAnalysis();
   require('module').runMain();
-}else {
-  console.log("[pathtoanalysis]* pathto.js");
+}catch(e) {
+  console.log("[--analysis pathtoanalysis]* pathto_mainprogram.js [arg]*");
+  console.trace(e);
 }
