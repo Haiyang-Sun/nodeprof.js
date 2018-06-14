@@ -39,6 +39,9 @@ The goals of NodeProf are:
 	- haiyang.sun@usi.ch
 	- Università della Svizzera italiana (USI), Lugano, Switzerland
 
+## Publication
+
+* Efficient dynamic analysis for Node.js [link](https://dl.acm.org/citation.cfm?id=3179527)
 
 ## Licence
 
