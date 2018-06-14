@@ -17,6 +17,7 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
+import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 
@@ -26,11 +27,13 @@ import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 public abstract class UnaryEventHandler extends BaseEventHandlerNode {
     private final String op;
     private final boolean isDelete;
+    private final boolean isVoid;
 
     public UnaryEventHandler(EventContext context) {
         super(context);
         op = (String) getAttribute("operator");
         this.isDelete = op.equals("delete");
+        this.isVoid = op.equals("void");
     }
 
     public String getOp() {
@@ -41,18 +44,32 @@ public abstract class UnaryEventHandler extends BaseEventHandlerNode {
         return this.isDelete;
     }
 
+    public boolean isVoid() {
+        return this.isVoid;
+    }
+
     public Object getValue(Object[] inputs) {
-        if (!isDelete) {
-            return assertGetInput(0, inputs, "unaryValue");
-        } else {
+        if (this.isVoid) {
+            return Undefined.instance;
+        } else if (isDelete) {
             Object target = assertGetInput(0, inputs, "delete target");
             Object key = assertGetInput(1, inputs, "delete key");
             return JSArray.createConstant(GlobalObjectCache.getInstance().getJSContext(), new Object[]{target, key});
+        } else {
+            return assertGetInput(0, inputs, "unaryValue");
         }
     }
 
     @Override
     public boolean isLastIndex(int inputCount, int index) {
-        return isDelete ? index == 1 : index == 0;
+        if (this.isDelete) {
+            // delete object key need two arguments
+            return index == 1;
+        } else if (this.isVoid) {
+            // void needs no argument because it always returns undefined
+            return index == -1;
+        } else {
+            return index == 0;
+        }
     }
 }
