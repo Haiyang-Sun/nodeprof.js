@@ -48,7 +48,7 @@ public class EvalFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, pre,
+                    directCall(postCall, new Object[]{jalangiAnalysis, post,
                                     getSourceIID(), getCode(inputs), true}, false);
                 }
             }
