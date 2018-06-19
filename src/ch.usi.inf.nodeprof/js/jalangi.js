@@ -197,10 +197,6 @@ function loadAnalysis(){
   //put back the entry program
   process.argv.unshift(arg0);
 }
-try{
-  loadAnalysis();
-  require('module').runMain();
-}catch(e) {
-  console.log("[--analysis pathtoanalysis]* pathto_mainprogram.js [arg]*");
-  console.trace(e);
-}
+
+loadAnalysis();
+require('module').runMain();
