@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +114,10 @@ public class Logger {
         if (isInternal) {
             b.append("*");
         }
-        b.append(getRelative(fileName));
+        if (GlobalConfiguration.LOG_ABSOLUTE_PATH)
+            b.append(fileName);
+        else
+            b.append(getRelative(fileName));
         b.append(":").append(sourceSection.getStartLine()).append(":").append(sourceSection.getStartColumn()).append(":").append(sourceSection.getEndLine()).append(":").append(
                         sourceSection.getEndColumn() + 1);
         b.append(")");

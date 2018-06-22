@@ -53,6 +53,10 @@ public class NodeProfCLI {
     @Option(name = "IgnoreJalangiException", help = ignoreJExpHelp, category = OptionCategory.USER)//
     public static final OptionKey<Boolean> IGNORE_JALANGI_EXCEPTION = new OptionKey<>(false);
 
+    static final String logAbsPathHelp = "Use absolute instead of relative source path in logs";
+    @Option(name = "LogAbsolutePath", help = logAbsPathHelp, category = OptionCategory.USER)//
+    public static final OptionKey<Boolean> LOG_ABSOLUTE_PATH = new OptionKey<>(false);
+
     public static OptionDescriptor[] ods = {
                     OptionDescriptor.newBuilder(ENABLED, "nodeprof").deprecated(false).help(enabledHelp).category(OptionCategory.USER).build(),
                     OptionDescriptor.newBuilder(DEBUG, "nodeprof.Debug").deprecated(false).help(debugHelp).category(OptionCategory.USER).build(),
@@ -61,5 +65,6 @@ public class NodeProfCLI {
                     OptionDescriptor.newBuilder(EXCLUDE_SOURCE, "nodeprof.ExcludeSource").deprecated(false).help(exclHelp).category(OptionCategory.USER).build(),
                     OptionDescriptor.newBuilder(SCOPE, "nodeprof.Scope").deprecated(false).help(scopeHelp).category(OptionCategory.USER).build(),
                     OptionDescriptor.newBuilder(IGNORE_JALANGI_EXCEPTION, "nodeprof.IgnoreJalangiException").deprecated(false).help(ignoreJExpHelp).category(OptionCategory.USER).build(),
+                    OptionDescriptor.newBuilder(LOG_ABSOLUTE_PATH, "nodeprof.LogAbsolutePath").deprecated(false).help(logAbsPathHelp).category(OptionCategory.USER).build(),
     };
 }

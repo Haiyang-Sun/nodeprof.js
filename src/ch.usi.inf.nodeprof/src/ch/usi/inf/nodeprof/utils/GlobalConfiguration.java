@@ -58,6 +58,11 @@ public class GlobalConfiguration {
      * trace all runtime events as produced by Graal.js
      */
     @CompilationFinal public static boolean DEBUG_TRACING;
+    
+    /**
+     * use absolute instead of relative path in logs
+     */
+    @CompilationFinal public static boolean LOG_ABSOLUTE_PATH;
 
     @TruffleBoundary
     public static void setup(Env env) {
@@ -67,5 +72,6 @@ public class GlobalConfiguration {
         SCOPE = env.getOptions().get(NodeProfCLI.SCOPE);
         EXCL = env.getOptions().get(NodeProfCLI.EXCLUDE_SOURCE);
         IGNORE_JALANGI_EXCEPTION = env.getOptions().get(NodeProfCLI.IGNORE_JALANGI_EXCEPTION);
+        LOG_ABSOLUTE_PATH = env.getOptions().get(NodeProfCLI.LOG_ABSOLUTE_PATH);
     }
 }
