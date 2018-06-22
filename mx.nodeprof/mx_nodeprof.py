@@ -150,14 +150,15 @@ def runJalangi(args, excl="", out=None, svm=False):
     jalangiAnalysisArg = []
     jalangiArgs = [join(_suite.dir, "src/ch.usi.inf.nodeprof/js/jalangi.js")]
     e_flag=False;
+    a_flag=False;
     debug=False;
     scope='module';
     for arg in args:
         if e_flag:
             excl += ","+arg;
-            e_flag=False;
+            e_flag = False;
         elif arg == "--excl":
-            e_flag=True;
+            e_flag = True;
         elif arg == "--log":
             jalangiArgs += ['--nodeprof.Debug'];
         elif arg == "--debug":
@@ -165,9 +166,17 @@ def runJalangi(args, excl="", out=None, svm=False):
         elif arg.startswith('--scope'):
             scope = arg.split('=')[1]
         else:
-            if arg != args[-1]:
-                excl += ","+arg[arg.rfind("/")+1:];
             jalangiAnalysisArg += [arg];
+            # exclude analysis file from instrumentation by default
+            if arg == "--analysis":
+                a_flag = True;
+            elif a_flag:
+                analysisPath = os.path.abspath(arg);
+                if not os.path.exists (arg):
+                    print "analysis file "+arg+"("+analysisPath+") does not exist"
+                    sys.exit(1);
+                excl += ","+analysisPath;
+                a_flag = False;
     jalangiArgs = ["--nodeprof.Scope="+scope, "--nodeprof.ExcludeSource="+excl] + jalangiArgs + jalangiAnalysisArg;
     _runJalangi(jalangiArgs, out=out, svm=svm, debug=debug);
 
