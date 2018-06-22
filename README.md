@@ -51,4 +51,4 @@ NodeProf is available under the following license:
 
 ## Acknowledgement
 
-Thanks to Daniele Bonetta and Christian Humer from Oracle Labs for the help during the implementation.
+Thanks to Daniele Bonetta, Alexander Jordan, and Christian Humer from Oracle Labs for the help during the implementation.
