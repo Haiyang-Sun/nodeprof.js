@@ -23,7 +23,7 @@
       else
         return sandbox.iidToLocation(sandbox.sid, iid);
     }
-    this.functionEnter = function(iid, func, base, args, builtinName){
+    this.builtinEnter = function(builtinName, func, base, args){
       if(builtinName && builtinName.indexOf("Promise") > -1){
         console.log("builtin used "+builtinName);
       }

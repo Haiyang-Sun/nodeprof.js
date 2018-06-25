@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,28 +27,41 @@ import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
 
 public class RootFactory extends AbstractFactory {
 
-    public RootFactory(Object jalangiAnalysis, DynamicObject pre,
-                    DynamicObject post) {
+    protected final DynamicObject builtinPre;
+    protected final DynamicObject builtinPost;
+
+    public RootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post,
+                       DynamicObject builtinPre, DynamicObject builtinPost) {
         super("function", jalangiAnalysis, pre, post);
+        this.builtinPre = builtinPre;
+        this.builtinPost = builtinPost;
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new FunctionRootEventHandler(context) {
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 2, 0);
-            @Child DirectCallNode preCall = createPreCallNode();
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Child DirectCallNode preCall = createDirectCallNode(this.isBuiltin ? builtinPre : pre);
+            @Child DirectCallNode postCall = createDirectCallNode(this.isBuiltin ? builtinPost : post);
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (isRegularExpression())
                     return;
-                if (pre == null) {
-                    return;
-                }
-                directCall(preCall, new Object[]{jalangiAnalysis, pre,
+
+                if (this.isBuiltin) {
+                    if (builtinPre != null) {
+                        directCall(preCall, new Object[]{jalangiAnalysis, builtinPre,
+                                this.getBuiltinName(), getFunction(frame), getReceiver(frame),
+                                makeArgs.executeArguments(getArguments(frame))}, true, getSourceIID());
+                    }
+                } else {
+                    if (pre != null) {
+                        directCall(preCall, new Object[]{jalangiAnalysis, pre,
                                 getSourceIID(), getFunction(frame), getReceiver(frame),
-                                makeArgs.executeArguments(getArguments(frame)), this.getBuiltinName()}, true);
+                                makeArgs.executeArguments(getArguments(frame))}, true, getSourceIID());
+                    }
+                }
             }
 
             @Override
@@ -55,12 +69,20 @@ public class RootFactory extends AbstractFactory {
                             Object[] inputs) {
                 if (isRegularExpression())
                     return;
-                if (post == null) {
-                    return;
-                }
-                directCall(postCall, new Object[]{jalangiAnalysis, post,
+
+                if (this.isBuiltin) {
+                    if (builtinPost != null) {
+                        directCall(postCall, new Object[]{jalangiAnalysis, builtinPost,
+                                this.getBuiltinName(), convertResult(result)
+                        }, false, getSourceIID());
+                    }
+                } else {
+                    if (post != null) {
+                        directCall(postCall, new Object[]{jalangiAnalysis, post,
                                 getSourceIID(), convertResult(result)
-                }, false);
+                        }, false, getSourceIID());
+                    }
+                }
             }
 
             @Override
@@ -73,7 +95,7 @@ public class RootFactory extends AbstractFactory {
                 // TODO add real exceptions
                 directCall(postCall, new Object[]{jalangiAnalysis, post,
                                 getSourceIID(), Undefined.instance
-                }, false);
+                }, false, getSourceIID());
             }
         };
     }

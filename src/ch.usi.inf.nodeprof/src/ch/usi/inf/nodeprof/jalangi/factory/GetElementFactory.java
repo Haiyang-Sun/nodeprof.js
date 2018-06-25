@@ -44,7 +44,7 @@ public class GetElementFactory extends AbstractFactory {
                                     getProperty(inputs), true,// isComputed
                                     isOpAssign(),// isOpAssign
                                     isMethodCall(),// isMethodCall
-                    }, true);
+                    }, true, getSourceIID());
                 }
             }
 
@@ -57,7 +57,7 @@ public class GetElementFactory extends AbstractFactory {
                                     getProperty(inputs), convertResult(result), true,// isComputed
                                     isOpAssign(),// isOpAssign
                                     isMethodCall(),// isMethodCall
-                    }, false);
+                    }, false, getSourceIID());
                 }
             }
         };

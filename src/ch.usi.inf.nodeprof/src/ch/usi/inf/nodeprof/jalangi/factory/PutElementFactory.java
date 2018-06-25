@@ -43,7 +43,7 @@ public class PutElementFactory extends AbstractFactory {
                                     getSourceIID(), getReceiver(inputs),
                                     getProperty(inputs), getValue(inputs), true,// isComputed
                                     isOpAssign(),// isOpAssign
-                    }, true);
+                    }, true, getSourceIID());
                 }
             }
 
@@ -55,7 +55,7 @@ public class PutElementFactory extends AbstractFactory {
                                     getSourceIID(), getReceiver(inputs),
                                     getProperty(inputs), getValue(inputs), true,// isComputed
                                     isOpAssign(),// isOpAssign
-                    }, false);
+                    }, false, getSourceIID());
                 }
             }
         };

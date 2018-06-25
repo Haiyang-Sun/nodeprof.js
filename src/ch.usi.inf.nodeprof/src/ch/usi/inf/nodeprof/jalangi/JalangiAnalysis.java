@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import java.util.HashMap;
+import java.util.*;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.TruffleObject;
@@ -141,10 +142,13 @@ public class JalangiAnalysis {
                             new ConditionalFactory(this.jsAnalysis, callbacks.get("conditional"), true));
         }
 
-        if (this.callbacks.containsKey("functionEnter") || this.callbacks.containsKey("functionExit")) {
+        Set<String> s = new HashSet<>(Arrays.asList("functionEnter", "functionExit", "builtinEnter", "builtinExit"));
+        if (!Collections.disjoint(this.callbacks.keySet(), s)) {
             this.instrument.onCallback(
                             ProfiledTagEnum.ROOT,
-                            new RootFactory(this.jsAnalysis, callbacks.get("functionEnter"), callbacks.get("functionExit")));
+                            new RootFactory(this.jsAnalysis,
+                                    callbacks.get("functionEnter"), callbacks.get("functionExit"),
+                                    callbacks.get("builtinEnter"), callbacks.get("builtinExit")));
         }
 
         /**

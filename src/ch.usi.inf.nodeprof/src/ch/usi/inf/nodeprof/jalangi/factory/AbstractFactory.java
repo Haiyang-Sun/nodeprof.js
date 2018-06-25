@@ -81,16 +81,17 @@ public abstract class AbstractFactory implements
      * @param args
      * @param isPre TODO
      */
-    protected void directCall(DirectCallNode callNode, Object[] args, boolean isPre) {
+    protected void directCall(DirectCallNode callNode, Object[] args, boolean isPre, int iid) {
         if (nestedControl)
             return;
         nestedControl = true;
         try {
             callNode.call(args);
         } catch (GraalJSException e) {
-            Logger.error((int) args[2], "error happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]");
+            Logger.error(iid, "error happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]");
             Logger.dumpException(e);
         }
         nestedControl = false;
     }
+
 }

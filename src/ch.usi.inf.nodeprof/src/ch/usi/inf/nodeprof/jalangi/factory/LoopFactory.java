@@ -38,7 +38,7 @@ public class LoopFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
                     directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID()}, true);
+                                    getSourceIID()}, true, getSourceIID());
                 }
             }
 
@@ -47,7 +47,7 @@ public class LoopFactory extends AbstractFactory {
                             Object[] inputs) {
                 if (post != null) {
                     directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID()}, false);
+                                    getSourceIID()}, false, getSourceIID());
                 }
             }
         };

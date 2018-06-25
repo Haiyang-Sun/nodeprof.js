@@ -49,7 +49,7 @@ public class InvokeFactory extends AbstractFactory {
                                     false,// isMethod
                                     0,// functionIid);
                                     0 // functionSid
-                    }, true);
+                    }, true, getSourceIID());
                 }
             }
 
@@ -65,7 +65,7 @@ public class InvokeFactory extends AbstractFactory {
                                     false,// isMethod
                                     0,// functionIid);
                                     0 // functionSid
-                    }, false);
+                    }, false, getSourceIID());
                 }
             }
         };

@@ -44,7 +44,7 @@ public class PutFieldFactory extends AbstractFactory {
                                         getSourceIID(), getReceiver(inputs),
                                         getProperty(), getValue(inputs), false,// isComputed
                                         isOpAssign(),// isOpAssign
-                        }, true);
+                        }, true, getSourceIID());
                     }
                 }
             }
@@ -58,7 +58,7 @@ public class PutFieldFactory extends AbstractFactory {
                                         getSourceIID(), getReceiver(inputs),
                                         getProperty(), getValue(inputs), false,// isComputed
                                         isOpAssign(),// isOpAssign
-                        }, false);
+                        }, false, getSourceIID());
                     }
                 }
             }

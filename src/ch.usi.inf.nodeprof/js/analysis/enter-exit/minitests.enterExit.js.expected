@@ -1,0 +1,11 @@
+builtinEnter: Object.create / 4
+builtinExit: Object.create / 2
+builtinEnter: Object.create / 4
+builtinExit: Object.create / 2
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:1:1:20:4) / 2
+functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:16:2:18:2) / 4
+builtinEnter: Object.create / 4
+builtinExit: Object.create / 2
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:16:2:18:2) / 2
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:1:2:20:2) / 2
+[ 'Object.create', 'foo' ]

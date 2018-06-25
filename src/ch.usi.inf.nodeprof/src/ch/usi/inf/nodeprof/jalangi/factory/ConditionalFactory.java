@@ -49,7 +49,7 @@ public class ConditionalFactory extends AbstractFactory {
                                 Object[] inputs) {
                     if (post != null) {
                         directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                        getSourceIID(), getCondition(inputs)}, false);
+                                        getSourceIID(), getCondition(inputs)}, false, getSourceIID());
                     }
                 }
             };
@@ -67,7 +67,7 @@ public class ConditionalFactory extends AbstractFactory {
                                 Object[] inputs) {
                     if (post != null && this.isLogic()) {
                         directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                        getSourceIID(), convertResult(result)}, false);
+                                        getSourceIID(), convertResult(result)}, false, getSourceIID());
                     }
                 }
             };

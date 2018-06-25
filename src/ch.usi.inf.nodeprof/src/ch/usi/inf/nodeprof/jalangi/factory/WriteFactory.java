@@ -60,7 +60,7 @@ public class WriteFactory extends AbstractFactory {
                                     Undefined.instance, // value before write
                                     false, // isGlobal
                                     true, // TODO, isScriptLocal
-                    }, false);
+                    }, false, getSourceIID());
                 }
             };
         } else {
@@ -86,7 +86,7 @@ public class WriteFactory extends AbstractFactory {
                                         // write
                                         true, // isGlobal
                                         true, // TODO, isScriptLocal
-                        }, false);
+                        }, false, getSourceIID());
                     }
                 }
             };

@@ -58,7 +58,7 @@ public class ReadFactory extends AbstractFactory {
                                     getSourceIID(), getName(), convertResult(result),
                                     false, // isGlobal
                                     true, // TODO, isScriptLocal
-                    }, false);
+                    }, false, getSourceIID());
                 }
             };
         } else {
@@ -81,7 +81,7 @@ public class ReadFactory extends AbstractFactory {
                                         getSourceIID(), getProperty(),
                                         convertResult(result), true, // isGlobal
                                         true, // TODO, isScriptLocal
-                        }, false);
+                        }, false, getSourceIID());
                     }
                 }
 

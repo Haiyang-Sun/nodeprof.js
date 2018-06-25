@@ -45,7 +45,7 @@ public class BinaryFactory extends AbstractFactory {
                                     false, // isOpAssign
                                     false, // isSwitchCaseComparison
                                     false  // isComputed
-                    }, true);
+                    }, true, getSourceIID());
                 }
             }
 
@@ -59,7 +59,7 @@ public class BinaryFactory extends AbstractFactory {
                                     false, // isOpAssign
                                     false, // isSwitchCaseComparison
                                     false  // isComputed
-                    }, false);
+                    }, false, getSourceIID());
                 }
             }
         };

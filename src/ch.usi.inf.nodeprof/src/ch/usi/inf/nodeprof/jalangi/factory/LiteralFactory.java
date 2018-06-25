@@ -45,7 +45,7 @@ public class LiteralFactory extends AbstractFactory {
                 if (post != null) {
                     directCall(postCall, new Object[]{jalangiAnalysis, post,
                                     getSourceIID(), convertResult(result),
-                                    this.hasSetterGetter()}, false);
+                                    this.hasSetterGetter()}, false, getSourceIID());
                 }
             }
 

@@ -40,7 +40,7 @@ public class EvalFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
                     directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID(), getCode(inputs), true}, true);
+                                    getSourceIID(), getCode(inputs), true}, true, getSourceIID());
                 }
             }
 
@@ -49,7 +49,7 @@ public class EvalFactory extends AbstractFactory {
                             Object[] inputs) {
                 if (post != null) {
                     directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getCode(inputs), true}, false);
+                                    getSourceIID(), getCode(inputs), true}, false, getSourceIID());
                 }
             }
         };

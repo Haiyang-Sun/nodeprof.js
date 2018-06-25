@@ -40,7 +40,7 @@ public class UnaryFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
                     directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID(), getOp(), getValue(inputs),}, true);
+                                    getSourceIID(), getOp(), getValue(inputs),}, true, getSourceIID());
                 }
             }
 
@@ -50,7 +50,7 @@ public class UnaryFactory extends AbstractFactory {
                 if (post != null) {
                     directCall(postCall, new Object[]{jalangiAnalysis, post,
                                     getSourceIID(), getOp(), getValue(inputs),
-                                    convertResult(result)}, false);
+                                    convertResult(result)}, false, getSourceIID());
                 }
             }
         };

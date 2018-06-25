@@ -47,7 +47,7 @@ public class GetFieldFactory extends AbstractFactory {
                                     false,// isComputed
                                     isOpAssign(),// isOpAssign
                                     isMethodCall(),// isMethodCall
-                    }, true);
+                    }, true, getSourceIID());
                 }
             }
 
@@ -63,7 +63,7 @@ public class GetFieldFactory extends AbstractFactory {
                                     convertResult(result), false,// isComputed
                                     isOpAssign(),// isOpAssign
                                     isMethodCall(),// isMethodCall
-                    }, false);
+                    }, false, getSourceIID());
                 }
             }
         };
