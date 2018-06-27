@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright [2018] [Haiyang Sun, Università della Svizzera Italiana (USI)]
+ * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,7 +154,7 @@ public class AnalysisSourceFilter implements SourcePredicate {
                 if (res && source.getLineCount() > 0) {
                     // check if the source code has a special filter string at its beginning
                     CharSequence sourceChars = source.getCharacters();
-                    String sourceHead = sourceChars.subSequence(0, Math.min(sourceChars.length() -1, 1000)).toString().trim();
+                    String sourceHead = sourceChars.subSequence(0, Math.min(sourceChars.length() - 1, 1000)).toString().trim();
                     // should be enough
                     if (sourceHead.contains("DO NOT INSTRUMENT")) {
                         res = false;
