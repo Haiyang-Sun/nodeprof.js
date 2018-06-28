@@ -207,8 +207,7 @@ public abstract class NodeProfAnalysis {
     @TruffleBoundary
     public void analysisReady() {
         assert (getFilter() != null);
-        SourceSectionFilter eventFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.getTags()).sourceIs(getFilter()).build();
-        analysisReady(eventFilter, handlers);
+        analysisReady(getFilter(), handlers);
     }
 
     /**
@@ -217,23 +216,26 @@ public abstract class NodeProfAnalysis {
 
     @TruffleBoundary
     public void analysisReady(AnalysisSourceFilter filter) {
-        SourceSectionFilter eventFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.getTags()).sourceIs(filter).build();
-        analysisReady(eventFilter, handlers);
+        analysisReady(filter, handlers);
     }
 
     @TruffleBoundary
-    private void analysisReady(SourceSectionFilter eventFilter, HashMap<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> handlerMapping) {
+    private void analysisReady(SourcePredicate sourceFilter, HashMap<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> handlerMapping) {
         // check if any new callback is registered
         if (handlerMapping.size() > 0) {
+            ArrayList<Class<?>> nonBuiltinCallbacks = new ArrayList<>();
             for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
                 entry.getKey().usedAnalysis++;
+                if (entry.getKey() != ProfiledTagEnum.BUILTIN) {
+                    nonBuiltinCallbacks.add(entry.getKey().getTag());
+                }
             }
 
             SourceSectionFilter inputFilter = SourceSectionFilter.newBuilder().tagIs(StandardTags.ExpressionTag.class, StandardTags.StatementTag.class).build();
 
             // A built-in node has also the root tag, so we need a separate factory
             if (handlerMapping.containsKey(ProfiledTagEnum.BUILTIN)) {
-                SourceSectionFilter builtinFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.getTags()).sourceIs(AnalysisSourceFilter.getBuiltinFilter()).build();
+                SourceSectionFilter builtinFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.BUILTIN.getTag()).sourceIs(AnalysisSourceFilter.getBuiltinFilter()).build();
                 getInstrumenter().attachExecutionEventFactory(
                                 builtinFilter,
                                 inputFilter,
@@ -251,52 +253,59 @@ public abstract class NodeProfAnalysis {
                                 });
             }
 
-            getInstrumenter().attachExecutionEventFactory(
-                            eventFilter,
-                            inputFilter,
-                            new ExecutionEventNodeFactory() {
+            if (nonBuiltinCallbacks.size() > 0) {
+                Class<?>[] eventTags = new Class<?>[nonBuiltinCallbacks.size()];
+                nonBuiltinCallbacks.toArray(eventTags);
+                SourceSectionFilter eventFilter = SourceSectionFilter.newBuilder().tagIs(eventTags).sourceIs(sourceFilter).build();
 
-                                @Override
-                                @TruffleBoundary
-                                public ExecutionEventNode create(EventContext context) {
-                                    int count = 0;
-                                    InstrumentableNode instrumentedNode = (InstrumentableNode) context.getInstrumentedNode();
-                                    for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
-                                        if (instrumentedNode.hasTag(entry.getKey().getTag()) && entry.getKey() != ProfiledTagEnum.BUILTIN) {
-                                            count += 1;
-                                        }
-                                    }
-                                    // if a node should never have two tags the same time (except
-                                    // for the built-in)
-                                    if (count > 1) {
-                                        Logger.error("a node has more than 1 profiling tags!!");
-                                        String tags = "";
+                getInstrumenter().attachExecutionEventFactory(
+                                eventFilter,
+                                inputFilter,
+                                new ExecutionEventNodeFactory() {
+
+                                    @Override
+                                    @TruffleBoundary
+                                    public ExecutionEventNode create(EventContext context) {
+                                        int count = 0;
+                                        InstrumentableNode instrumentedNode = (InstrumentableNode) context.getInstrumentedNode();
                                         for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
                                             if (instrumentedNode.hasTag(entry.getKey().getTag()) && entry.getKey() != ProfiledTagEnum.BUILTIN) {
-                                                tags += entry.getKey().getTag().getSimpleName() + " ";
+                                                count += 1;
                                             }
                                         }
-                                        Logger.error(context.getInstrumentedSourceSection(), context.getInstrumentedNode().getClass().getName() + " has tags: " + tags);
-                                    }
-
-                                    assert (count <= 1);
-                                    for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
-                                        try {
-                                            if (instrumentedNode.hasTag(entry.getKey().getTag()) && entry.getKey() != ProfiledTagEnum.BUILTIN) {
-                                                return createAndSimplifyExecutionEventNode(context, entry.getKey(), entry.getValue());
+                                        // if a node should never have two tags the same time
+                                        // (except
+                                        // for the built-in)
+                                        if (count > 1) {
+                                            Logger.error("a node has more than 1 profiling tags!!");
+                                            String tags = "";
+                                            for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
+                                                if (instrumentedNode.hasTag(entry.getKey().getTag()) && entry.getKey() != ProfiledTagEnum.BUILTIN) {
+                                                    tags += entry.getKey().getTag().getSimpleName() + " ";
+                                                }
                                             }
-                                        } catch (Exception exception) {
-                                            exception.printStackTrace();
+                                            Logger.error(context.getInstrumentedSourceSection(), context.getInstrumentedNode().getClass().getName() + " has tags: " + tags);
                                         }
-                                    }
-                                    // if there is no handler for this node, return an empty
-                                    // ExecutionEventNode which should bring zero overhead after
-                                    // compilation
-                                    return new ExecutionEventNode() {
-                                    };
-                                }
 
-                            });
+                                        assert (count <= 1);
+                                        for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
+                                            try {
+                                                if (instrumentedNode.hasTag(entry.getKey().getTag()) && entry.getKey() != ProfiledTagEnum.BUILTIN) {
+                                                    return createAndSimplifyExecutionEventNode(context, entry.getKey(), entry.getValue());
+                                                }
+                                            } catch (Exception exception) {
+                                                exception.printStackTrace();
+                                            }
+                                        }
+                                        // if there is no handler for this node, return an empty
+                                        // ExecutionEventNode which should bring zero overhead after
+                                        // compilation
+                                        return new ExecutionEventNode() {
+                                        };
+                                    }
+
+                                });
+            }
         }
         this.handlers = new HashMap<>();
     }
