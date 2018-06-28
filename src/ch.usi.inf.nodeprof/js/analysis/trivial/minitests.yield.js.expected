@@ -1,0 +1,2 @@
+{ value: 'Crash', done: false }
+{ value: undefined, done: true }
