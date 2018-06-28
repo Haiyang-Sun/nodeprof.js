@@ -16,6 +16,9 @@
 
 // Author: Liang Gong
 
+// do not remove the following comment
+// JALANGI DO NOT INSTRUMENT
+
 ((function (sandbox) {
     function RuntimeDB() {
         // ---- DB library functions start ----

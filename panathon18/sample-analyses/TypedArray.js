@@ -17,6 +17,8 @@
 // Author: Liang Gong
 // Ported to Jalangi2 by Koushik Sen
 
+// do not remove the following comment
+// JALANGI DO NOT INSTRUMENT
 
 /**
  * Check Rule: Typed array is faster than normal array

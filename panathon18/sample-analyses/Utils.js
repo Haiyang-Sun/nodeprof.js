@@ -16,6 +16,9 @@
 
 // Author: Liang Gong
 
+// do not remove the following comment
+// JALANGI DO NOT INSTRUMENT
+
 ((function (sandbox) {
 
     var SPECIAL_PROP = sandbox.Constants.SPECIAL_PROP + "M";
