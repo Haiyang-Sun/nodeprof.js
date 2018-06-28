@@ -54,7 +54,7 @@ public class NonContiguousArray extends TestableNodeProfAnalysis {
     public void printResult() {
         int idx = 0;
         Logger.info("NonContiguousArray analysis finishes.");
-        for (Entry<Long, Report> entry : db.getRecords().entrySet()) {
+        for (Entry<Integer, Report> entry : db.getRecords().entrySet()) {
             Logger.info("NonContiguousArray [" + idx++ + "]" + entry.getValue().report());
         }
     }

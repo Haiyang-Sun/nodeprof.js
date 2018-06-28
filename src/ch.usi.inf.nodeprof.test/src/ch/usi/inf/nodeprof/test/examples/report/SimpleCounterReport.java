@@ -21,12 +21,12 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
 public class SimpleCounterReport extends Report {
     private int cnt = 0;
 
-    public SimpleCounterReport(long iid) {
+    public SimpleCounterReport(int iid) {
         super(iid);
     }
 
     public static SimpleCounterReport getFromDB(
-                    ReportDB db, long iid) {
+                    ReportDB db, int iid) {
         if (!db.contains(iid)) {
             db.put(iid, new SimpleCounterReport(iid));
         }
@@ -43,13 +43,12 @@ public class SimpleCounterReport extends Report {
 
     @Override
     public String report() {
-        return SourceMapping.getLocationForIID(this.iid) + ": counter "
-                        + this.getCnt();
+        return SourceMapping.getLocationForIID(this.iid) + ": counter " + this.getCnt();
     }
 
     public static class SimleReportFactory implements ReportFactory {
         @Override
-        public Report create(long iid) {
+        public Report create(int iid) {
             return new SimpleCounterReport(iid);
         }
     }

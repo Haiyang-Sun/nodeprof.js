@@ -21,32 +21,32 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 
 public class ReportDB {
     public static interface ReportFactory {
-        Report create(long iid);
+        Report create(int iid);
     }
 
-    private final HashMap<Long, Report> records = new HashMap<>();
+    private final HashMap<Integer, Report> records = new HashMap<>();
 
     @TruffleBoundary
-    public Report get(Long entryKey) {
+    public Report get(Integer entryKey) {
         return records.get(entryKey);
     }
 
     @TruffleBoundary
-    public Report put(Long entryKey, Report value) {
+    public Report put(Integer entryKey, Report value) {
         return records.put(entryKey, value);
     }
 
     @TruffleBoundary
-    public void remove(Long key) {
+    public void remove(Integer key) {
         records.remove(key);
     }
 
     @TruffleBoundary
-    public boolean contains(Long key) {
+    public boolean contains(Integer key) {
         return records.containsKey(key);
     }
 
-    public HashMap<Long, Report> getRecords() {
+    public HashMap<Integer, Report> getRecords() {
         return records;
     }
 

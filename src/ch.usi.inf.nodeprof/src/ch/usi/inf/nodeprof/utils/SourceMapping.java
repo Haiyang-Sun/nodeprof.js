@@ -24,9 +24,9 @@ import com.oracle.truffle.api.source.SourceSection;
 
 public abstract class SourceMapping {
     private static int iidGen = 0;
-    private static @CompilationFinal HashMap<Long, String> iidMap;
-    private static @CompilationFinal HashMap<SourceSection, Long> sourceSet;
-    private static @CompilationFinal HashMap<Long, SourceSection> idToSource;
+    private static @CompilationFinal HashMap<Integer, String> iidMap;
+    private static @CompilationFinal HashMap<SourceSection, Integer> sourceSet;
+    private static @CompilationFinal HashMap<Integer, SourceSection> idToSource;
 
     @TruffleBoundary
     private static void init() {
@@ -41,11 +41,12 @@ public abstract class SourceMapping {
     }
 
     @TruffleBoundary
-    public static long getIIDForSourceSection(SourceSection sourceSection) {
+    public static int getIIDForSourceSection(SourceSection sourceSection) {
         if (sourceSet.containsKey(sourceSection)) {
             return sourceSet.get(sourceSection);
         }
-        long newIId = ++iidGen;
+        int newIId = ++iidGen;
+        assert (newIId < Integer.MAX_VALUE);
         StringBuilder b = Logger.getSourceSectionId(sourceSection);
 
         iidMap.put(newIId, b.toString());
@@ -55,12 +56,12 @@ public abstract class SourceMapping {
     }
 
     @TruffleBoundary
-    public static String getLocationForIID(long iid) {
+    public static String getLocationForIID(int iid) {
         return iidMap.get(iid);
     }
 
     @TruffleBoundary
-    public static SourceSection getSourceSectionForIID(long iid) {
+    public static SourceSection getSourceSectionForIID(int iid) {
         return idToSource.get(iid);
     }
 

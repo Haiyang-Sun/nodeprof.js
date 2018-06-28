@@ -53,7 +53,7 @@ public abstract class TestableNodeProfAnalysis extends NodeProfAnalysis {
     }
 
     @TruffleBoundary
-    protected void addDebugEvent(String eventName, long iid, ProfiledTagEnum tag, Object... data) {
+    protected void addDebugEvent(String eventName, int iid, ProfiledTagEnum tag, Object... data) {
         if (this.isTestEnabled()) {
             if (GlobalConfiguration.DEBUG) {
                 Logger.debug(iid, eventName + "@" + tag.name());
@@ -81,7 +81,7 @@ public abstract class TestableNodeProfAnalysis extends NodeProfAnalysis {
          * @param tag tracks the tag of the Node
          * @param data keeps track of any extra data
          */
-        public AnalysisEvent(String eventName, long iid, ProfiledTagEnum tag, Object... data) {
+        public AnalysisEvent(String eventName, int iid, ProfiledTagEnum tag, Object... data) {
             this.eventName = eventName;
             this.tag = tag;
             this.data = data;
@@ -89,11 +89,11 @@ public abstract class TestableNodeProfAnalysis extends NodeProfAnalysis {
         }
 
         private String eventName;
-        private long iid;
+        private int iid;
         private ProfiledTagEnum tag;
         private Object[] data;
 
-        public long getIId() {
+        public int getIId() {
             return iid;
         }
 

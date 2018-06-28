@@ -88,7 +88,7 @@ public abstract class AbstractFactory implements
         try {
             callNode.call(args);
         } catch (GraalJSException e) {
-            Logger.error((long) args[2], "error happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]");
+            Logger.error((int) args[2], "error happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]");
             Logger.dumpException(e);
         }
         nestedControl = false;

@@ -30,7 +30,7 @@ public abstract class ReportEntryNode extends Node {
         this.factory = factory;
     }
 
-    protected Report getFromDb(Long iid) {
+    protected Report getFromDb(Integer iid) {
         Report res;
         if (!reports.contains(iid)) {
             res = factory.create(iid);
@@ -41,20 +41,20 @@ public abstract class ReportEntryNode extends Node {
         return res;
     }
 
-    public abstract Report execute(Long source);
+    public abstract Report execute(Integer source);
 
     /**
      * @param iid the instrumentation id
      * @param cached the cached instrumentaion id
      */
     @Specialization(guards = "iid == cached")
-    public Report executeSource(Long iid, @Cached("iid") Long cached,
+    public Report executeSource(Integer iid, @Cached("iid") Integer cached,
                     @Cached("getFromDb(iid)") Report result) {
         return result;
     }
 
     @Specialization
-    public Report executeSource(Long iid) {
+    public Report executeSource(Integer iid) {
         return getFromDb(iid);
     }
 }

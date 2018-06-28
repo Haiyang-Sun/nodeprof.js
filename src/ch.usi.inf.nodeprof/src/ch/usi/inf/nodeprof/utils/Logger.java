@@ -50,7 +50,7 @@ public class Logger {
         print(out, "i", sourceSection, msg);
     }
 
-    public static void info(long iid, Object msg) {
+    public static void info(int iid, Object msg) {
         info(SourceMapping.getSourceSectionForIID(iid), msg);
     }
 
@@ -60,7 +60,7 @@ public class Logger {
         }
     }
 
-    public static void debug(long iid, Object msg) {
+    public static void debug(int iid, Object msg) {
         debug(SourceMapping.getSourceSectionForIID(iid), msg);
     }
 
@@ -74,7 +74,7 @@ public class Logger {
         print(out, "w", sourceSection, msg);
     }
 
-    public static void warning(long iid, Object msg) {
+    public static void warning(int iid, Object msg) {
         warning(SourceMapping.getSourceSectionForIID(iid), msg);
     }
 
@@ -86,7 +86,7 @@ public class Logger {
         print(err, "e", sourceSection, msg);
     }
 
-    public static void error(long iid, Object msg) {
+    public static void error(int iid, Object msg) {
         error(SourceMapping.getSourceSectionForIID(iid), msg);
     }
 

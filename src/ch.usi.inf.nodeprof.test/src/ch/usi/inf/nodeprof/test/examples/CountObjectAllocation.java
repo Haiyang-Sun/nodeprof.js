@@ -53,7 +53,7 @@ public class CountObjectAllocation extends TestableNodeProfAnalysis {
     @Override
     public void printResult() {
         Logger.info("CountObjectAllocation analysis finishes.");
-        for (Entry<Long, Report> entry : db.getRecords().entrySet()) {
+        for (Entry<Integer, Report> entry : db.getRecords().entrySet()) {
             Logger.info("CountObjectAllocation " + entry.getValue().report());
         }
     }

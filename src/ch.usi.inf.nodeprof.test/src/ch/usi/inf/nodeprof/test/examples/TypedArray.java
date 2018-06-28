@@ -48,15 +48,15 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
 
 public class TypedArray extends TestableNodeProfAnalysis {
     private final ReportDB db = new ReportDB();
-    private final WeakHashMap<Object, Long> allocationTrack = new WeakHashMap<>();
+    private final WeakHashMap<Object, Integer> allocationTrack = new WeakHashMap<>();
 
     @TruffleBoundary
-    public void trackAllocation(Object array, long iid) {
+    public void trackAllocation(Object array, int iid) {
         allocationTrack.put(array, iid);
     }
 
     @TruffleBoundary
-    public long getAllocation(Object array) {
+    public int getAllocation(Object array) {
         if (!allocationTrack.containsKey(array))
             return -1;
         return allocationTrack.get(array);
@@ -71,7 +71,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
         int idx = 0;
         int typedArray = 0;
         Logger.info("TypedArray analysis finishes.");
-        for (Entry<Long, Report> entry : db.getRecords().entrySet()) {
+        for (Entry<Integer, Report> entry : db.getRecords().entrySet()) {
             TypedArrayReport report = (TypedArrayReport) entry.getValue();
             if (GlobalConfiguration.DEBUG) {
                 Logger.debug("TypedArray-Arrays[" + idx++ + "]: " + entry.getValue().report());
@@ -94,7 +94,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
         public boolean isLiteral = false;
         public boolean isTyped = true;
 
-        public TypedArrayReport(long iid) {
+        public TypedArrayReport(int iid) {
             super(iid);
         }
 
@@ -106,7 +106,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
 
     class TypedArrayFactory implements ReportFactory {
         @Override
-        public TypedArrayReport create(long iid) {
+        public TypedArrayReport create(int iid) {
             return new TypedArrayReport(iid);
         }
 
@@ -175,7 +175,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
                     public void executePost(VirtualFrame frame,
                                     Object result, Object[] inputs) {
                         if (this.arrayPrototype) {
-                            long iid = getAllocation(getReceiver(frame));
+                            int iid = getAllocation(getReceiver(frame));
                             if (iid >= 0) {
                                 addDebugEvent("TA_ARRAY_OP", iid, ProfiledTagEnum.BUILTIN, this.funcName);
                                 TypedArrayReport report = (TypedArrayReport) getReportNode.execute(iid);
@@ -217,7 +217,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
                         Object convertedIndex = toArrayIndex.execute(getProperty(inputs));
 
                         if (convertedIndex instanceof Long && ((Long) convertedIndex).intValue() >= 0) {
-                            long iid = getAllocation(getReceiver(inputs));
+                            int iid = getAllocation(getReceiver(inputs));
                             if (iid <= 0) {
                                 /**
                                  * the receiver is not allocated as an array and as a result is not

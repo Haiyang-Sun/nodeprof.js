@@ -41,7 +41,7 @@ public abstract class BaseEventHandlerNode extends Node {
     /**
      * the unique instrumentation ID for the instrumented source section
      */
-    protected final long sourceIID;
+    protected final int sourceIID;
 
     /**
      * used to read the attribute of the tags
@@ -63,7 +63,7 @@ public abstract class BaseEventHandlerNode extends Node {
     /**
      * @return the instrumentation ID for the instrumented source section
      */
-    public long getSourceIID() {
+    public int getSourceIID() {
         return sourceIID;
     }
 

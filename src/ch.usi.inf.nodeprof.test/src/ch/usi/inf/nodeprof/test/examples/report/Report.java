@@ -16,13 +16,13 @@
 package ch.usi.inf.nodeprof.test.examples.report;
 
 public abstract class Report {
-    protected final long iid;
+    protected final int iid;
 
-    public Report(long iid) {
+    public Report(int iid) {
         this.iid = iid;
     }
 
-    public long getSourceIId() {
+    public int getSourceIId() {
         return iid;
     }
 

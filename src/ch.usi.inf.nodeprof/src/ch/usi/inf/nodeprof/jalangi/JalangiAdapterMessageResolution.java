@@ -47,16 +47,16 @@ public class JalangiAdapterMessageResolution {
                     Object result = null;
                     if (arguments[0] instanceof String) {
                         String iid = (String) arguments[0];
-                        result = SourceMapping.getLocationForIID(Long.parseLong(iid));
+                        result = SourceMapping.getLocationForIID(Integer.parseInt(iid));
                     } else if (arguments[0] instanceof Long) {
                         Long iid = (Long) arguments[0];
-                        result = SourceMapping.getLocationForIID(iid);
+                        result = SourceMapping.getLocationForIID(iid.intValue());
                     } else if (arguments[0] instanceof Integer) {
                         Integer iid = (Integer) arguments[0];
                         result = SourceMapping.getLocationForIID(iid);
                     } else {
                         try {
-                            result = SourceMapping.getLocationForIID(Long.parseLong(arguments[0].toString()));
+                            result = SourceMapping.getLocationForIID(Integer.parseInt(arguments[0].toString()));
                         } catch (Exception e) {
                             Logger.error("iidToLocation failed for argument type " + arguments[0].getClass().getName());
                             CompilerDirectives.transferToInterpreterAndInvalidate();
