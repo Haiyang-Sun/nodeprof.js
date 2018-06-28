@@ -130,7 +130,7 @@ def testJalangi(args):
             vmArgs += [arg];
 
     if all:
-        for analysis in os.listdir(analysisdir):
+        for analysis in sorted(os.listdir(analysisdir)):
             _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, svm, testsuites);
     elif analyses:
         for analysis in analyses:
@@ -190,9 +190,7 @@ def unitTests(args):
 
 def test(args):
     unitTests(args)
-    testJalangi(args +["basics"]);
-    testJalangi(args +["extra-features"]);
-    testJalangi(args +["jitprof"]);
+    testJalangi(args +["--all"]);
 
 @contextmanager
 def _import_substratevm():
