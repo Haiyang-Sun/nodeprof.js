@@ -29,14 +29,17 @@ this.evalFunctionPost= function(iid, func, receiver, args, ret){
 }
 ```
 
-One extra argument for _functionEnter_ callback for built-in functions:
+An extra pair of callbacks for entering built-in functions:
 
 ```
 /**
- * for built-in functions, builtinName will be the name of the builtin function.
+ * for built-in functions, their `name` is passed instead of an `iid`.
  */
-this.functionEnter(iid, func, receiver, args, builtinName) {
-}
+this.builtinEnter = function (name, f, dis, args) {
+};
+this.builtinExit = function (name, returnVal) {
+	return {returnVal: returnVal};
+};
 ```
 
 
