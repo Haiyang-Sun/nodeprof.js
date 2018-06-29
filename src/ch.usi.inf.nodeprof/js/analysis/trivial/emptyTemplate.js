@@ -68,6 +68,11 @@
         this.functionExit = function (iid, returnVal, wrappedExceptionVal) {
             return {returnVal: returnVal, wrappedExceptionVal: wrappedExceptionVal, isBacktrack: false};
         };
+        this.builtinEnter = function (name, f, dis, args) {
+        };
+        this.builtinExit = function (name, returnVal) {
+            return {returnVal: returnVal};
+        };
         //not supported yet
         this.scriptEnter = function (iid, instrumentedFileName, originalFileName) {
         };
