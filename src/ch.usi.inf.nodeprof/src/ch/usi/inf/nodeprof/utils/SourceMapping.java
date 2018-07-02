@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +22,13 @@ import java.util.HashMap;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
+import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
+import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.builtins.JSUserObject;
+import com.oracle.truffle.js.runtime.objects.JSObject;
+import com.oracle.truffle.js.runtime.objects.Undefined;
 
 public abstract class SourceMapping {
     private static int iidGen = 0;
@@ -68,6 +74,32 @@ public abstract class SourceMapping {
     }
 
     @TruffleBoundary
+    public static DynamicObject getJSObjectForIID(int iid) {
+        return getJSObjectForSourceSection(getSourceSectionForIID(iid));
+    }
+
+    @TruffleBoundary
+    public static DynamicObject getJSObjectForSourceSection(SourceSection section) {
+        if (section == null)
+            return Undefined.instance;
+        Source source = section.getSource();
+        DynamicObject o = getJSObjectForSource(source);
+        JSObject.set(o, "section", makeSectionString(section).toString());
+        return o;
+    }
+
+    @TruffleBoundary
+    public static DynamicObject getJSObjectForSource(Source source) {
+        if (source == null)
+            return Undefined.instance;
+        JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
+        DynamicObject o = JSUserObject.create(ctx);
+        JSObject.set(o, "file", shortPath(source.getName()));
+        JSObject.set(o, "internal", isInternal(source));
+        return o;
+    }
+
+    @TruffleBoundary
     public static synchronized void reset() {
         iidGen = 0;
         iidMap.clear();
@@ -75,14 +107,28 @@ public abstract class SourceMapping {
         idToSource.clear();
     }
 
-    @TruffleBoundary
-    private static String getRelative(String path) {
-        if (path.startsWith("/")) {
+    /**
+     * Helper to create shorter (relative) paths for a given path.
+     *
+     * @param path the path string to shorten
+     * @return possibly shortened (relative) path
+     */
+    private static String shortPath(String path) {
+        if (!GlobalConfiguration.LOG_ABSOLUTE_PATH && path.startsWith("/")) {
             String base = System.getProperty("user.dir");
             return new File(base).toURI().relativize(new File(path).toURI()).getPath();
         } else {
             return path;
         }
+    }
+
+    private static StringBuilder makeSectionString(SourceSection sourceSection) {
+        StringBuilder b = new StringBuilder();
+        b.append(sourceSection.getStartLine()).append(":")
+                .append(sourceSection.getStartColumn())
+                .append(":").append(sourceSection.getEndLine())
+                .append(":").append(sourceSection.getEndColumn() + 1);
+        return b;
     }
 
     @TruffleBoundary
@@ -94,12 +140,8 @@ public abstract class SourceMapping {
         if (isInternal) {
             b.append("*");
         }
-        if (GlobalConfiguration.LOG_ABSOLUTE_PATH)
-            b.append(fileName);
-        else
-            b.append(getRelative(fileName));
-        b.append(":").append(sourceSection.getStartLine()).append(":").append(sourceSection.getStartColumn()).append(":").append(sourceSection.getEndLine()).append(":").append(
-                sourceSection.getEndColumn() + 1);
+        b.append(shortPath(fileName));
+        b.append(":").append(makeSectionString(sourceSection));
         b.append(")");
         return b;
     }

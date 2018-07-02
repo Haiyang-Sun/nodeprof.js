@@ -94,7 +94,7 @@ public class Logger {
     public static void error(Object msg) {
         print(err, "e", msg);
     }
-    
+
     /**
      *
      * print source section with code

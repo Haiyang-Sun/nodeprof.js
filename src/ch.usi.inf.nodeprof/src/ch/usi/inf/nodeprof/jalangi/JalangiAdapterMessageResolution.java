@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +18,11 @@ package ch.usi.inf.nodeprof.jalangi;
 
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.interop.CanResolve;
-import com.oracle.truffle.api.interop.MessageResolution;
-import com.oracle.truffle.api.interop.Resolve;
-import com.oracle.truffle.api.interop.TruffleObject;
-import com.oracle.truffle.api.interop.UnsupportedTypeException;
+import com.oracle.truffle.api.interop.*;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
+import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
 
@@ -38,32 +36,61 @@ public class JalangiAdapterMessageResolution {
         }
     }
 
+    static private int convertIID(Object argument) {
+        int iid;
+        if (argument instanceof String) {
+            String s = (String) argument;
+            iid = Integer.parseInt(s);
+        } else if (argument instanceof Long) {
+            Long l = (Long) argument;
+            iid = l.intValue();
+        } else if (argument instanceof Integer) {
+            iid = (Integer) argument;
+        } else {
+            iid = Integer.parseInt(argument.toString());
+        }
+        return iid;
+    }
+
+    static private boolean checkArguments(int count, Object[] arguments, String funcName) {
+        if (arguments.length < count) {
+            Logger.error("call to " + funcName + " expects " + count + " argument(s)");
+            if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
+                CompilerDirectives.transferToInterpreterAndInvalidate();
+                throw ArityException.raise(count, arguments.length);
+            }
+            return false;
+        } else if (arguments.length > count) {
+            Logger.warning("extra arguments passed to " + funcName);
+        }
+        return true;
+    }
+
     @Resolve(message = "INVOKE")
     abstract static class RunnableInvokeNode extends Node {
         @TruffleBoundary
         public Object access(JalangiAdapter adapter, String identifier, Object[] arguments) {
             if ("iidToLocation".equals(identifier)) {
-                if (arguments.length == 1) {
+                if (checkArguments(1, arguments, identifier)) {
                     Object result = null;
-                    if (arguments[0] instanceof String) {
-                        String iid = (String) arguments[0];
-                        result = SourceMapping.getLocationForIID(Integer.parseInt(iid));
-                    } else if (arguments[0] instanceof Long) {
-                        Long iid = (Long) arguments[0];
-                        result = SourceMapping.getLocationForIID(iid.intValue());
-                    } else if (arguments[0] instanceof Integer) {
-                        Integer iid = (Integer) arguments[0];
-                        result = SourceMapping.getLocationForIID(iid);
-                    } else {
-                        try {
-                            result = SourceMapping.getLocationForIID(Integer.parseInt(arguments[0].toString()));
-                        } catch (Exception e) {
-                            Logger.error("iidToLocation failed for argument type " + arguments[0].getClass().getName());
-                            CompilerDirectives.transferToInterpreterAndInvalidate();
-                            throw UnsupportedTypeException.raise(e, arguments);
-                        }
+                    try {
+                        result = SourceMapping.getLocationForIID(convertIID(arguments[0]));
+                    } catch (Exception e) {
+                        Logger.error("iidToLocation failed for argument type " + arguments[0].getClass().getName());
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        throw UnsupportedTypeException.raise(e, arguments);
                     }
                     return result == null ? Undefined.instance : result;
+                }
+            }  else if (identifier.equals("iidToSourceObject")) {
+                if (checkArguments(1, arguments, identifier)) {
+                    try {
+                        return SourceMapping.getJSObjectForIID(convertIID(arguments[0]));
+                    } catch (Exception e) {
+                        Logger.error("iidToSourceObject failed for argument type " + arguments[0].getClass().getName());
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        throw UnsupportedTypeException.raise(e, arguments);
+                    }
                 }
             } else if (identifier.equals("valueOf")) {
                 return "jalangi-adapter";
