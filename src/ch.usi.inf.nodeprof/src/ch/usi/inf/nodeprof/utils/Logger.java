@@ -40,7 +40,7 @@ public class Logger {
 
     @TruffleBoundary
     private static void print(PrintStream stream, String tag, SourceSection sourceSection, Object msg) {
-        stream.printf("[%s] %s: %s\n", tag, getSourceSectionId(sourceSection).toString(), msg.toString());
+        stream.printf("[%s] %s: %s\n", tag, SourceMapping.makeLocationString(sourceSection).toString(), msg.toString());
     }
 
     public static void info(Object msg) {
@@ -94,40 +94,7 @@ public class Logger {
     public static void error(Object msg) {
         print(err, "e", msg);
     }
-
-    @TruffleBoundary
-    public static String getRelative(String path) {
-        if (path.startsWith("/")) {
-            String base = System.getProperty("user.dir");
-            return new File(base).toURI().relativize(new File(path).toURI()).getPath();
-        } else {
-            return path;
-        }
-    }
-
-    @TruffleBoundary
-    public static StringBuilder getSourceSectionId(SourceSection sourceSection) {
-        StringBuilder b = new StringBuilder();
-        String fileName = sourceSection.getSource().getName();
-        boolean isInternal = isInternal(sourceSection.getSource());
-        b.append("(");
-        if (isInternal) {
-            b.append("*");
-        }
-        if (GlobalConfiguration.LOG_ABSOLUTE_PATH)
-            b.append(fileName);
-        else
-            b.append(getRelative(fileName));
-        b.append(":").append(sourceSection.getStartLine()).append(":").append(sourceSection.getStartColumn()).append(":").append(sourceSection.getEndLine()).append(":").append(
-                        sourceSection.getEndColumn() + 1);
-        b.append(")");
-        return b;
-    }
-
-    private static boolean isInternal(Source src) {
-        return src.isInternal() || src.getPath() == null || src.getPath().equals("");
-    }
-
+    
     /**
      *
      * print source section with code

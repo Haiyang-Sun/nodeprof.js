@@ -15,11 +15,13 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.utils;
 
+import java.io.File;
 import java.util.HashMap;
 
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
+import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 
 public abstract class SourceMapping {
@@ -47,7 +49,7 @@ public abstract class SourceMapping {
         }
         int newIId = ++iidGen;
         assert (newIId < Integer.MAX_VALUE);
-        StringBuilder b = Logger.getSourceSectionId(sourceSection);
+        StringBuilder b = makeLocationString(sourceSection);
 
         iidMap.put(newIId, b.toString());
         sourceSet.put(sourceSection, newIId);
@@ -71,5 +73,38 @@ public abstract class SourceMapping {
         iidMap.clear();
         sourceSet.clear();
         idToSource.clear();
+    }
+
+    @TruffleBoundary
+    private static String getRelative(String path) {
+        if (path.startsWith("/")) {
+            String base = System.getProperty("user.dir");
+            return new File(base).toURI().relativize(new File(path).toURI()).getPath();
+        } else {
+            return path;
+        }
+    }
+
+    @TruffleBoundary
+    public static StringBuilder makeLocationString(SourceSection sourceSection) {
+        StringBuilder b = new StringBuilder();
+        String fileName = sourceSection.getSource().getName();
+        boolean isInternal = isInternal(sourceSection.getSource());
+        b.append("(");
+        if (isInternal) {
+            b.append("*");
+        }
+        if (GlobalConfiguration.LOG_ABSOLUTE_PATH)
+            b.append(fileName);
+        else
+            b.append(getRelative(fileName));
+        b.append(":").append(sourceSection.getStartLine()).append(":").append(sourceSection.getStartColumn()).append(":").append(sourceSection.getEndLine()).append(":").append(
+                sourceSection.getEndColumn() + 1);
+        b.append(")");
+        return b;
+    }
+
+    private static boolean isInternal(Source src) {
+        return src.isInternal() || src.getPath() == null || src.getPath().equals("");
     }
 }
