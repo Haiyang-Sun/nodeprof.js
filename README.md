@@ -1,3 +1,5 @@
+[![Build Status](https://api.travis-ci.com/Haiyang-Sun/nodeprof.js.svg?branch=master)](https://travis-ci.com/Haiyang-Sun/nodeprof.js)
+
 An efficient instrumentation and profiling framework for [Graal.js](https://github.com/graalvm/graaljs).
 
 ## Getting Started
