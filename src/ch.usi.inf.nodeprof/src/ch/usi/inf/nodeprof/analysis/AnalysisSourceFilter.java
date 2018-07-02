@@ -23,6 +23,7 @@ import java.util.List;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.SourceSectionFilter.SourcePredicate;
 import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.js.runtime.Evaluator;
 
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
@@ -132,11 +133,33 @@ public class AnalysisSourceFilter implements SourcePredicate {
         // if it's an exclusion filter, we include the source by default
         boolean res = filterExcludes;
 
+        boolean isInternal = isInternal(source);
         // use name or path of source depending whether we consider it internal
-        String name = isInternal(source) ? source.getName() : source.getPath();
+
+        boolean isEval = isInternal && source.getName().startsWith(Evaluator.EVAL_AT_SOURCE_NAME_PREFIX);
+        String name;
+        if (isEval) {
+            name = source.getName();
+            int startPos = name.indexOf('(');
+            int endPos = name.indexOf(')');
+            if (startPos > -1 && endPos > -1) {
+                int fileEnd = name.indexOf(':', startPos);
+                if (fileEnd > -1 && fileEnd < endPos) {
+                    endPos = fileEnd;
+                }
+                name = name.substring(startPos + 1, endPos);
+                // TODO, currently there is no way to judge if the eval is called from internal
+                // for the moment, we assume it's not internal
+                isInternal = false;
+            }
+        } else if (isInternal) {
+            name = source.getName();
+        } else {
+            name = source.getPath();
+        }
         assert (name != null);
 
-        if (instrumentInternal || !isInternal(source)) {
+        if (instrumentInternal || !isInternal) {
             // log warning if source does not have a name
             if (name.equals("")) {
                 if (loggedSources.add(source)) {
@@ -172,7 +195,7 @@ public class AnalysisSourceFilter implements SourcePredicate {
         // debug log (once per source) if filter did something
         if (res != filterExcludes && loggedSources.add(source)) {
             // don't log internal if they are being excluded (there are a lot of them)
-            if (instrumentInternal || !isInternal(source)) {
+            if (instrumentInternal || !isInternal) {
                 Logger.debug("Source filter: " + name + " -> " + (res ? "included" : "excluded") + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
             }
         }

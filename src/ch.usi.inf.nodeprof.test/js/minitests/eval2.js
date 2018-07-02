@@ -13,28 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-//DO NOT INSTRUMENT
-((function(sandbox){
-  function TestEval() {
-    this.cache = null;
-    this.evalPre = function (iid, str) {
-      console.log("pre "+str);
-    }
-    this.evalPost = function (iid, str) {
-      console.log("post "+str);
-    }
-    this.evalFunctionPost= function(iid, func, receiver, args, ret){
-      console.log("new Function body "+args[0]);
-      console.log("result function: "+ret);
-      this.cache = func;
-    }
-    this.invokeFun = function(iid, func) {
-      console.log("invoke func:"+func);
-      if(this.cache == func) {
-        console.log("found invocation of new Function at "+J$.iidToLocation(iid)+" of func "+func);
-      }
-    }
-  };
-  sandbox.analysis = new TestEval();
-}
-)(J$));
+eval("var x = 1; function foo(a){console.log(a);}; foo(x);");
