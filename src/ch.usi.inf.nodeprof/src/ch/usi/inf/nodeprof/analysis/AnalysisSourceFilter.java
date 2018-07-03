@@ -137,6 +137,8 @@ public class AnalysisSourceFilter implements SourcePredicate {
         // use name or path of source depending whether we consider it internal
 
         boolean isEval = isInternal && source.getName().startsWith(Evaluator.EVAL_AT_SOURCE_NAME_PREFIX);
+        boolean isIndirectEval = isInternal && source.getName().startsWith(Evaluator.FUNCTION_SOURCE_NAME);
+
         String name;
         if (isEval) {
             name = source.getName();
@@ -152,6 +154,9 @@ public class AnalysisSourceFilter implements SourcePredicate {
                 // for the moment, we assume it's not internal
                 isInternal = false;
             }
+        } else if (isIndirectEval) {
+            name = source.getName();
+            isInternal = false;
         } else if (isInternal) {
             name = source.getName();
         } else {
