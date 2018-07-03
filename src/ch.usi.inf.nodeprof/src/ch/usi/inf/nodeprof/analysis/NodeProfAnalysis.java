@@ -139,8 +139,8 @@ public abstract class NodeProfAnalysis {
         }
     }
 
-    public AnalysisSourceFilter getFilter() {
-        return AnalysisSourceFilter.getDefault();
+    public SourceFilterList getFilter() {
+        return SourceFilterList.getDefault();
     }
 
     /**
@@ -215,7 +215,7 @@ public abstract class NodeProfAnalysis {
      */
 
     @TruffleBoundary
-    public void analysisReady(AnalysisSourceFilter filter) {
+    public void analysisReady(SourcePredicate filter) {
         analysisReady(filter, handlers);
     }
 
@@ -235,7 +235,7 @@ public abstract class NodeProfAnalysis {
 
             // A built-in node has also the root tag, so we need a separate factory
             if (handlerMapping.containsKey(ProfiledTagEnum.BUILTIN)) {
-                SourceSectionFilter builtinFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.BUILTIN.getTag()).sourceIs(AnalysisSourceFilter.getBuiltinFilter()).build();
+                SourceSectionFilter builtinFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.BUILTIN.getTag()).sourceIs(SourceFilterList.getBuiltinFilter()).build();
                 getInstrumenter().attachExecutionEventFactory(
                                 builtinFilter,
                                 inputFilter,

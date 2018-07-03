@@ -29,6 +29,6 @@
       console.log("getField "+getLocation(J$.sid, iid)+" in exclusion2.js");
     };
   }
-  sandbox.addAnalysis(new FieldTest(), {internal:true, excludes:"module.js,testFilter.js"});
+  sandbox.addAnalysis(new FieldTest(), {internal:true, excludes:"module.js,testFilter.js,require.js"});
 }
 )(J$));

@@ -146,7 +146,13 @@ public abstract class SourceMapping {
         return b;
     }
 
-    private static boolean isInternal(Source src) {
+    /**
+     * Helper function to determine what is considered internal by the source filter.
+     *
+     * @param src the Source to test
+     * @return true if src is considered internal
+     */
+    public static boolean isInternal(final Source src) {
         return src.isInternal() || src.getPath() == null || src.getPath().equals("");
     }
 }

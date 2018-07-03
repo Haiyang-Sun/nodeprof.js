@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +22,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import ch.usi.inf.nodeprof.analysis.SourceFilterJS;
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
+import com.oracle.truffle.api.instrumentation.SourceSectionFilter.SourcePredicate;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
 import com.oracle.truffle.api.interop.ForeignAccess;
 import com.oracle.truffle.api.interop.Message;
@@ -33,10 +36,11 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.js.parser.JavaScriptLanguage;
+import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.Null;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
-import ch.usi.inf.nodeprof.analysis.AnalysisSourceFilter;
+import ch.usi.inf.nodeprof.analysis.SourceFilterList;
 import ch.usi.inf.nodeprof.analysis.NodeProfAnalysis;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
@@ -66,13 +70,13 @@ public class NodeProfJalangi extends NodeProfAnalysis {
      */
     @Override
     @TruffleBoundary
-    public AnalysisSourceFilter getFilter() {
+    public SourceFilterList getFilter() {
         List<String> exclude = new ArrayList<>(Collections.singletonList("jalangi.js"));
         if (GlobalConfiguration.SCOPE.equals("app")) {
             exclude.add("node_modules");
         }
-        return AnalysisSourceFilter.addGlobalExcludes(
-                        AnalysisSourceFilter.makeExcludeFilter(exclude, !GlobalConfiguration.SCOPE.equals("all")));
+        return SourceFilterList.addGlobalExcludes(
+                        SourceFilterList.makeExcludeFilter(exclude, !GlobalConfiguration.SCOPE.equals("all")));
     }
 
     /**
@@ -122,30 +126,39 @@ public class NodeProfJalangi extends NodeProfAnalysis {
         return result;
     }
 
-    private AnalysisSourceFilter parseConfigObject(TruffleObject configObj) {
-        AnalysisSourceFilter result;
-        Object internal = getProperty(configObj, "internal");
-        boolean instrumentInternal = internal == null ? false : Boolean.parseBoolean(internal.toString());
+    private SourcePredicate parseFilterConfig(TruffleObject configObj) {
+        SourcePredicate result;
 
-        boolean excludeFilter = true;
-        String filters;
-        Object excludes = getProperty(configObj, "excludes");
-        if (excludes == null) {
-            Object includes = getProperty(configObj, "includes");
-            filters = includes == null ? "" : includes.toString();
-            excludeFilter = false;
+        if (JSFunction.isJSFunction(configObj)) {
+            result = new SourceFilterJS(configObj);
+            Logger.debug("JS filter installed: " + configObj.toString());
         } else {
-            filters = excludes.toString();
-        }
-        List<String> filterList = filters == null ? Collections.emptyList() : Arrays.asList(filters.split(","));
-        // return a filter based on excludeFilter, filterList and global excludes
-        if (excludeFilter) {
-            Logger.debug("a customized filter with exclusion list " + filters);
-            result = AnalysisSourceFilter.makeExcludeFilter(filterList, !instrumentInternal);
-            result = AnalysisSourceFilter.addGlobalExcludes(result);
-        } else {
-            Logger.debug("a customized filter with inclusion list " + filters);
-            result = AnalysisSourceFilter.makeIncludeFilter(filterList, "");
+
+            Object internal = getProperty(configObj, "internal");
+            boolean instrumentInternal = internal == null ? false : Boolean.parseBoolean(internal.toString());
+
+            boolean excludeFilter = true;
+            String filters;
+            Object excludes = getProperty(configObj, "excludes");
+            if (excludes == null) {
+                Object includes = getProperty(configObj, "includes");
+                filters = includes == null ? "" : includes.toString();
+                excludeFilter = false;
+            } else {
+                filters = excludes.toString();
+            }
+            List<String> filterList = filters == null ? Collections.emptyList() : Arrays.asList(filters.split(","));
+            SourceFilterList listFilter;
+            // return a filter based on excludeFilter, filterList and global excludes
+            if (excludeFilter) {
+                Logger.debug("a customized filter with exclusion list " + filters);
+                listFilter = SourceFilterList.makeExcludeFilter(filterList, !instrumentInternal);
+                listFilter = SourceFilterList.addGlobalExcludes(listFilter);
+            } else {
+                Logger.debug("a customized filter with inclusion list " + filters);
+                listFilter = SourceFilterList.makeIncludeFilter(filterList, "");
+            }
+            result = listFilter;
         }
         return result;
     }
@@ -158,7 +171,7 @@ public class NodeProfJalangi extends NodeProfAnalysis {
         if (jalangiAnalyses.containsKey(analysis)) {
             jalangiAnalyses.get(analysis).onReady();
         }
-        analysisReady(parseConfigObject(configObj));
+        analysisReady(parseFilterConfig(configObj));
     }
 
     @Override

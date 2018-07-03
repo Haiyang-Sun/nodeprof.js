@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
- //DO NOT INSTRUMENT
-((function(sandbox){
-  function FieldTest() {
-    var assert = require("assert");
-    function getLocation(sid, iid) {
-      if (process.config.variables.graalvm)
-        // Truffle-Jalangi has unique IIDs
-        return  J$.iidToLocation(iid);
-      else
-        // Jalangi on V8/Node needs sid
-        return J$.iidToLocation(sid, iid);
+package ch.usi.inf.nodeprof.analysis;
+
+import com.oracle.truffle.api.source.Source;
+
+public class SourceFilterUtil {
+    static boolean containsDoNotInstrument(final Source source) {
+        if (source.getLineCount() > 0) {
+            // check if the source code has a special filter string at its beginning
+            CharSequence sourceChars = source.getCharacters();
+            String sourceHead = sourceChars.subSequence(0, Math.min(sourceChars.length() - 1, 1000)).toString().trim();
+            // should be enough
+            if (sourceHead.contains("DO NOT INSTRUMENT")) {
+                return true;
+            }
+        }
+        return false;
     }
-    this.getField = function(iid, base, offset, val, isComputed, isOpAssign, isMethodCall) {
-      console.log("getField "+getLocation(J$.sid, iid)+" in exclusion.js");
-    };
-  }
-  sandbox.addAnalysis(new FieldTest(), {internal:false, excludes:"testFilter.js,require.js"});
 }
-)(J$));

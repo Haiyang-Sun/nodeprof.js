@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import com.oracle.truffle.api.instrumentation.Instrumenter;
 
-import ch.usi.inf.nodeprof.analysis.AnalysisSourceFilter;
+import ch.usi.inf.nodeprof.analysis.SourceFilterList;
 import ch.usi.inf.nodeprof.test.BasicAnalysisTest;
 import ch.usi.inf.nodeprof.test.TestableNodeProfAnalysis;
 import ch.usi.inf.nodeprof.test.examples.TrivialAnalysis;
@@ -33,8 +33,8 @@ public class TrivialTest extends BasicAnalysisTest {
     }
 
     @Override
-    public AnalysisSourceFilter getFilter() {
-        return AnalysisSourceFilter.getAll();
+    public SourceFilterList getFilter() {
+        return SourceFilterList.getAll();
     }
 
     /**

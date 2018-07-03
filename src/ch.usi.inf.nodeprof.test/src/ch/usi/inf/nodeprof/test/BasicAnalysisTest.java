@@ -33,7 +33,7 @@ import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.js.parser.JavaScriptLanguage;
 
 import ch.usi.inf.nodeprof.NodeProfInstrument;
-import ch.usi.inf.nodeprof.analysis.AnalysisSourceFilter;
+import ch.usi.inf.nodeprof.analysis.SourceFilterList;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
@@ -56,7 +56,7 @@ public abstract class BasicAnalysisTest {
         Logger.info("Test starts");
     }
 
-    public abstract AnalysisSourceFilter getFilter();
+    public abstract SourceFilterList getFilter();
 
     public void initAnalysis() {
         this.analysis = getAnalysis(instrument.getInstrumenter());

@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import ch.usi.inf.nodeprof.utils.SourceMapping;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.SourceSectionFilter.SourcePredicate;
 import com.oracle.truffle.api.source.Source;
@@ -28,15 +30,17 @@ import com.oracle.truffle.js.runtime.Evaluator;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 
+import static ch.usi.inf.nodeprof.analysis.SourceFilterUtil.containsDoNotInstrument;
+
 /**
  * Customized SourcePredicate
  */
-public class AnalysisSourceFilter implements SourcePredicate {
+public class SourceFilterList implements SourcePredicate {
     private static final List<String> NO_EXCLUDES = Collections.emptyList();
-    private static final AnalysisSourceFilter allExceptInternal = addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, true));
-    private static final AnalysisSourceFilter all = addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, false));
-    private static final AnalysisSourceFilter app = addGlobalExcludes(makeExcludeFilter(Collections.singletonList("node_modules"), true));
-    private static final AnalysisSourceFilter builtinFilter = makeIncludeFilter(Collections.singletonList("<builtin>"), "(builtin-filter)");
+    private static final SourceFilterList allExceptInternal = addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, true));
+    private static final SourceFilterList all = addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, false));
+    private static final SourceFilterList app = addGlobalExcludes(makeExcludeFilter(Collections.singletonList("node_modules"), true));
+    private static final SourceFilterList builtinFilter = makeIncludeFilter(Collections.singletonList("<builtin>"), "(builtin-filter)");
 
     private final boolean instrumentInternal;
     private final boolean filterExcludes;
@@ -51,7 +55,7 @@ public class AnalysisSourceFilter implements SourcePredicate {
      * @param debugHint string to identify a filter in debug output (or "")
      */
     @TruffleBoundary
-    private AnalysisSourceFilter(boolean filterExcludes, boolean instrumentInternal, HashSet<String> matchSources, String debugHint) {
+    private SourceFilterList(boolean filterExcludes, boolean instrumentInternal, HashSet<String> matchSources, String debugHint) {
         this.filterExcludes = filterExcludes;
         this.instrumentInternal = instrumentInternal;
         this.matchSources = matchSources;
@@ -62,16 +66,16 @@ public class AnalysisSourceFilter implements SourcePredicate {
         this.matchSources.remove("");
     }
 
-    public static AnalysisSourceFilter makeExcludeFilter(List<String> matchSources, boolean excludeInternal) {
-        return new AnalysisSourceFilter(true, !excludeInternal, new HashSet<>(matchSources), "");
+    public static SourceFilterList makeExcludeFilter(List<String> matchSources, boolean excludeInternal) {
+        return new SourceFilterList(true, !excludeInternal, new HashSet<>(matchSources), "");
     }
 
-    public static AnalysisSourceFilter makeSingleIncludeFilter(String includeSource) {
-        return new AnalysisSourceFilter(false, true, new HashSet<>(Collections.singleton(includeSource)), "");
+    public static SourceFilterList makeSingleIncludeFilter(String includeSource) {
+        return new SourceFilterList(false, true, new HashSet<>(Collections.singleton(includeSource)), "");
     }
 
-    public static AnalysisSourceFilter makeIncludeFilter(List<String> includeSources, String debugHint) {
-        return new AnalysisSourceFilter(false, true, new HashSet<>(includeSources), debugHint);
+    public static SourceFilterList makeIncludeFilter(List<String> includeSources, String debugHint) {
+        return new SourceFilterList(false, true, new HashSet<>(includeSources), debugHint);
     }
 
     private static HashSet<String> parseExcludeConfig() {
@@ -88,43 +92,43 @@ public class AnalysisSourceFilter implements SourcePredicate {
      * @return a new filter that excludes sources set in original filter and globally configured
      *         excludes
      */
-    public static AnalysisSourceFilter addGlobalExcludes(final AnalysisSourceFilter filter) {
+    public static SourceFilterList addGlobalExcludes(final SourceFilterList filter) {
         // adding excludes to an include filter does not make sense
         assert (filter.filterExcludes);
         HashSet<String> mergedMatchSources = parseExcludeConfig();
         mergedMatchSources.addAll(filter.matchSources);
-        return new AnalysisSourceFilter(filter.filterExcludes, filter.instrumentInternal, mergedMatchSources, filter.debugHint);
+        return new SourceFilterList(filter.filterExcludes, filter.instrumentInternal, mergedMatchSources, filter.debugHint);
     }
 
-    public static AnalysisSourceFilter getDefault() {
-        AnalysisSourceFilter res;
+    public static SourceFilterList getDefault() {
+        SourceFilterList res;
         switch (GlobalConfiguration.SCOPE) {
             case "all":
-                res = AnalysisSourceFilter.all;
+                res = SourceFilterList.all;
                 break;
             case "module":
-                res = AnalysisSourceFilter.allExceptInternal;
+                res = SourceFilterList.allExceptInternal;
                 break;
             case "app":
-                res = AnalysisSourceFilter.app;
+                res = SourceFilterList.app;
                 break;
             default:
-                res = AnalysisSourceFilter.app;
+                res = SourceFilterList.app;
                 break;
         }
         return res;
     }
 
-    public static AnalysisSourceFilter getAll() {
-        return AnalysisSourceFilter.all;
+    public static SourceFilterList getAll() {
+        return SourceFilterList.all;
     }
 
-    public static AnalysisSourceFilter allExceptInternal() {
-        return AnalysisSourceFilter.allExceptInternal;
+    public static SourceFilterList allExceptInternal() {
+        return SourceFilterList.allExceptInternal;
     }
 
-    public static AnalysisSourceFilter getBuiltinFilter() {
-        return AnalysisSourceFilter.builtinFilter;
+    public static SourceFilterList getBuiltinFilter() {
+        return SourceFilterList.builtinFilter;
     }
 
     @Override
@@ -133,7 +137,7 @@ public class AnalysisSourceFilter implements SourcePredicate {
         // if it's an exclusion filter, we include the source by default
         boolean res = filterExcludes;
 
-        boolean isInternal = isInternal(source);
+        boolean isInternal = SourceMapping.isInternal(source);
         // use name or path of source depending whether we consider it internal
 
         boolean isEval = isInternal && source.getName().startsWith(Evaluator.EVAL_AT_SOURCE_NAME_PREFIX);
@@ -179,17 +183,12 @@ public class AnalysisSourceFilter implements SourcePredicate {
                         break;
                     }
                 }
-                if (res && source.getLineCount() > 0) {
-                    // check if the source code has a special filter string at its beginning
-                    CharSequence sourceChars = source.getCharacters();
-                    String sourceHead = sourceChars.subSequence(0, Math.min(sourceChars.length() - 1, 1000)).toString().trim();
-                    // should be enough
-                    if (sourceHead.contains("DO NOT INSTRUMENT")) {
-                        res = false;
-                        if (loggedSources.add(source)) {
-                            Logger.debug("Source filter: " + name + " -> excluded due to 'DO NOT INSTRUMENT'" + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
-                        }
+                if (res && containsDoNotInstrument(source)) {
+                    res = false;
+                    if (loggedSources.add(source)) {
+                        Logger.debug("Source filter: " + name + " -> excluded due to 'DO NOT INSTRUMENT'" + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
                     }
+
                 }
             }
         } else {
@@ -205,15 +204,5 @@ public class AnalysisSourceFilter implements SourcePredicate {
             }
         }
         return res;
-    }
-
-    /**
-     * Helper function to determine what is considered internal by the source filter.
-     *
-     * @param src the Source to test
-     * @return true if src is considered internal
-     */
-    static private boolean isInternal(final Source src) {
-        return src.isInternal() || src.getPath() == null || src.getPath().equals("");
     }
 }
