@@ -32,3 +32,5 @@ script:
   - mx sforceimports
   - mx build
   - mx test
+  - cp snapshot/nodeprof.jar build/
+  - mx test
