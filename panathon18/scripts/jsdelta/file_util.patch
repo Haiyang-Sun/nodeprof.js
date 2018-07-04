@@ -1,0 +1,23 @@
+diff --git a/src/file_util.js b/src/file_util.js
+index 82ad522..c25d5fc 100644
+--- a/src/file_util.js
++++ b/src/file_util.js
+@@ -38,9 +38,9 @@ function pp(state) {
+     });
+ }
+ 
+-function parse(input) {
++function parse(input, option=undefined) {
+     try {
+-        return esprima.parse(input);
++        return esprima.parse(input, option ? option : {});
+     } catch (e) {
+         throw e;
+     }
+@@ -82,4 +82,4 @@ module.exports.persistAST = persistAST;
+ module.exports.pp = pp;
+ module.exports.parse = parse;
+ module.exports.copyToDir = copyToOut
+-module.exports.makeTempDir = makeTempDir;
+\ No newline at end of file
++module.exports.makeTempDir = makeTempDir;

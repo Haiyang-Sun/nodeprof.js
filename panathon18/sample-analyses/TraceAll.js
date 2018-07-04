@@ -26,6 +26,13 @@
 
 (function (sandbox) {
 
+    var fs = require("fs");
+    var path = require("path");
+    var filter_path = path.resolve( __dirname, "./TraceAllFilter.js");
+    var srcfilter = null;
+    if(fs.existsSync(filter_path)) srcfilter = require(filter_path);
+
+
     if (sandbox.Constants.isBrowser) {
         sandbox.Results = {};
     }
@@ -308,14 +315,5 @@
         };
     }
 
-    sandbox.analysis = new MyAnalysis();
+    sandbox.addAnalysis(new MyAnalysis(), srcfilter);
 })(J$);
-
-/*
- node src/js/commands/jalangi.js --inlineIID --inlineSource --analysis src/js/sample_analyses/ChainedAnalyses.js --analysis src/js/runtime/SMemory.js --analysis src/js/sample_analyses/pldi16/TraceAll.js tests/pldi16/TraceAllTest.js
- node src/js/commands/esnstrument_cli.js --inlineIID --inlineSource --analysis src/js/sample_analyses/ChainedAnalyses.js --analysis src/js/runtime/SMemory.js --analysis src/js/sample_analyses/pldi16/TraceAll.js --out /tmp/pldi16/TraceAllTest.html  tests/pldi16/TraceAllTest.html
- node src/js/commands/esnstrument_cli.js --inlineIID --inlineSource --analysis src/js/sample_analyses/ChainedAnalyses.js --analysis src/js/runtime/SMemory.js --analysis src/js/sample_analyses/pldi16/TraceAll.js --out /tmp/pldi16/TraceAllTest.js  tests/pldi16/TraceAllTest.js
- open file:///tmp/pldi16/TraceAllTest.html
- */
-
-
