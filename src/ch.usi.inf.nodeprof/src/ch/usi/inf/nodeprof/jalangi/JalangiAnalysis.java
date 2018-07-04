@@ -44,6 +44,9 @@ import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.*;
+
+
 /**
  * Java representation of the Jalangi analysis object created in Jalangi ChainedAnalysisNoCheck
  */
@@ -52,6 +55,7 @@ public class JalangiAnalysis {
      * mapping from the callback names to the function
      */
     private final HashMap<String, DynamicObject> callbacks;
+
     /**
      * The Jalangi analysis object
      *
@@ -64,6 +68,53 @@ public class JalangiAnalysis {
      * The instrument
      */
     final NodeProfJalangi instrument;
+
+    public static final Map<String, EnumSet<ProfiledTagEnum>> callbackMap = Collections.unmodifiableMap(
+            new HashMap<String, EnumSet<ProfiledTagEnum>>() {{
+                // function calls
+                put("functionEnter", EnumSet.of(ROOT));
+                put("functionExit", EnumSet.of(ROOT));
+                put("invokeFunPre", EnumSet.of(ROOT));
+                put("invokeFun", EnumSet.of(ROOT));
+
+                // builtin calls
+                put("builtinEnter", EnumSet.of(ROOT));
+                put("builtinExit", EnumSet.of(ROOT));
+
+                // literals
+                put("literal", EnumSet.of(LITERAL));
+
+                // reads and writes
+                put("read", EnumSet.of(VAR_READ, PROPERTY_READ));
+                put("write", EnumSet.of(VAR_WRITE, PROPERTY_WRITE));
+
+                // property reads
+                put("getFieldPre", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
+                put("getField", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
+
+                // property writes
+                put("putFieldPre", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
+                put("putField", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
+
+                // operators
+                put("unaryPre", EnumSet.of(UNARY));
+                put("unary", EnumSet.of(UNARY));
+                put("binaryPre", EnumSet.of(BINARY));
+                put("binary", EnumSet.of(BINARY));
+
+                // conditions
+                put("conditional", EnumSet.of(CF_COND));
+            }});
+
+    public static final Set<String> unimplementedCallbacks = Collections.unmodifiableSet(
+            new HashSet<>(Arrays.asList("declare", "endExpression", "forinObject",
+                    "instrumentCodePre", "instrumentCode", // TODO will those be supported at all?
+                    "onReady", // TODO should this be ignored instead
+                    "_return", "runInstrumentedFunctionBody", "scriptEnter", "scriptExit", "_throw", "_with")));
+
+    public static final Set<String> ignoredCallbacks = Collections.unmodifiableSet(
+            // endExecution is a high-level event handled by the jalangi.js script
+            new HashSet<>(Arrays.asList("endExecution")));
 
     @TruffleBoundary
     public JalangiAnalysis(NodeProfJalangi nodeprofJalangi, Object jsAnalysis) {
@@ -206,7 +257,10 @@ public class JalangiAnalysis {
         TruffleObject original = JavaInterop.asTruffleObject(callback);
         if (original instanceof DynamicObject) {
             if (GlobalConfiguration.DEBUG) {
-                Logger.debug("Jalangi registering callback " + name);
+                Logger.debug("Jalangi analysis registering callback: " + name);
+            }
+            if (unimplementedCallbacks.contains(name)) {
+                Logger.warning("Jalangi analysis callback not implemented in NodeProf: " + name);
             }
             GlobalObjectCache.getInstance().addDynamicObject((DynamicObject) original);
             this.callbacks.put(name.toString(), (DynamicObject) original);

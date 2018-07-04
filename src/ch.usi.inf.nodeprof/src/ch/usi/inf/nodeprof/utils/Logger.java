@@ -80,7 +80,7 @@ public class Logger {
     }
 
     public static void warning(Object msg) {
-        print(out, "w", msg);
+        print(err, "w", msg);
     }
 
     public static void error(SourceSection sourceSection, Object msg) {
