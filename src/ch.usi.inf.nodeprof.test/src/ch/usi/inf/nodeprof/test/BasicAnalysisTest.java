@@ -85,7 +85,9 @@ public abstract class BasicAnalysisTest {
      * excluded if the test case uses some Node.js feature which is not availabe in js shell
      */
     List<String> excludeMiniTests = Arrays.asList(
-                    "element2.js");
+            "element2.js",
+            "require.js"
+    );
 
     @Test
     public void testMicroTestcases() {
