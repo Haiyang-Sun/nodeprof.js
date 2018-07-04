@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +34,7 @@ import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.js.parser.JavaScriptLanguage;
 
 import ch.usi.inf.nodeprof.NodeProfInstrument;
-import ch.usi.inf.nodeprof.analysis.SourceFilterList;
+import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
@@ -56,7 +57,7 @@ public abstract class BasicAnalysisTest {
         Logger.info("Test starts");
     }
 
-    public abstract SourceFilterList getFilter();
+    public abstract AnalysisFilterSourceList getFilter();
 
     public void initAnalysis() {
         this.analysis = getAnalysis(instrument.getInstrumenter());

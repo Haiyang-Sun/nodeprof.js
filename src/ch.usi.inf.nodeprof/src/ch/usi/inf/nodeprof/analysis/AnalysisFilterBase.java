@@ -16,9 +16,32 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.analysis;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import com.oracle.truffle.api.instrumentation.SourceSectionFilter;
 import com.oracle.truffle.api.source.Source;
 
-public class SourceFilterUtil {
+/**
+ * Base for NodeProf's analysis filters
+ *
+ * Filter combines a source predicate with a second-level filter (see testTag()).
+ */
+public abstract class AnalysisFilterBase implements SourceSectionFilter.SourcePredicate {
+
+    /**
+     * Implementation returns true if the instrumentation tag should be added to source,
+     * false if the tag should be filtered.
+     *
+     * @param source the Source object to filter
+     * @param tag the type of tag to filter within source
+     */
+    public abstract boolean testTag(final Source source, ProfiledTagEnum tag);
+
+    /**
+     * check whether beginning of source file contains DO NOT INSTRUMENT
+     *
+     * @param source the Source to test
+     * @return true if DO NOT INSTRUMENT string found in source
+     */
     static boolean containsDoNotInstrument(final Source source) {
         if (source.getLineCount() > 0) {
             // check if the source code has a special filter string at its beginning

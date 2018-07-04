@@ -5,6 +5,8 @@ NodeProf also supports several features not supported by Jalangi. Details can be
 
 ### Extra features supported in NodeProf
 
+#### Callbacks
+
 _evalPre_ and _evalPost_ for the 'eval' operation in JavaScript.
 
 ```
@@ -46,6 +48,16 @@ this.builtinExit = function (name, returnVal) {
 Examples can be found:
 [1](https://github.com/Haiyang-Sun/nodeprof.js/blob/master/src/ch.usi.inf.nodeprof/js/analysis/extra-features/extra.js), [2](https://github.com/Haiyang-Sun/nodeprof.js/blob/master/src/ch.usi.inf.nodeprof/js/analysis/builtin-feature/analysis.js)
 
+#### Source selection (selective instrumentation)
+
+NodeProf supports selecting source files for instrumentation if their name is matched by a string
+in an inclusion (or exclusion) list provided when registering the analysis object:
+
+```
+sandbox.addAnalysis(new MyAnalysis(), {excludes: 'badSource.js'});
+```
+
+Details can be found in the [tutorial](Tutorial.md).
 
 ### Jalangi features not yet supported
 

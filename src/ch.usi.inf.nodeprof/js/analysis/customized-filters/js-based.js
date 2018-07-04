@@ -28,10 +28,10 @@
     };
   }
   sandbox.addAnalysis(new First(), function filter(source) {
-    //console.log('source: ', source);
     if (source.internal)
       return false;
-    if (source.file.endsWith('enterExit.js'))
+    // instruments one file
+    if (source.name.endsWith('enterExit.js'))
       return true;
     return false;
   });
@@ -48,6 +48,27 @@
     };
   }
   sandbox.addAnalysis(new Second(), function filter(source) {
+    if (source.internal)
+      return false;
+    // instruments one callback in one file
+    if (source.name.endsWith('enterExit.js'))
+      return ['functionEnter'];
+    return false;
+  });
+
+  function Third() {
+    const analysis = 'analysis 3';
+    this.getField = function(iid, base, offset, val, isComputed, isOpAssign, isMethodCall) {
+      console.log("%s: getField: %s / %s / %d", analysis, offset, J$.iidToLocation(iid), arguments.length);
+    };
+    this.functionEnter = function (iid, f, dis, args) {
+      if (f.name == '')
+        return;
+      console.log("%s: functionEnter: %s / %s / %d", analysis, f.name, J$.iidToLocation(iid), arguments.length);
+    };
+  }
+  sandbox.addAnalysis(new Third(), function filter(source) {
+    // excludes everything
     return false;
   });
 }

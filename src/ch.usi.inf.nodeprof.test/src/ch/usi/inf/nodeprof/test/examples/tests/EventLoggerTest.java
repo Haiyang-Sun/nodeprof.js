@@ -21,7 +21,7 @@ import org.junit.Test;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
-import ch.usi.inf.nodeprof.analysis.SourceFilterList;
+import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
 import ch.usi.inf.nodeprof.test.AnalysisEventsVerifier;
 import ch.usi.inf.nodeprof.test.BasicAnalysisTest;
 import ch.usi.inf.nodeprof.test.TestableNodeProfAnalysis;
@@ -158,8 +158,8 @@ public class EventLoggerTest extends BasicAnalysisTest {
     }
 
     @Override
-    public SourceFilterList getFilter() {
-        return SourceFilterList.makeSingleIncludeFilter("Unnamed");
+    public AnalysisFilterSourceList getFilter() {
+        return AnalysisFilterSourceList.makeSingleIncludeFilter("Unnamed");
     }
 
     @After

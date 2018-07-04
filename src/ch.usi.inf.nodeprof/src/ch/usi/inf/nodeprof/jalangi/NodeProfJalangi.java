@@ -22,11 +22,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import ch.usi.inf.nodeprof.analysis.SourceFilterJS;
+import ch.usi.inf.nodeprof.analysis.AnalysisFilterBase;
+import ch.usi.inf.nodeprof.analysis.AnalysisFilterJS;
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
-import com.oracle.truffle.api.instrumentation.SourceSectionFilter.SourcePredicate;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
 import com.oracle.truffle.api.interop.ForeignAccess;
 import com.oracle.truffle.api.interop.Message;
@@ -40,7 +40,7 @@ import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.Null;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
-import ch.usi.inf.nodeprof.analysis.SourceFilterList;
+import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
 import ch.usi.inf.nodeprof.analysis.NodeProfAnalysis;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
@@ -70,13 +70,13 @@ public class NodeProfJalangi extends NodeProfAnalysis {
      */
     @Override
     @TruffleBoundary
-    public SourceFilterList getFilter() {
+    public AnalysisFilterSourceList getFilter() {
         List<String> exclude = new ArrayList<>(Collections.singletonList("jalangi.js"));
         if (GlobalConfiguration.SCOPE.equals("app")) {
             exclude.add("node_modules");
         }
-        return SourceFilterList.addGlobalExcludes(
-                        SourceFilterList.makeExcludeFilter(exclude, !GlobalConfiguration.SCOPE.equals("all")));
+        return AnalysisFilterSourceList.addGlobalExcludes(
+                        AnalysisFilterSourceList.makeExcludeFilter(exclude, !GlobalConfiguration.SCOPE.equals("all")));
     }
 
     /**
@@ -126,11 +126,11 @@ public class NodeProfJalangi extends NodeProfAnalysis {
         return result;
     }
 
-    private SourcePredicate parseFilterConfig(TruffleObject configObj) {
-        SourcePredicate result;
+    private AnalysisFilterBase parseFilterConfig(TruffleObject configObj) {
+        AnalysisFilterBase result;
 
         if (JSFunction.isJSFunction(configObj)) {
-            result = new SourceFilterJS(configObj);
+            result = new AnalysisFilterJS(configObj);
             Logger.debug("JS filter installed: " + configObj.toString());
         } else {
 
@@ -148,15 +148,15 @@ public class NodeProfJalangi extends NodeProfAnalysis {
                 filters = excludes.toString();
             }
             List<String> filterList = filters == null ? Collections.emptyList() : Arrays.asList(filters.split(","));
-            SourceFilterList listFilter;
+            AnalysisFilterSourceList listFilter;
             // return a filter based on excludeFilter, filterList and global excludes
             if (excludeFilter) {
                 Logger.debug("a customized filter with exclusion list " + filters);
-                listFilter = SourceFilterList.makeExcludeFilter(filterList, !instrumentInternal);
-                listFilter = SourceFilterList.addGlobalExcludes(listFilter);
+                listFilter = AnalysisFilterSourceList.makeExcludeFilter(filterList, !instrumentInternal);
+                listFilter = AnalysisFilterSourceList.addGlobalExcludes(listFilter);
             } else {
                 Logger.debug("a customized filter with inclusion list " + filters);
-                listFilter = SourceFilterList.makeIncludeFilter(filterList, "");
+                listFilter = AnalysisFilterSourceList.makeIncludeFilter(filterList, "");
             }
             result = listFilter;
         }

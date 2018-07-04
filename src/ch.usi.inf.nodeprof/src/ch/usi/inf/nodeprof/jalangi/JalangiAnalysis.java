@@ -46,7 +46,6 @@ import ch.usi.inf.nodeprof.utils.Logger;
 
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.*;
 
-
 /**
  * Java representation of the Jalangi analysis object created in Jalangi ChainedAnalysisNoCheck
  */
@@ -74,8 +73,8 @@ public class JalangiAnalysis {
                 // function calls
                 put("functionEnter", EnumSet.of(ROOT));
                 put("functionExit", EnumSet.of(ROOT));
-                put("invokeFunPre", EnumSet.of(ROOT));
-                put("invokeFun", EnumSet.of(ROOT));
+                put("invokeFunPre", EnumSet.of(INVOKE));
+                put("invokeFun", EnumSet.of(INVOKE));
 
                 // builtin calls
                 put("builtinEnter", EnumSet.of(ROOT));

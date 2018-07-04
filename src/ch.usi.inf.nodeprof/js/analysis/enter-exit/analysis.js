@@ -51,5 +51,5 @@
       console.log([...allFuncs].filter(x => funcNameFilter.has(x)).sort());
     };
   }
-  sandbox.addAnalysis(new MyAnalysis(), {includes:"builtin,enterExit.js,exitException"});
+  sandbox.addAnalysis(new MyAnalysis(), {includes:"<builtin>,enterExit.js,exitException"});
 })(J$);

@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +22,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.instrumentation.ExecutionEventNode;
-import com.oracle.truffle.api.instrumentation.ExecutionEventNodeFactory;
-import com.oracle.truffle.api.instrumentation.InstrumentableNode;
-import com.oracle.truffle.api.instrumentation.Instrumenter;
-import com.oracle.truffle.api.instrumentation.SourceSectionFilter;
+import com.oracle.truffle.api.instrumentation.*;
 import com.oracle.truffle.api.instrumentation.SourceSectionFilter.SourcePredicate;
-import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
@@ -37,6 +32,7 @@ import ch.usi.inf.nodeprof.handlers.MultiEventHandler;
 import ch.usi.inf.nodeprof.jalangi.NodeProfJalangi;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
+import com.oracle.truffle.api.source.Source;
 
 public abstract class NodeProfAnalysis {
     private final Env env;
@@ -139,8 +135,8 @@ public abstract class NodeProfAnalysis {
         }
     }
 
-    public SourceFilterList getFilter() {
-        return SourceFilterList.getDefault();
+    public AnalysisFilterSourceList getFilter() {
+        return AnalysisFilterSourceList.getDefault();
     }
 
     /**
@@ -215,12 +211,12 @@ public abstract class NodeProfAnalysis {
      */
 
     @TruffleBoundary
-    public void analysisReady(SourcePredicate filter) {
+    public void analysisReady(AnalysisFilterBase filter) {
         analysisReady(filter, handlers);
     }
 
     @TruffleBoundary
-    private void analysisReady(SourcePredicate sourceFilter, HashMap<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> handlerMapping) {
+    private void analysisReady(AnalysisFilterBase sourceFilter, HashMap<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> handlerMapping) {
         // check if any new callback is registered
         if (handlerMapping.size() > 0) {
             ArrayList<Class<?>> nonBuiltinCallbacks = new ArrayList<>();
@@ -235,7 +231,7 @@ public abstract class NodeProfAnalysis {
 
             // A built-in node has also the root tag, so we need a separate factory
             if (handlerMapping.containsKey(ProfiledTagEnum.BUILTIN)) {
-                SourceSectionFilter builtinFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.BUILTIN.getTag()).sourceIs(SourceFilterList.getBuiltinFilter()).build();
+                SourceSectionFilter builtinFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.BUILTIN.getTag()).sourceIs(AnalysisFilterSourceList.getBuiltinFilter()).build();
                 getInstrumenter().attachExecutionEventFactory(
                                 builtinFilter,
                                 inputFilter,
@@ -273,9 +269,7 @@ public abstract class NodeProfAnalysis {
                                                 count += 1;
                                             }
                                         }
-                                        // if a node should never have two tags the same time
-                                        // (except
-                                        // for the built-in)
+                                        // a node should never have two tags the same time(except for the built-in)
                                         if (count > 1) {
                                             Logger.error("a node has more than 1 profiling tags!!");
                                             String tags = "";
@@ -290,7 +284,9 @@ public abstract class NodeProfAnalysis {
                                         assert (count <= 1);
                                         for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
                                             try {
-                                                if (instrumentedNode.hasTag(entry.getKey().getTag()) && entry.getKey() != ProfiledTagEnum.BUILTIN) {
+                                                ProfiledTagEnum key = entry.getKey();
+                                                Source source = context.getInstrumentedSourceSection().getSource();
+                                                if (instrumentedNode.hasTag(key.getTag()) && key != ProfiledTagEnum.BUILTIN && sourceFilter.testTag(source, key)) {
                                                     return createAndSimplifyExecutionEventNode(context, entry.getKey(), entry.getValue());
                                                 }
                                             } catch (Exception exception) {

@@ -1,5 +1,6 @@
 analysis 1: functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:16:2:18:2) / 4
+analysis 2: functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:16:2:18:2) / 4
 analysis 1: getField: create / (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:17:11:17:24) / 7
 getField (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:17:11:17:24) in exclusion2.js
 getField (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:17:11:17:24) in exclusion.js
-
+release name: node

@@ -94,7 +94,7 @@ public abstract class SourceMapping {
             return Undefined.instance;
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
         DynamicObject o = JSUserObject.create(ctx);
-        JSObject.set(o, "file", shortPath(source.getName()));
+        JSObject.set(o, "name", shortPath(source.getName()));
         JSObject.set(o, "internal", isInternal(source));
         return o;
     }

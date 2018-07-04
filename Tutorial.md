@@ -66,3 +66,61 @@ If benchmarkName is specified, only test files inside nodeprof/src/ch.usi.inf.no
 Nodeprof can be executed using a SubstrateVM-based Graal.js build (during your build, you have already cloned a dependent project called _graal_ and another project called _graaljs_ in workspace-nodeprof).
 
 (To be added soon)
+
+### Source filters and selective instrumentation in NodeProf
+#### Command-line options
+NodeProf supports basic source selection on the command line. Coarse-grained inclusion is supported
+via `--nodeprof.Scope=[app|module|all]` and explicit exclusion using `--nodeprof.ExcludeSource="keyword1,keyword2"`.
+
+#### JavaScript API: source config object
+More fine-grained control over instrumentation is provided by an API that is used inside JavaScript
+(analysis) code. An analysis-specific filter can be installed by passing a configuration object
+to NodeProf like this:
+
+```
+var sourceConfig = {excludes: 'badSource.js'}
+sandbox.addAnalysis(new MyAnalysis(), sourceConfig);
+```
+
+The configuration object **is combined** with any global exclusions provided on the command line and
+`DO NOT INSTRMENT` comments are always respected.
+When passing a simple config object, three properties (`excludes`, `includes`, `internal`)
+are used to control source selection.
+
+```
+var sourceConfig = {
+    excludes: 'node_modules/some.module.dir,analysis', // similar to command line exclusion list above 
+    internal: true || false, // optional: include internal files similar to --nodeprof.Scope=all option
+    // OR
+    includes: 'interesting.file.js,' // only include matching files (implies internal: true)
+}
+```
+
+(Experimental) In order to instrument built-in code when using `includes`, add the special name `<builtin>` to the list. 
+
+#### (Experimental) JavaScript API: instrumentation predicate
+
+(Experimental) The most flexible and fine-grained level of control is provided by an **(experimental) instrumentation predicate**.
+Instead of a configuration object, a predicate function can be passed to `addAnalysis()`:
+  
+```
+var sourceConfig = function predicate(source) {
+    if (/* test source obj */)
+        return true; // instrument this source
+    else if (/* other test */)
+        return ['functionEnter', 'getField']; // instrument these callbacks only
+    else
+        return false; // do not instrument this source   
+}
+```
+
+The instrumentation predicate **overrides all** command line options related to source selection. However,
+`DO NOT INSTRMENT` comments are respected.
+The `source` object passed to the instrumentation predicate has the following properties:
+
+```
+{
+    name: "path/to/the/source" || "internal-name",
+    internal: true || false
+}
+```
