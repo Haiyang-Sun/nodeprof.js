@@ -34,9 +34,11 @@ import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.js.parser.JavaScriptLanguage;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
+import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Null;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -145,6 +147,11 @@ public class NodeProfJalangi extends NodeProfAnalysis {
                 filters = includes == null ? "" : includes.toString();
                 excludeFilter = false;
             } else {
+                if (getProperty(configObj, "includes") != null) {
+                    Logger.error("Filter config must not define 'include' and 'exclude' at the same time (config: "
+                            + JSObject.safeToString((DynamicObject) configObj) + ")");
+                    System.exit(-1);
+                }
                 filters = excludes.toString();
             }
             List<String> filterList = filters == null ? Collections.emptyList() : Arrays.asList(filters.split(","));
