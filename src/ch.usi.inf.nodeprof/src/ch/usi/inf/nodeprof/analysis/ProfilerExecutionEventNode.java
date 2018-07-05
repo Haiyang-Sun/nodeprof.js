@@ -93,7 +93,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
         if (hasOnEnter > 0) {
             hasOnEnter--;
             this.cb.exceptionHitCount++;
-            this.child.executeExceptional(frame);
+            this.child.executeExceptional(frame, exception);
         }
     }
 

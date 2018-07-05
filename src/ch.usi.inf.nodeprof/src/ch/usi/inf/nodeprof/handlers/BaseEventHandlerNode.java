@@ -88,7 +88,7 @@ public abstract class BaseEventHandlerNode extends Node {
 
     }
 
-    public void executeExceptional(VirtualFrame frame) {
+    public void executeExceptional(VirtualFrame frame, Throwable exception) {
 
     }
 

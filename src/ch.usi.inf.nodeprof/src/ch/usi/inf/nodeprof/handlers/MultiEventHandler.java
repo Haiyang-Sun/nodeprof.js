@@ -59,9 +59,9 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseEvent
 
     @ExplodeLoop
     @Override
-    public void executeExceptional(VirtualFrame frame) {
+    public void executeExceptional(VirtualFrame frame, Throwable exception) {
         for (T handler : handlers) {
-            handler.executeExceptional(frame);
+            handler.executeExceptional(frame, exception);
         }
     }
 

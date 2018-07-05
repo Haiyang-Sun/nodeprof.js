@@ -20,6 +20,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -86,16 +87,26 @@ public class RootFactory extends AbstractFactory {
             }
 
             @Override
-            public void executeExceptional(VirtualFrame frame) {
+            public void executeExceptional(VirtualFrame frame, Throwable exception) {
                 if (isRegularExpression())
                     return;
-                if (post == null) {
-                    return;
+                if (this.isBuiltin) {
+                    if (builtinPost != null) {
+                        Object exceptionValue = exception instanceof GraalJSException ? ((GraalJSException) exception).getErrorObject() : exception.getMessage();
+                        directCall(postCall, new Object[]{jalangiAnalysis, builtinPost,
+                                        getSourceIID(), Undefined.instance, exceptionValue == null ? "" : exceptionValue
+
+                        }, false, getSourceIID());
+                    }
+                } else {
+                    if (post != null) {
+                        Object exceptionValue = exception instanceof GraalJSException ? ((GraalJSException) exception).getErrorObject() : exception.getMessage();
+                        directCall(postCall, new Object[]{jalangiAnalysis, post,
+                                        getSourceIID(), Undefined.instance, exceptionValue == null ? "" : exceptionValue
+                        }, false, getSourceIID());
+                    }
                 }
-                // TODO add real exceptions
-                directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                getSourceIID(), Undefined.instance
-                }, false, getSourceIID());
+
             }
         };
     }

@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +28,11 @@
     };
 
     this.functionExit = function (iid, returnVal, wrappedExceptionVal) {
+      if(!wrappedExceptionVal) {
         console.log("functionExit: %s / %d", J$.iidToLocation(iid), arguments.length);
+      }else {
+        console.log('functionExit with exception "%s(%s)": %s / %d', wrappedExceptionVal, typeof(wrappedExceptionVal),  J$.iidToLocation(iid), arguments.length);
+      }
     };
 
     this.builtinEnter = function (name, f, dis, args) {
@@ -46,5 +51,5 @@
       console.log([...allFuncs].filter(x => funcNameFilter.has(x)).sort());
     };
   }
-  sandbox.addAnalysis(new MyAnalysis(), {includes:"builtin,enterExit.js"});
+  sandbox.addAnalysis(new MyAnalysis(), {includes:"builtin,enterExit.js,exitException"});
 })(J$);
