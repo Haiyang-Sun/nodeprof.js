@@ -19,6 +19,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.EvalEventHandler;
@@ -40,7 +41,7 @@ public class EvalFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
                     directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID(), getCode(inputs), true}, true, getSourceIID());
+                                    getSourceIID(), getCode(inputs), Undefined.instance}, true, getSourceIID());
                 }
             }
 
@@ -49,7 +50,7 @@ public class EvalFactory extends AbstractFactory {
                             Object[] inputs) {
                 if (post != null) {
                     directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getCode(inputs), true}, false, getSourceIID());
+                                    getSourceIID(), getCode(inputs), Undefined.instance}, false, getSourceIID());
                 }
             }
         };
