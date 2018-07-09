@@ -22,7 +22,7 @@ mx build
 
 Run tests:
 ```
-mx test
+mx test-all
 ```
 
 Detailed explanation can be found in the [Tutorial](https://github.com/Haiyang-Sun/nodeprof.js/blob/master/Tutorial.md);

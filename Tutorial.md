@@ -22,12 +22,12 @@ $ mx build
 
 Run tests:
 ```
-$ mx test
+$ mx test-all
 ```
 
 ### Run with 'mx'
 
-- ``` mx test ``` runs all test cases and compare the output with expected values
+- ``` mx test-all ``` runs all test cases and compare the output with expected values
 
 - ``` mx unittests ``` runs all unit tests
 

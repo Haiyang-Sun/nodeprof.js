@@ -31,6 +31,6 @@ before_script:
 script:
   - mx sforceimports
   - mx build
-  - mx test
+  - mx test-all
   - cp snapshot/nodeprof.jar build/
-  - mx test
+  - mx test-all
