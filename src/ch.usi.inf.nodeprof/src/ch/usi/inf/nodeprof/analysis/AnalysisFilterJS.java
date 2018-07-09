@@ -74,7 +74,8 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
 
         // we need to bail out during builtin calls inside the JS predicate
         if (include && isRecursive) {
-            Logger.error("JS Analysis filter bailout due to recursive call while testing: " + name);
+            if (!(name.equals("<builtin>") || name.equals("<internal>")))
+                Logger.error("JS Analysis filter bailout due to recursive call while testing: " + name);
             return false;
         }
 
