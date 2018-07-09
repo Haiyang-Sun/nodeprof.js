@@ -29,7 +29,7 @@ $ mx test-all
 
 - ``` mx test-all ``` runs all test cases and compare the output with expected values
 
-- ``` mx unittests ``` runs all unit tests
+- ``` mx test-unit``` runs all unit tests
 
 - ``` mx test-specific analysisName [benchmarkName] ``` will automatically search Jalangi analysis defined in ```src/ch.usi.inf.nodeprof/js/analysis/analysisName``` and load them. [click here for more details](https://github.com/Haiyang-Sun/nodeprof.js/tree/master/src/ch.usi.inf.nodeprof/js/analysis) and compare the output of the run with expected output.
 If benchmarkName is specified, only test files inside nodeprof/src/ch.usi.inf.nodeprof.test/js/benchmarkName will be tested.
