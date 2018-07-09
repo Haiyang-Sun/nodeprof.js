@@ -35,6 +35,6 @@
       }
     }
   };
-  sandbox.analysis = new TestEval();
+  sandbox.addAnalysis(new TestEval(), {includes: 'eval.js,eval2.js,evalfunc.js'});
 }
 )(J$));

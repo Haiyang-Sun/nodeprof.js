@@ -35,9 +35,9 @@ import ch.usi.inf.nodeprof.utils.Logger;
  */
 public class AnalysisFilterSourceList extends AnalysisFilterBase {
     private static final List<String> NO_EXCLUDES = Collections.emptyList();
-    private static final AnalysisFilterSourceList allExceptInternal = addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, true));
+    private static final AnalysisFilterSourceList allExceptInternal = addGlobalExcludes(makeExcludeFilter(Collections.singletonList(Evaluator.FUNCTION_SOURCE_NAME), true));
     private static final AnalysisFilterSourceList all = addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, false));
-    private static final AnalysisFilterSourceList app = addGlobalExcludes(makeExcludeFilter(Collections.singletonList("node_modules"), true));
+    private static final AnalysisFilterSourceList app = addGlobalExcludes(makeExcludeFilter(Arrays.asList("node_modules", Evaluator.FUNCTION_SOURCE_NAME), true));
     private static final AnalysisFilterSourceList builtinFilter = makeIncludeFilter(Collections.singletonList("<builtin>"), "(builtin-filter)");
 
     private final boolean instrumentInternal;
@@ -93,7 +93,15 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
     public static AnalysisFilterSourceList addGlobalExcludes(final AnalysisFilterSourceList filter) {
         // adding excludes to an include filter does not make sense
         assert (filter.filterExcludes);
-        HashSet<String> mergedMatchSources = parseExcludeConfig();
+        return addMatchSources(filter, parseExcludeConfig());
+    }
+
+    public static AnalysisFilterSourceList addMatchSources(final AnalysisFilterSourceList filter, List<String> matchSources) {
+        return addMatchSources(filter, new HashSet<>(matchSources));
+    }
+
+    public static AnalysisFilterSourceList addMatchSources(final AnalysisFilterSourceList filter, HashSet<String> matchSources) {
+        HashSet<String> mergedMatchSources = new HashSet<>(matchSources);
         mergedMatchSources.addAll(filter.matchSources);
         return new AnalysisFilterSourceList(filter.filterExcludes, filter.instrumentInternal, mergedMatchSources, filter.debugHint);
     }
@@ -139,7 +147,7 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
         // use name or path of source depending whether we consider it internal
 
         boolean isEval = isInternal && source.getName().startsWith(Evaluator.EVAL_AT_SOURCE_NAME_PREFIX);
-        boolean isIndirectEval = isInternal && source.getName().startsWith(Evaluator.FUNCTION_SOURCE_NAME);
+        boolean isIndirectEval = isInternal && source.getName().startsWith(Evaluator.FUNCTION_SOURCE_NAME) && !matchSources.contains(Evaluator.FUNCTION_SOURCE_NAME);
 
         String name;
         if (isEval) {

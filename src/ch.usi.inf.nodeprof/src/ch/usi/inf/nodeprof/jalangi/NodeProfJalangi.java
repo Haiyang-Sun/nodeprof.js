@@ -16,11 +16,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterBase;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterJS;
@@ -73,12 +69,8 @@ public class NodeProfJalangi extends NodeProfAnalysis {
     @Override
     @TruffleBoundary
     public AnalysisFilterSourceList getFilter() {
-        List<String> exclude = new ArrayList<>(Collections.singletonList("jalangi.js"));
-        if (GlobalConfiguration.SCOPE.equals("app")) {
-            exclude.add("node_modules");
-        }
-        return AnalysisFilterSourceList.addGlobalExcludes(
-                        AnalysisFilterSourceList.makeExcludeFilter(exclude, !GlobalConfiguration.SCOPE.equals("all")));
+        AnalysisFilterSourceList baseFilter = super.getFilter();
+        return AnalysisFilterSourceList.addMatchSources(baseFilter, Collections.singletonList("jalangi.js"));
     }
 
     /**

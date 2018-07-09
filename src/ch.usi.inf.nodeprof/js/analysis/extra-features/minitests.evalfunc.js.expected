@@ -5,7 +5,6 @@ console.log("abc"); return 0;
 invoke func:function Function() { [native code] }
 found invocation of new Function at (src/ch.usi.inf.nodeprof.test/js/minitests/evalfunc.js:16:9:16:56) of func function Function() { [native code] }
 abc
-invoke func:function () { [native code] }
 invoke func:function anonymous() {
 console.log("abc"); return 0;
 }
