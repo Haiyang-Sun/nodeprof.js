@@ -224,8 +224,8 @@ def mx_post_parse_cmd_line(args):
         pass # SubstrateVM is not available
 
 mx.update_commands(_suite, {
-    'test': [test, ''],
-    'unittests': [unitTests, ''],
+    'test-all': [test, ''],
+    'test-unit': [unitTests, ''],
     'test-specific': [testJalangi, ''],
     'jalangi': [runJalangi, ''],
 })
