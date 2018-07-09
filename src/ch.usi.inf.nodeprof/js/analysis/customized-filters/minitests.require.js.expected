@@ -3,4 +3,8 @@ analysis 2: functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/minitests/ente
 analysis 1: getField: create / (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:17:11:17:24) / 7
 getField (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:17:11:17:24) in exclusion2.js
 getField (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:17:11:17:24) in exclusion.js
+node-console: functionEnter: log / (*console.js:127:25:133:2) / 4
+node-console: functionEnter: write / (*console.js:93:1:121:2) / 4
 release name: node
+Set { 'console.js' }
+[ 'Object.create' ]
