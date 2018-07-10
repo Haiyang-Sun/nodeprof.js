@@ -22,6 +22,7 @@ import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
 import ch.usi.inf.nodeprof.NodeProfCLI;
 
 public class GlobalConfiguration {
+
     /**
      * global instrumentation scope: "app", "module", and "all".
      *
@@ -52,8 +53,14 @@ public class GlobalConfiguration {
      */
     @CompilationFinal public static boolean DEBUG;
 
+    /**
+     * trace all runtime events as produced by Graal.js and dump them to a file.
+     */
+    @CompilationFinal public static boolean DEBUG_TRACING;
+
     @TruffleBoundary
     public static void setup(Env env) {
+        DEBUG_TRACING = env.getOptions().get(NodeProfCLI.TRACE_EVENTS);
         DEBUG = env.getOptions().get(NodeProfCLI.DEBUG);
         ANALYSIS = env.getOptions().get(NodeProfCLI.ANALYSIS);
         SCOPE = env.getOptions().get(NodeProfCLI.SCOPE);

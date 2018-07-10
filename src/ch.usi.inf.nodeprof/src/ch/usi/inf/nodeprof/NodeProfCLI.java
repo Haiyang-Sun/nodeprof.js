@@ -32,6 +32,10 @@ public class NodeProfCLI {
     @Option(name = "Debug", help = debugHelp, category = OptionCategory.USER)//
     public static final OptionKey<Boolean> DEBUG = new OptionKey<>(false);
 
+    static final String traceEventsHelp = "Enable low-level instrumentation tracing (expert).";
+    @Option(name = "TraceEvents", help = traceEventsHelp, category = OptionCategory.USER)//
+    public static final OptionKey<Boolean> TRACE_EVENTS = new OptionKey<>(false);
+
     static final String analysisHelp = "Analysis to be enabled in nodeprof (separated by ','). By default NodeProfJalangi";
     @Option(name = "Analysis", help = analysisHelp, category = OptionCategory.USER)//
     public static final OptionKey<String> ANALYSIS = new OptionKey<>("NodeProfJalangi");
@@ -51,6 +55,7 @@ public class NodeProfCLI {
     public static OptionDescriptor[] ods = {
                     OptionDescriptor.newBuilder(ENABLED, "nodeprof").deprecated(false).help(enabledHelp).category(OptionCategory.USER).build(),
                     OptionDescriptor.newBuilder(DEBUG, "nodeprof.Debug").deprecated(false).help(debugHelp).category(OptionCategory.USER).build(),
+                    OptionDescriptor.newBuilder(TRACE_EVENTS, "nodeprof.TraceEvents").deprecated(false).help(traceEventsHelp).category(OptionCategory.USER).build(),
                     OptionDescriptor.newBuilder(ANALYSIS, "nodeprof.Analysis").deprecated(false).help(analysisHelp).category(OptionCategory.USER).build(),
                     OptionDescriptor.newBuilder(EXCLUDE_SOURCE, "nodeprof.ExcludeSource").deprecated(false).help(exclHelp).category(OptionCategory.USER).build(),
                     OptionDescriptor.newBuilder(SCOPE, "nodeprof.Scope").deprecated(false).help(scopeHelp).category(OptionCategory.USER).build(),

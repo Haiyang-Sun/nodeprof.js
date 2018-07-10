@@ -27,6 +27,7 @@ import com.oracle.truffle.api.nodes.LanguageInfo;
 import ch.usi.inf.nodeprof.analysis.NodeProfAnalysis;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
+import ch.usi.inf.nodeprof.utils.RawEventsTracingSupport;
 
 /**
  * TruffleInstrument for the profiler
@@ -100,10 +101,14 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
             if (GlobalConfiguration.ANALYSIS != null) {
                 String[] names = GlobalConfiguration.ANALYSIS.split(",");
                 for (String name : names) {
-                    if (GlobalConfiguration.DEBUG) {
-                        Logger.debug("loading " + name + " for analysis");
+                    if (GlobalConfiguration.DEBUG_TRACING) {
+                        RawEventsTracingSupport.enable(instrumenter);
+                    } else {
+                        if (GlobalConfiguration.DEBUG) {
+                            Logger.debug("loading " + name + " for analysis");
+                        }
+                        NodeProfAnalysis.enableAnalysis(this.instrumenter, env, name);
                     }
-                    NodeProfAnalysis.enableAnalysis(this.instrumenter, env, name);
                 }
             }
         }
