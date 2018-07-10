@@ -38,9 +38,9 @@ def _runJalangi(args, svm=False, debug=False, outFile=None):
     if svm:
         from subprocess import call
         if outFile:
-            return call(["../graal/vm/mxbuild/linux-amd64/GRAALVM_CMP_GU_GVM_INS_JS_NJS_NP_POLYNATIVE_PRO_RGX_SVM_TFL_LIBPOLY_POLY/graalvm-1.0.0-rc2-dev/bin/node"]+ jalangiArgs+args, stdout=open(outFile,'w'));
+            return call(["./svm.sh"]+ jalangiArgs+args, stdout=open(outFile,'w'));
         else:
-            return call(["../graal/vm/mxbuild/linux-amd64/GRAALVM_CMP_GU_GVM_INS_JS_NJS_NP_POLYNATIVE_PRO_RGX_SVM_TFL_LIBPOLY_POLY/graalvm-1.0.0-rc2-dev/bin/node"]+ jalangiArgs+args);
+            return call(["./svm.sh"]+ jalangiArgs+args);
     else:
         cmdArgs = prepareJalangiCmdLine(['--jvm']+jalangiArgs + args);
         if outFile:
