@@ -7,6 +7,7 @@ import mx_unittest
 from mx import BinarySuite, VC
 from contextlib import contextmanager
 
+import sys
 _suite = mx.suite('nodeprof')
 
 def prepareJalangiCmdLine(args):
@@ -17,7 +18,18 @@ def prepareJalangiCmdLine(args):
     _setEnvVar('NODE_JVM_OPTIONS', ' '.join(vmArgs))
     return [join(_node.dir, 'out', mode, 'node')] + progArgs
 
-def _runJalangi(args, out=None, err=None, cwd=None, svm=False, debug=False):
+class OutputCapture:
+    def __init__(self, outFile):
+        self.outFile = outFile;
+        if self.outFile:
+            self.fout = open(self.outFile, 'w')
+        else:
+            self.fout = None;
+    def __call__(self, data):
+        if self.fout :
+            self.fout.write(data);
+
+def _runJalangi(args, svm=False, debug=False, outFile=None):
     from mx_graal_nodejs import run_nodejs
     jalangiArgs = ['--nodeprof', '--nodeprof.Analysis=NodeProfJalangi']
     if debug:
@@ -25,11 +37,18 @@ def _runJalangi(args, out=None, err=None, cwd=None, svm=False, debug=False):
     cmdArgs = [];
     if svm:
         from subprocess import call
-        #return call(["../graal/vm/mxbuild/linux-amd64/GRAALVM_CMP_GU_GVM_INS_JS_NJS_NP_POLYNATIVE_PRO_RGX_SVM_TFL_LIBPOLY_POLY/graalvm-1.0.0-rc2-dev/bin/node"]+ jalangiArgs+args);
-        print "Support for SubstrateVM is still in progress"
+        if outFile:
+            return call(["../graal/vm/mxbuild/linux-amd64/GRAALVM_CMP_GU_GVM_INS_JS_NJS_NP_POLYNATIVE_PRO_RGX_SVM_TFL_LIBPOLY_POLY/graalvm-1.0.0-rc2-dev/bin/node"]+ jalangiArgs+args, stdout=open(outFile,'w'));
+        else:
+            return call(["../graal/vm/mxbuild/linux-amd64/GRAALVM_CMP_GU_GVM_INS_JS_NJS_NP_POLYNATIVE_PRO_RGX_SVM_TFL_LIBPOLY_POLY/graalvm-1.0.0-rc2-dev/bin/node"]+ jalangiArgs+args);
     else:
         cmdArgs = prepareJalangiCmdLine(['--jvm']+jalangiArgs + args);
-        return mx.run(cmdArgs, nonZeroIsFatal=True, out=out, err=err, cwd=cwd)
+        if outFile:
+            out=OutputCapture(outFile);
+        else:
+            out=None;
+        ret = mx.run(cmdArgs, nonZeroIsFatal=True, out=out);
+        return ret;
 
 def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
     analysisOpt = [];
@@ -74,28 +93,19 @@ def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
                 if not force and not expectExist:
                     continue;
                 print('Testing ' + testfile + " in " + testSuite+" with analysis "+analysis)
-                o = OutputCapture();
-                runJalangi(args + analysisOpt+[join(testHome,testfile)], out=o);
-                f = open(join(analysisHome,testSuite+"."+testfile+".output"), 'w')
-                #TODO, check if any error messages
-                f.write(o.data);
+                outFile = join(analysisHome,testSuite+"."+testfile+".output");
+                runJalangi(args + analysisOpt+[join(testHome,testfile)], outFile=outFile);
                 if not expectExist:
                     print("Ignored @"+analysis);
                     continue;
                 with open(fn) as fexp:
-                    if(o.data == fexp.read()):
-                        print("Pass @"+analysis);
-                    else:
-                        print("Fail @"+analysis);
-                        if not force:
-                            sys.exit(1);
-
-                #mx.logv('Executing original jalangi')
-                #o.data = '';
-                #runOriginalJalangi(analysisOpt+[join(testHome,testfile)], out=o);
-                #f = open(join(analysisHome,testSuite+"."+testfile+".jalangi"), 'w')
-                #f.write(o.data);
-                #TODO, add script to print the difference
+                    with open(outFile) as foutput:
+                        if(foutput.read() == fexp.read()):
+                            print("Pass @"+analysis);
+                        else:
+                            print("Fail @"+analysis);
+                            if not force:
+                                sys.exit(1);
 
 def testJalangi(args):
     import sys
@@ -135,14 +145,7 @@ def testJalangi(args):
     else:
         print ("Usage: mx test-specific [analysis-names...] [--all]")
 
-import sys
-class OutputCapture:
-    def __init__(self):
-        self.data = ''
-    def __call__(self, data):
-        self.data += data
-
-def runJalangi(args, excl="", out=None):
+def runJalangi(args, excl="", outFile=None):
     """run jalangi"""
     jalangiAnalysisArg = []
     jalangiArgs = [join(_suite.dir, "src/ch.usi.inf.nodeprof/js/jalangi.js")]
@@ -178,7 +181,7 @@ def runJalangi(args, excl="", out=None):
                 excl += ","+analysisPath;
                 a_flag = False;
     jalangiArgs = ["--nodeprof.Scope="+scope, "--nodeprof.ExcludeSource="+excl] + jalangiArgs + jalangiAnalysisArg;
-    _runJalangi(jalangiArgs, out=out, svm=svm, debug=debug);
+    _runJalangi(jalangiArgs, outFile=outFile, svm=svm, debug=debug);
 
 def unitTests(args):
     """run tests for the example analysis"""
@@ -199,10 +202,6 @@ def _import_substratevm():
     except:
         mx.abort("Cannot import 'mx_substratevm'. Did you forget to dynamically import SubstrateVM?")
     yield mx_substratevm
-
-def svmjalangi(args, nonZeroIsFatal=True, out=None, err=None, cwd=None):
-    """run on SubstrateVM"""
-    return runJalangi(args, out=out, svm=True)
 
 mx_sdk.register_graalvm_component(mx_sdk.GraalVmTool(
     suite=_suite,
