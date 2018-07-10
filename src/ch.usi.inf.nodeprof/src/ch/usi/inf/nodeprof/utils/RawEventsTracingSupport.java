@@ -1,5 +1,6 @@
 package ch.usi.inf.nodeprof.utils;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.ExecutionEventNode;
@@ -32,7 +33,9 @@ import com.oracle.truffle.js.nodes.instrumentation.JSTags.UnaryExpressionTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.WriteElementExpressionTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.WritePropertyExpressionTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.WriteVariableExpressionTag;
+import com.oracle.truffle.js.runtime.JSTruffleOptions;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
+import com.oracle.truffle.js.runtime.objects.JSObject;
 
 public class RawEventsTracingSupport {
 
@@ -56,12 +59,14 @@ public class RawEventsTracingSupport {
                     ControlFlowBranchTag.class,
     };
 
+    @TruffleBoundary
     public static void enable(Instrumenter instrumenter) {
         SourceSectionFilter sourceSectionFilter = SourceSectionFilter.newBuilder().tagIs(ALL).build();
         SourceSectionFilter inputGeneratingObjects = SourceSectionFilter.newBuilder().tagIs(
                         StandardTags.ExpressionTag.class,
                         StandardTags.StatementTag.class).build();
         instrumenter.attachExecutionEventFactory(sourceSectionFilter, inputGeneratingObjects, getFactory());
+        System.out.println("Low-level event tracing enabled [SVM: " + JSTruffleOptions.SubstrateVM + "]");
     }
 
     private static ExecutionEventNodeFactory getFactory() {
@@ -82,13 +87,23 @@ public class RawEventsTracingSupport {
                         System.out.println(p + s);
                     }
 
+                    @TruffleBoundary
                     private String getValueDescription(Object inputValue) {
                         if (JSFunction.isJSFunction(inputValue)) {
                             return "JSFunction:'" + JSFunction.getName((DynamicObject) inputValue) + "'";
+                        } else if (JSObject.isJSObject(inputValue)) {
+                            return "JSObject: instance";
+                        } else if (inputValue instanceof String) {
+                            return inputValue.toString();
+                        } else if (inputValue instanceof Number) {
+                            return inputValue.toString();
+                        } else if (inputValue instanceof Boolean) {
+                            return inputValue.toString();
                         }
-                        return inputValue != null ? inputValue.toString() : "null";
+                        return inputValue != null ? inputValue.getClass().getSimpleName() : "null";
                     }
 
+                    @TruffleBoundary
                     @Override
                     protected void onInputValue(VirtualFrame frame, EventContext i, int inputIndex, Object inputValue) {
                         String format = String.format("%-7s|tag: %-20s @ %-20s|val: %-25s|from: %-20s", "IN " + (1 + inputIndex) + "/" + getInputCount(),
@@ -97,6 +112,7 @@ public class RawEventsTracingSupport {
                         log(format);
                     }
 
+                    @TruffleBoundary
                     @Override
                     public void onEnter(VirtualFrame frame) {
                         String format = String.format("%-7s|tag: %-20s @ %-20s |attr: %-20s", "ENTER", getTagNames((JavaScriptNode) c.getInstrumentedNode()),
@@ -105,14 +121,16 @@ public class RawEventsTracingSupport {
                         depth++;
                     }
 
+                    @TruffleBoundary
                     @Override
                     protected void onReturnValue(VirtualFrame frame, Object result) {
                         depth--;
                         String format = String.format("%-7s|tag: %-20s @ %-20s |rval: %-20s |attr: %-20s", "RETURN", getTagNames((JavaScriptNode) c.getInstrumentedNode()),
-                                        c.getInstrumentedNode().getClass().getSimpleName(), result, getAttributesDescription(c));
+                                        c.getInstrumentedNode().getClass().getSimpleName(), getValueDescription(result), getAttributesDescription(c));
                         log(format);
                     }
 
+                    @TruffleBoundary
                     @Override
                     protected void onReturnExceptional(VirtualFrame frame, Throwable exception) {
                         depth--;

@@ -97,18 +97,16 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
          */
         assert truffleContext == null || truffleContext == context;
 
-        if (truffleContext != null) {
+        if (GlobalConfiguration.DEBUG_TRACING) {
+            RawEventsTracingSupport.enable(instrumenter);
+        } else if (truffleContext != null) {
             if (GlobalConfiguration.ANALYSIS != null) {
                 String[] names = GlobalConfiguration.ANALYSIS.split(",");
                 for (String name : names) {
-                    if (GlobalConfiguration.DEBUG_TRACING) {
-                        RawEventsTracingSupport.enable(instrumenter);
-                    } else {
-                        if (GlobalConfiguration.DEBUG) {
-                            Logger.debug("loading " + name + " for analysis");
-                        }
-                        NodeProfAnalysis.enableAnalysis(this.instrumenter, env, name);
+                    if (GlobalConfiguration.DEBUG) {
+                        Logger.debug("loading " + name + " for analysis");
                     }
+                    NodeProfAnalysis.enableAnalysis(this.instrumenter, env, name);
                 }
             }
         }
