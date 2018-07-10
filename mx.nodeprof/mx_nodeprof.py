@@ -25,12 +25,13 @@ def _runJalangi(args, out=None, err=None, cwd=None, svm=False, debug=False):
     cmdArgs = [];
     if svm:
         from subprocess import call
-        return call(["mx", "--dy", "/substratevm", "svmnode"]+jalangiArgs+args);
+        #return call(["../graal/vm/mxbuild/linux-amd64/GRAALVM_CMP_GU_GVM_INS_JS_NJS_NP_POLYNATIVE_PRO_RGX_SVM_TFL_LIBPOLY_POLY/graalvm-1.0.0-rc2-dev/bin/node"]+ jalangiArgs+args);
+        print "Support for SubstrateVM is still in progress"
     else:
         cmdArgs = prepareJalangiCmdLine(['--jvm']+jalangiArgs + args);
         return mx.run(cmdArgs, nonZeroIsFatal=True, out=out, err=err, cwd=cwd)
 
-def _testJalangi(args, analysisHome, analysis, force=False, svm = False, testsuites=[]):
+def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
     analysisOpt = [];
     if os.path.exists (join(analysisHome, "config")):
         config = open (join(analysisHome, "config"));
@@ -74,7 +75,7 @@ def _testJalangi(args, analysisHome, analysis, force=False, svm = False, testsui
                     continue;
                 print('Testing ' + testfile + " in " + testSuite+" with analysis "+analysis)
                 o = OutputCapture();
-                runJalangi(args + analysisOpt+[join(testHome,testfile)], out=o, svm=svm);
+                runJalangi(args + analysisOpt+[join(testHome,testfile)], out=o);
                 f = open(join(analysisHome,testSuite+"."+testfile+".output"), 'w')
                 #TODO, check if any error messages
                 f.write(o.data);
@@ -105,7 +106,6 @@ def testJalangi(args):
     analysisdir = join(_suite.dir, 'src/ch.usi.inf.nodeprof/js/analysis');
     testdir = join(_suite.dir, 'src/ch.usi.inf.nodeprof.test/js');
     vmArgs = [];
-    svm = False;
     all = False;
     analyses = [];
     force = False;
@@ -113,9 +113,6 @@ def testJalangi(args):
     for arg in args:
         if arg == "--all":
             all = True;
-            continue;
-        elif arg == "--svm":
-            svm = True;
             continue;
         elif arg == "--force":
             force = True;
@@ -131,10 +128,10 @@ def testJalangi(args):
 
     if all:
         for analysis in sorted(os.listdir(analysisdir)):
-            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, svm, testsuites);
+            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites);
     elif analyses:
         for analysis in analyses:
-            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, svm, testsuites);
+            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites);
     else:
         print ("Usage: mx test-specific [analysis-names...] [--all]")
 
@@ -145,7 +142,7 @@ class OutputCapture:
     def __call__(self, data):
         self.data += data
 
-def runJalangi(args, excl="", out=None, svm=False):
+def runJalangi(args, excl="", out=None):
     """run jalangi"""
     jalangiAnalysisArg = []
     jalangiArgs = [join(_suite.dir, "src/ch.usi.inf.nodeprof/js/jalangi.js")]
@@ -153,10 +150,13 @@ def runJalangi(args, excl="", out=None, svm=False):
     a_flag=False;
     debug=False;
     scope='module';
+    svm=False;
     for arg in args:
         if e_flag:
             excl += ","+arg;
             e_flag = False;
+        elif arg == "--svm":
+            svm = True;
         elif arg == "--excl":
             e_flag = True;
         elif arg == "--log":
