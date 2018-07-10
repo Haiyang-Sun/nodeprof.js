@@ -59,14 +59,20 @@ public class RawEventsTracingSupport {
                     ControlFlowBranchTag.class,
     };
 
+    // TODO maybe there's a nicer way to avoid enabling an instrument twice...
+    private static boolean enabled = false;
+
     @TruffleBoundary
     public static void enable(Instrumenter instrumenter) {
-        SourceSectionFilter sourceSectionFilter = SourceSectionFilter.newBuilder().tagIs(ALL).build();
-        SourceSectionFilter inputGeneratingObjects = SourceSectionFilter.newBuilder().tagIs(
-                        StandardTags.ExpressionTag.class,
-                        StandardTags.StatementTag.class).build();
-        instrumenter.attachExecutionEventFactory(sourceSectionFilter, inputGeneratingObjects, getFactory());
-        System.out.println("Low-level event tracing enabled [SVM: " + JSTruffleOptions.SubstrateVM + "]");
+        if (enabled == false) {
+            SourceSectionFilter sourceSectionFilter = SourceSectionFilter.newBuilder().tagIs(ALL).build();
+            SourceSectionFilter inputGeneratingObjects = SourceSectionFilter.newBuilder().tagIs(
+                            StandardTags.ExpressionTag.class,
+                            StandardTags.StatementTag.class).build();
+            instrumenter.attachExecutionEventFactory(sourceSectionFilter, inputGeneratingObjects, getFactory());
+            System.out.println("Low-level event tracing enabled [SVM: " + JSTruffleOptions.SubstrateVM + "]");
+            enabled = true;
+        }
     }
 
     private static ExecutionEventNodeFactory getFactory() {
