@@ -103,6 +103,12 @@ public class JalangiAnalysis {
 
                 // conditions
                 put("conditional", EnumSet.of(CF_COND));
+
+                // eval-like
+                put("evalPre", EnumSet.of(EVAL));
+                put("evalPost", EnumSet.of(EVAL));
+                put("evalFunctionPre", EnumSet.of(BUILTIN));
+                put("evalFunctionPost", EnumSet.of(BUILTIN));
             }});
 
     public static final Set<String> unimplementedCallbacks = Collections.unmodifiableSet(
