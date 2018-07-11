@@ -29,11 +29,14 @@ class OutputCapture:
         if self.fout :
             self.fout.write(data);
 
-def _runJalangi(args, svm=False, debug=False, outFile=None):
+def _runJalangi(args, svm=False, debug=False, outFile=None, trace=False):
     from mx_graal_nodejs import run_nodejs
     jalangiArgs = ['--nodeprof', '--nodeprof.Analysis=NodeProfJalangi']
     if debug:
         jalangiArgs += ["--nodeprof.Debug"];
+    if trace:
+        jalangiArgs += ["--nodeprof.TraceEvents"];
+
     cmdArgs = [];
     if svm:
         from subprocess import call
@@ -94,7 +97,7 @@ def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
                     continue;
                 print('Testing ' + testfile + " in " + testSuite+" with analysis "+analysis)
                 outFile = join(analysisHome,testSuite+"."+testfile+".output");
-                runJalangi(args + analysisOpt+[join(testHome,testfile)], outFile=outFile);
+                runJalangi(args + analysisOpt+[join(testHome,testfile)], outFile=outFile, tracable=False);
                 if not expectExist:
                     print("Ignored @"+analysis);
                     continue;
@@ -145,7 +148,7 @@ def testJalangi(args):
     else:
         print ("Usage: mx test-specific [analysis-names...] [--all]")
 
-def runJalangi(args, excl="", outFile=None):
+def runJalangi(args, excl="", outFile=None, tracable=True):
     """run jalangi"""
     jalangiAnalysisArg = []
     jalangiArgs = [join(_suite.dir, "src/ch.usi.inf.nodeprof/js/jalangi.js")]
@@ -154,12 +157,15 @@ def runJalangi(args, excl="", outFile=None):
     debug=False;
     scope='module';
     svm=False;
+    trace=False;
     for arg in args:
         if e_flag:
             excl += ","+arg;
             e_flag = False;
         elif arg == "--svm":
             svm = True;
+        elif arg == "--trace":
+            trace = True;
         elif arg == "--excl":
             e_flag = True;
         elif arg == "--log":
@@ -181,7 +187,7 @@ def runJalangi(args, excl="", outFile=None):
                 excl += ","+analysisPath;
                 a_flag = False;
     jalangiArgs = ["--nodeprof.Scope="+scope, "--nodeprof.ExcludeSource="+excl] + jalangiArgs + jalangiAnalysisArg;
-    _runJalangi(jalangiArgs, outFile=outFile, svm=svm, debug=debug);
+    _runJalangi(jalangiArgs, outFile=outFile, svm=svm, debug=debug, trace= (tracable and  trace));
 
 def unitTests(args):
     """run tests for the example analysis"""

@@ -86,7 +86,7 @@ public class RawEventsTracingSupport {
                             StandardTags.ExpressionTag.class,
                             StandardTags.StatementTag.class).build();
             instrumenter.attachExecutionEventFactory(sourceSectionFilter, inputGeneratingObjects, getFactory());
-            System.out.println("Low-level event tracing enabled [SVM: " + JSTruffleOptions.SubstrateVM + "]");
+            Logger.info("Low-level event tracing enabled [SVM: " + JSTruffleOptions.SubstrateVM + "]");
             enabled = true;
         }
     }
@@ -106,7 +106,7 @@ public class RawEventsTracingSupport {
                         while (d-- > 0) {
                             p += "    ";
                         }
-                        System.out.println(p + s);
+                        Logger.info(p + s);
                     }
 
                     @TruffleBoundary
