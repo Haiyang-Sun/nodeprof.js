@@ -137,9 +137,7 @@
             };
         }
 
-        var notSupported = false;
-
-        if(notSupported) {
+        if(false) {
             //not supported yet
             this.forinObject = function (iid, val) {
             };
