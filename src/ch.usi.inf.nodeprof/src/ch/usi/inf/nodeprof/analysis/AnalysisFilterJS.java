@@ -16,12 +16,12 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.analysis;
 
-
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.jalangi.JalangiAnalysis;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
 import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.*;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
@@ -34,8 +34,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class AnalysisFilterJS extends AnalysisFilterBase {
-    private Node call;
-    private TruffleObject jsPredicateFunc;
+    private final Node call;
+    private final TruffleObject jsPredicateFunc;
     private final HashMap<Source, EnumSet<ProfiledTagEnum>> includedSources;
     private final HashSet<Source> excludedSources;
     private boolean isRecursive = false;
@@ -49,7 +49,7 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
     }
 
     @Override
-    @CompilerDirectives.TruffleBoundary
+    @TruffleBoundary
     public boolean test(final Source source) {
         if (excludedSources.contains(source))
             return false;
@@ -106,7 +106,7 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
             String tagStr = "";
             if (includeTags != allTags)
                 tagStr = " " + includeTags.toString();
-            Logger.debug("JS Analysis filter: " + name + " -> " + (include ? "included": "excluded") + tagStr);
+            Logger.debug("JS Analysis filter: " + name + " -> " + (include ? "included" : "excluded") + tagStr);
 
         }
 
@@ -119,9 +119,10 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
         return include;
     }
 
+    @TruffleBoundary
     private EnumSet<ProfiledTagEnum> mapToTags(Object[] callbacks) {
         EnumSet<ProfiledTagEnum> set = EnumSet.noneOf(ProfiledTagEnum.class);
-        for (Object cb: callbacks) {
+        for (Object cb : callbacks) {
             EnumSet<ProfiledTagEnum> tags = JalangiAnalysis.callbackMap.get(cb.toString());
             if (tags == null)
                 Logger.error("JS Analysis filter predicate returned non-Jalangi callback: " + cb);
@@ -132,9 +133,10 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
     }
 
     @Override
+    @TruffleBoundary
     public boolean testTag(final Source source, ProfiledTagEnum tag) {
         EnumSet<ProfiledTagEnum> tags = includedSources.get(source);
-        assert(tags != null);
+        assert (tags != null);
         return tags == allTags || tags.contains(tag);
     }
 }
