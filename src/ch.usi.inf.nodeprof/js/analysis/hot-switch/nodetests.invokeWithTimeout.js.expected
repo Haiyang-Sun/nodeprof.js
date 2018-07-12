@@ -1,0 +1,6 @@
+invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:20:1:20:7)
+[ 1 ]
+invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:24:23:24:29)
+[ 3 ]
+invokeFun @ undefined function (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:24:23:24:29)
+[ 3 ]

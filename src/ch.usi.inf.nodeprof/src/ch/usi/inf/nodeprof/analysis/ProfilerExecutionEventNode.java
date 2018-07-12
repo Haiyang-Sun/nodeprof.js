@@ -15,6 +15,8 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.analysis;
 
+import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
@@ -29,6 +31,29 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
     final ProfiledTagEnum cb;
     @Child BaseEventHandlerNode child;
     int hasOnEnter = 0;
+
+    /**
+     * A flag to switch on/off the profiling analysis: true => enabled, false => disabled
+     *
+     * by default the instrumentation is on. It can be updated with
+     * ProfilerExecutionEventNode.updateEnabled.
+     *
+     * After disabled, this class acts as an empty ExecutionEventNode which can be fully optimized
+     * out by the compiler
+     */
+    private @CompilationFinal static boolean profilerEnabled = true;
+
+    public static boolean getEnabled() {
+        return profilerEnabled;
+    }
+
+    /**
+     * @param value true to enable the profiler or false to disable
+     */
+    public static void updateEnabled(boolean value) {
+        CompilerDirectives.transferToInterpreterAndInvalidate();
+        profilerEnabled = value;
+    }
 
     public ProfilerExecutionEventNode(ProfiledTagEnum cb, EventContext context,
                     BaseEventHandlerNode child) {
@@ -45,6 +70,8 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
     @Override
     protected void onInputValue(VirtualFrame frame, EventContext inputContext,
                     int inputIndex, Object inputValue) {
+        if (!profilerEnabled)
+            return;
         saveInputValue(frame, inputIndex, inputValue);
         if (this.child.isLastIndex(getInputCount(), inputIndex)) {
             this.cb.preHitCount++;
@@ -54,6 +81,8 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     @Override
     protected void onEnter(VirtualFrame frame) {
+        if (!profilerEnabled)
+            return;
         hasOnEnter++;
         this.child.enter(frame);
         if (this.child.isLastIndex(getInputCount(), -1)) {
@@ -64,6 +93,8 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     @Override
     protected void onReturnValue(VirtualFrame frame, Object result) {
+        if (!profilerEnabled)
+            return;
         if (hasOnEnter > 0) {
             hasOnEnter--;
             this.cb.postHitCount++;
@@ -90,6 +121,8 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     @Override
     protected void onReturnExceptional(VirtualFrame frame, Throwable exception) {
+        if (!profilerEnabled)
+            return;
         if (hasOnEnter > 0) {
             hasOnEnter--;
             this.cb.exceptionHitCount++;

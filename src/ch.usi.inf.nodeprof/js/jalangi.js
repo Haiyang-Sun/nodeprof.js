@@ -29,6 +29,12 @@ J$={};
     sandbox.getGlobalIID = function(iid) {
       return iid;
     };
+    sandbox.enableAnalysis = function() {
+      return sandbox.adapter.instrumentationSwitch(true);
+    }
+    sandbox.disableAnalysis = function() {
+      return sandbox.adapter.instrumentationSwitch(false);
+    }
   }catch (e){
     console.log("cannot load nodeprof jalangi adapter");
   }

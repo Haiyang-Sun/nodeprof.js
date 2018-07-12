@@ -22,6 +22,7 @@ import com.oracle.truffle.api.interop.*;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
+import ch.usi.inf.nodeprof.analysis.ProfilerExecutionEventNode;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
@@ -108,6 +109,16 @@ public class JalangiAdapterMessageResolution {
                 }
             } else if (identifier.equals("registerCallback")) {
                 adapter.getNodeProfJalangi().registerCallback(arguments[0], arguments[1], arguments[2]);
+            } else if (identifier.equals("instrumentationSwitch")) {
+                // update instrumentation using the first argument given and return the updated
+                // status of the instrumentation (true for enabled and false for disabled)
+                if (arguments.length >= 1) {
+                    if (arguments[0] != null) {
+                        boolean value = Boolean.parseBoolean(arguments[0].toString());
+                        ProfilerExecutionEventNode.updateEnabled(value);
+                    }
+                }
+                return ProfilerExecutionEventNode.getEnabled();
             } else {
                 // unknown API
                 Logger.warning("Unsupported NodeProf-Jalangi operation " + identifier);
