@@ -55,7 +55,7 @@ public class GlobalConfiguration {
     @CompilationFinal public static boolean DEBUG;
 
     /**
-     * trace all runtime events as produced by Graal.js and dump them to a file.
+     * trace all runtime events as produced by Graal.js
      */
     @CompilationFinal public static boolean DEBUG_TRACING;
 
