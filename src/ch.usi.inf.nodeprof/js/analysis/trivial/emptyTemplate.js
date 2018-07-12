@@ -65,7 +65,7 @@
         this.write = function (iid, name, val, lhs, isGlobal, isScriptLocal) {
             return {result: val};
         };
-        
+
         /**
          * These callbacks are called before the execution of a function body starts and after it completes.
          **/
@@ -117,6 +117,7 @@
         this.endExecution = function () {
         };
 
+        //for callbacks that are new or different from Jalangi
         var extraFeatures = true;
         if(extraFeatures) {
             /**
@@ -126,42 +127,37 @@
             };
             this.evalPost = function (iid, str) {
             };
-        }
 
-        /**
-         *  These callabcks are called before and after body of functions defined with the Function constructor are executed.
-         **/
-        this.evalFunctionPre = function(iid, f, base, args) {
-        };
-        this.evalFunctionPost = function(iid, f, base, args, ret) {
-        };
+            /**
+             *  These callabcks are called before and after body of functions defined with the Function constructor are executed.
+             **/
+            this.evalFunctionPre = function(iid, f, base, args) {
+            };
+            this.evalFunctionPost = function(iid, f, base, args, ret) {
+            };
+        }
 
         var notSupported = false;
 
         if(notSupported) {
             //not supported yet
             this.forinObject = function (iid, val) {
-                return {result: val};
             };
 
             //not supported yet
             this.declare = function (iid, name, val, isArgument, argumentIndex, isCatchParam) {
-                return {result: val};
             };
 
             //not supported yet
             this._return = function (iid, val) {
-            return {result: val};
             };
 
             //not supported yet
             this._throw = function (iid, val) {
-            return {result: val};
             };
 
             //not supported yet
             this._with = function (iid, val) {
-            return {result: val};
             };
 
             //not supported yet
@@ -170,7 +166,6 @@
 
             //not supported yet
             this.scriptExit = function (iid, wrappedExceptionVal) {
-                return {wrappedExceptionVal: wrappedExceptionVal, isBacktrack: false};
             };
             //not supported yet
             this.endExpression = function (iid) {
@@ -178,12 +173,19 @@
 
             //not supported yet
             this.runInstrumentedFunctionBody = function (iid, f, functionIid, functionSid) {
-                return false;
             };
 
             //not supported yet
             this.onReady = function (cb) {
                 cb();
+            };
+
+            //not supported yet
+            this.instrumentCodePre = function (iid, code, isDirect) {
+            };
+
+            //not supported yet
+            this.instrumentCode = function (iid, newCode, newAst, isDirect) {
             };
         }
     }
