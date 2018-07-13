@@ -40,7 +40,9 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
     public static final String ID = "nodeprof";
     private Instrumenter instrumenter;
     private Env env;
-    private TruffleContext truffleContext;
+    private boolean readyToLoad = false;
+
+    private boolean loaded = false;
 
     public NodeProfInstrument() {
         super();
@@ -91,16 +93,29 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
         }
     }
 
+    @Override
     public void onLanguageContextCreated(TruffleContext context, LanguageInfo language) {
+
+    }
+
+    @Override
+    public void onContextCreated(TruffleContext context) {
+
+    }
+
+    @Override
+    public void onLanguageContextInitialized(TruffleContext context, LanguageInfo language) {
+
         assert (context != null);
         /**
-         * load all analysis when the first JS Context is created
+         * the language context will be created twice at the beginning. in svm the second context is
+         * different than the first one while in jvm the second context is the same as the first
+         * one. we enable NodeProf after the second one is initilized
          */
-        assert truffleContext == null || truffleContext == context;
-
         if (GlobalConfiguration.DEBUG_TRACING) {
             RawEventsTracingSupport.enable(instrumenter);
-        } else if (truffleContext != null) {
+        } else if (readyToLoad && !loaded) {
+
             if (GlobalConfiguration.ANALYSIS != null) {
                 String[] names = GlobalConfiguration.ANALYSIS.split(",");
                 for (String name : names) {
@@ -110,17 +125,10 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
                     NodeProfAnalysis.enableAnalysis(this.instrumenter, env, name);
                 }
             }
+            loaded = true;
         }
-        truffleContext = context;
-
-    }
-
-    @Override
-    public void onContextCreated(TruffleContext context) {
-    }
-
-    @Override
-    public void onLanguageContextInitialized(TruffleContext context, LanguageInfo language) {
+        // ready to load for the second context
+        readyToLoad = true;
     }
 
     @Override
