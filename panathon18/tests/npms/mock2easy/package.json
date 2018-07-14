@@ -1,0 +1,16 @@
+{
+  "name": "mock2easy-test",
+  "version": "1.0.0",
+  "description": "Tests mock2easy",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodejs app.js"
+  },
+  "author": "Oracle Labs",
+  "license": "UPL-1.0",
+  "dependencies": {
+    "mock2easy": "0.0.24",
+    "request": "2.2.9"
+  }
+}
+

@@ -1,0 +1,15 @@
+{
+  "name": "uri-js-test",
+  "version": "1.0.0",
+  "description": "Tests uri-js",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodejs app.js"
+  },
+  "author": "Oracle Labs",
+  "license": "UPL-1.0",
+  "dependencies": {
+    "uri-js": "2.1.1"
+  }
+}
+
