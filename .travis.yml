@@ -32,9 +32,9 @@ script:
   - mx sforceimports
   - mx build
   - mx test-all
-  - cp snapshot/nodeprof.jar build/
-  - mx test-all
   - cd ../graal/vm
   - mx --dy nodeprof,/substratevm --force-bash-launchers --disable-polyglot build
   - cd -
   - mx test-all --svm
+  - cp snapshot/nodeprof.jar build/
+  - mx test-all
