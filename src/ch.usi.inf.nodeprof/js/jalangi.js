@@ -23,7 +23,15 @@ J$={};
   }
   try {
     sandbox.adapter = __jalangiAdapter;
-    sandbox.iidToLocation = function(iid){
+    sandbox.deprecatedIIDUsed = false;
+    sandbox.iidToLocation = function(iid, _deprecatedIID){
+      if(_deprecatedIID) {
+        if(!sandbox.deprecatedIIDUsed){
+          sandbox.deprecatedIIDUsed = true;
+          console.trace("Warning! In NodeProf, iidToLocation only needs the iid (without sid). The iids as you get from the callbacks are unique across files.");
+        }
+        return sandbox.adapter.iidToLocation(_deprecatedIID);
+      }
       return sandbox.adapter.iidToLocation(iid);
     };
     sandbox.getGlobalIID = function(iid) {
