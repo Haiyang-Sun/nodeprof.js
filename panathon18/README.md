@@ -31,7 +31,7 @@ You can directly run NodeProf with a pre-built JAR file and the latest GraalVM.
 4. You can find a pre-built NodeProf JAR file here: `nodeprof.js/snapshot/nodeprof.jar`
 5. Put the NodeProf JAR file in a location of your choice (e.g. `/usr/local/graalvm-ee-<version>/jre/tools/nodeprof/nodeprof.jar`) and 
 	```
-	export NODEPROF_HOME=/usr/local/graalvm-ee-<version>/jre/tools/nodeprof
+	export NODEPROF_HOME=$GRAAL_HOME/jre/tools/nodeprof
 	```
 6. Copy the `nodeprof.js/src/ch.usi.inf.nodeprof/js/jalangi.js` file to the `NODEPROF_HOME` folder.
 7. You can now run an analysis using the following command:
