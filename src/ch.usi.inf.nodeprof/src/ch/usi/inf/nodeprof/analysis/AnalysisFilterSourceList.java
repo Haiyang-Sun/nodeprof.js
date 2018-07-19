@@ -119,7 +119,7 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
                 res = AnalysisFilterSourceList.app;
                 break;
             default:
-                res = AnalysisFilterSourceList.app;
+                res = AnalysisFilterSourceList.allExceptInternal;
                 break;
         }
         return res;
@@ -213,6 +213,8 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
     }
 
     @Override
-    public boolean testTag(final Source source, ProfiledTagEnum tag) { return true; }
+    public boolean testTag(final Source source, ProfiledTagEnum tag) {
+        return true;
+    }
 
 }
