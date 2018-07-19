@@ -61,7 +61,7 @@ If you plan to customise NodeProf or the GraalVM, this is the option you need.
 	```
 4. Run tests:
 	```
-	mx test
+	mx test-all
 	```
 5. Run an analysis with **mx**:
 	```
