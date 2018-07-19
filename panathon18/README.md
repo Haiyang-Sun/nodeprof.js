@@ -7,7 +7,7 @@ Welcome to the NodeProf/GraalVM track of Panathon 2018!
       * [Overview](#overview)
       * [Installation](#installation)
          * [Basic installation - Running a pre-built version of NodeProf on GraalVM (Linux and MacOS)](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos)
-         * [Advanced installation - Building NodeProf and GraalVM from source (Linux only)](#advanced-installation---building-nodeprof-and-graalvm-from-source-linux-only)
+         * [Advanced installation - Building NodeProf and GraalVM from source (Linux and MacOS)](#advanced-installation---building-nodeprof-and-graalvm-from-source-linux-and-macos)
       * [Implementing a NodeProf analysis](#implementing-a-nodeprof-analysis)
          * [Running the dynamic call graph analysis](#running-the-dynamic-call-graph-analysis)
          * [Viewing and interpreting the results](#viewing-and-interpreting-the-results)
