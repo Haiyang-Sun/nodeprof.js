@@ -29,6 +29,11 @@ class OutputCapture:
         if self.fout :
             self.fout.write(data);
 
+def runJNode(args):
+    cmdArgs = prepareJalangiCmdLine(['--jvm']+args);
+    mx.run(cmdArgs, nonZeroIsFatal=True);
+
+
 def _runJalangi(args, svm=False, debug=False, outFile=None, trace=False):
     from mx_graal_nodejs import run_nodejs
     jalangiArgs = ['--nodeprof', '--nodeprof.Analysis=NodeProfJalangi']
@@ -233,4 +238,5 @@ mx.update_commands(_suite, {
     'test-unit': [unitTests, ''],
     'test-specific': [testJalangi, ''],
     'jalangi': [runJalangi, ''],
+    'jnode': [runJNode, ''],
 })
