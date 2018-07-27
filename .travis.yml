@@ -16,8 +16,8 @@ before_install:
 
   - sudo apt-get update -qq
 
-  - wget http://h620.inf.usi.ch/nodeprof.js/labsjdk-8u172.tgz
-  - tar xvf labsjdk-8u172.tgz
+  - wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-0.46/openjdk-8u172-jvmci-0.46-linux-amd64.tar.gz
+  - tar xvf openjdk-8u172-jvmci-0.46-linux-amd64.tar.gz
   - git clone https://github.com/graalvm/mx.git
 
 install:
@@ -25,7 +25,7 @@ install:
   - export CXX="clang++-3.9";
 
 before_script:
-  - export JAVA_HOME=$TRAVIS_BUILD_DIR/labsjdk1.8.0_172-jvmci-0.46
+  - export JAVA_HOME=$TRAVIS_BUILD_DIR/openjdk1.8.0_172-jvmci-0.46
   - export PATH=$PATH:$TRAVIS_BUILD_DIR/mx
 
 script:
