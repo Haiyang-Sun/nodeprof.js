@@ -96,10 +96,12 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
         return addMatchSources(filter, parseExcludeConfig());
     }
 
+    @TruffleBoundary
     public static AnalysisFilterSourceList addMatchSources(final AnalysisFilterSourceList filter, List<String> matchSources) {
         return addMatchSources(filter, new HashSet<>(matchSources));
     }
 
+    @TruffleBoundary
     public static AnalysisFilterSourceList addMatchSources(final AnalysisFilterSourceList filter, HashSet<String> matchSources) {
         HashSet<String> mergedMatchSources = new HashSet<>(matchSources);
         mergedMatchSources.addAll(filter.matchSources);
@@ -200,6 +202,10 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
         } else {
             // not instrumenting internal source
             res = false;
+        }
+
+        if (res && loggedSources.add(source)) {
+            Logger.debug("Source filter: " + name + " -> included " + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
         }
 
         // debug log (once per source) if filter did something
