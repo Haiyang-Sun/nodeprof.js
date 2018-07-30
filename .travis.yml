@@ -34,3 +34,14 @@ script:
   - mx test-all
   - cp snapshot/nodeprof.jar build/
   - mx test-all
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "ZgAJNRliSHrtT0AOv/zpzhy24DoYPAuuR8/17gpO4YgbucVrB7N6MUbLywNiI8yvnGil2xZjcFUaw/mEaz0mO4k4Il2RtEC1vOZGRU9C17kGroaMUlWsdLaNNU2dIDpsHMzFaGTerCnENzuzSo27Op2/LiNJrG++3VFT9Ab9XPq3pGBCiuzwmwDOm73uNovsskRlkVEtj1H0Xp7kfkxXXfEFZFRZl+0Pltg2l+++hj/Ay6RvHvS/QfaAMb6BAjZWQHV9DA7QV0Ezmukwoe7YlKlgOdI5aKq3fx/bBbp3fyCxnQuMjV9CzomT5lenhxhlcawBfdQXkVY+maQsc5JFnEXXFjA88ju2eIkP3TxjMJCsZipT/19QpWHhCjzcNpzjfCF6G9kDB3qMuy0FyDXtyvuHdk3HCAKzY/bfWqPzuspix99E2qHJVONdmS3lv6TgVYEbN+GhsLhqBnGl/typon3YfBZXnv8A6ntkhhiPnr0gwu/sStYR3wFFp8BqaYCpms0p2iVwwbjpKK0dsah/YZ/4WoCbbvEGSq1sx7sbjYnD8kjKBbK3ne121FAQH+ChXeNLpIrsPX9FVjezWCd1bpU4fFEjUYBkTb+P/d3fNOdj/UPGDVgRrNpUUrkY3SvIxPJ/oMGpgdEoGOGzMrvSBt3ObaEKgtaRCtWxMKdNZF8="
+  file: build/nodeprof.jar
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
+
