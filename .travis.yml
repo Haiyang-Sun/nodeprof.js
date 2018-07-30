@@ -5,13 +5,17 @@ compiler:
 
 before_install:
   - |
-    if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-      TRAVIS_COMMIT_RANGE="$TRAVIS_BRANCH"
+    if [ "${TRAVIS_BRANCH}" == "${TRAVIS_TAG}" ]; then
+      echo "Building a tag."
+    else
+      if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+        TRAVIS_COMMIT_RANGE="$TRAVIS_BRANCH"
+      fi
+      git diff --name-only $TRAVIS_COMMIT_RANGE | grep -qvE '(\.md$)' || {
+        echo "Only docs were updated, stopping build process."
+        exit
+      }
     fi
-    git diff --name-only $TRAVIS_COMMIT_RANGE | grep -qvE '(\.md$)' || {
-      echo "Only docs were updated, stopping build process."
-      exit
-    }
   - sudo add-apt-repository -y ppa:h-rayflood/llvm;
 
   - sudo apt-get update -qq
