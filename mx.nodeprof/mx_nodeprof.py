@@ -112,6 +112,8 @@ def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
                             print("Pass @"+analysis);
                         else:
                             print("Fail @"+analysis);
+                            from subprocess import call
+                            call(["diff", fn, outFile])
                             if not force:
                                 sys.exit(1);
 
