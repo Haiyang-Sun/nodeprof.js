@@ -33,6 +33,8 @@ import ch.usi.inf.nodeprof.jalangi.NodeProfJalangi;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags.InputNodeTag;
 
 public abstract class NodeProfAnalysis {
     private final Env env;
@@ -227,7 +229,7 @@ public abstract class NodeProfAnalysis {
                 }
             }
 
-            SourceSectionFilter inputFilter = SourceSectionFilter.newBuilder().tagIs(StandardTags.ExpressionTag.class, StandardTags.StatementTag.class).build();
+            SourceSectionFilter inputFilter = SourceSectionFilter.newBuilder().tagIs(StandardTags.ExpressionTag.class, InputNodeTag.class).build();
 
             // A built-in node has also the root tag, so we need a separate factory
             if (handlerMapping.containsKey(ProfiledTagEnum.BUILTIN)) {
@@ -269,7 +271,8 @@ public abstract class NodeProfAnalysis {
                                                 count += 1;
                                             }
                                         }
-                                        // a node should never have two tags the same time(except for the built-in)
+                                        // a node should never have two tags the same time(except
+                                        // for the built-in)
                                         if (count > 1) {
                                             Logger.error("a node has more than 1 profiling tags!!");
                                             String tags = "";
@@ -372,7 +375,7 @@ public abstract class NodeProfAnalysis {
                     SourcePredicate sourcePredicate) {
         getInstrumenter().attachExecutionEventFactory(
                         SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.getTags()).sourceIs(sourcePredicate).build(),
-                        SourceSectionFilter.newBuilder().tagIs(StandardTags.ExpressionTag.class, StandardTags.StatementTag.class).build(),
+                        SourceSectionFilter.newBuilder().tagIs(StandardTags.ExpressionTag.class, JSTags.InputNodeTag.class).build(),
                         factory);
     }
 }
