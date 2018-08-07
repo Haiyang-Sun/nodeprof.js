@@ -36,8 +36,6 @@ script:
   - mx sforceimports
   - mx build
   - mx test-all
-  - cp snapshot/nodeprof.jar build/
-  - mx test-all
 
 deploy:
   provider: releases
