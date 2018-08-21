@@ -68,6 +68,7 @@ public class JalangiAnalysis {
      */
     final NodeProfJalangi instrument;
 
+    @SuppressWarnings("serial")
     public static final Map<String, EnumSet<ProfiledTagEnum>> callbackMap = Collections.unmodifiableMap(
             new HashMap<String, EnumSet<ProfiledTagEnum>>() {{
                 // function calls
