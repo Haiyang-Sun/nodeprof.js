@@ -199,8 +199,8 @@ function loadAnalysis(){
     try{
       require(path.resolve(analysis));
     }catch(e){
-      console.log("error loading analysis "+analysis);
-      console.trace(e);
+      console.log("error while loading analysis %s", analysis);
+      console.log(e);
       process.exit(-1);
     }
   });
