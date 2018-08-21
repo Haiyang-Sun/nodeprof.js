@@ -42,7 +42,7 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
     private static final EnumSet<ProfiledTagEnum> allTags = EnumSet.allOf(ProfiledTagEnum.class);
 
     public AnalysisFilterJS(TruffleObject jsPredicateFunc) {
-        this.call = Message.createExecute(1).createNode();
+        this.call = Message.EXECUTE.createNode();
         this.jsPredicateFunc = jsPredicateFunc;
         this.includedSources = new HashMap<>();
         this.excludedSources = new HashSet<>();

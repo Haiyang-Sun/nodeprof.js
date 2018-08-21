@@ -56,7 +56,7 @@ public class NodeProfJalangi extends NodeProfAnalysis {
     @Override
     @TruffleBoundary
     public void onLoad() throws Exception {
-        Source src = Source.newBuilder("__jalangiAdapter = adapterVar").name("nodeprof").mimeType(JavaScriptLanguage.TEXT_MIME_TYPE).build();
+        Source src = Source.newBuilder(JavaScriptLanguage.ID, "__jalangiAdapter = adapterVar", "nodeprof").build();
         CallTarget bootstrap = this.getEnv().parse(src, "adapterVar");
         bootstrap.call(new JalangiAdapter(this));
     }
