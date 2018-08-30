@@ -20,7 +20,7 @@ import java.util.*;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.TruffleObject;
-import com.oracle.truffle.api.interop.java.JavaInterop;
+import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
@@ -68,6 +68,7 @@ public class JalangiAnalysis {
      */
     final NodeProfJalangi instrument;
 
+    @SuppressWarnings("serial")
     public static final Map<String, EnumSet<ProfiledTagEnum>> callbackMap = Collections.unmodifiableMap(
             new HashMap<String, EnumSet<ProfiledTagEnum>>() {{
                 // function calls
@@ -259,16 +260,17 @@ public class JalangiAnalysis {
      */
     @TruffleBoundary
     public void registerCallback(Object name, Object callback) {
-        TruffleObject original = JavaInterop.asTruffleObject(callback);
-        if (original instanceof DynamicObject) {
+        if (callback instanceof DynamicObject) {
             if (GlobalConfiguration.DEBUG) {
                 Logger.debug("Jalangi analysis registering callback: " + name);
             }
             if (unimplementedCallbacks.contains(name)) {
                 Logger.warning("Jalangi analysis callback not implemented in NodeProf: " + name);
             }
-            GlobalObjectCache.getInstance().addDynamicObject((DynamicObject) original);
-            this.callbacks.put(name.toString(), (DynamicObject) original);
+            GlobalObjectCache.getInstance().addDynamicObject((DynamicObject) callback);
+            this.callbacks.put(name.toString(), (DynamicObject) callback);
+        } else {
+            throw UnsupportedTypeException.raise(new Object[]{callback});
         }
     }
 }

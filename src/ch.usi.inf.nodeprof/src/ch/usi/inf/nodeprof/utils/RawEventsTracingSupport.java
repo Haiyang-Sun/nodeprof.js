@@ -33,6 +33,7 @@ import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.JavaScriptNode;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.BinaryExpressionTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.BuiltinRootTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.ControlFlowBlockTag;
@@ -84,7 +85,7 @@ public class RawEventsTracingSupport {
             SourceSectionFilter sourceSectionFilter = SourceSectionFilter.newBuilder().tagIs(ALL).build();
             SourceSectionFilter inputGeneratingObjects = SourceSectionFilter.newBuilder().tagIs(
                             StandardTags.ExpressionTag.class,
-                            StandardTags.StatementTag.class).build();
+                            JSTags.InputNodeTag.class).build();
             instrumenter.attachExecutionEventFactory(sourceSectionFilter, inputGeneratingObjects, getFactory());
             Logger.info("Low-level event tracing enabled [SVM: " + JSTruffleOptions.SubstrateVM + "]");
             enabled = true;

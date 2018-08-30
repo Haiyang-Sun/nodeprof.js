@@ -5,19 +5,23 @@ compiler:
 
 before_install:
   - |
-    if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-      TRAVIS_COMMIT_RANGE="FETCH_HEAD...$TRAVIS_BRANCH"
+    if [ "${TRAVIS_BRANCH}" == "${TRAVIS_TAG}" ]; then
+      echo "Building a tag."
+    else
+      if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+        TRAVIS_COMMIT_RANGE="$TRAVIS_BRANCH"
+      fi
+      git diff --name-only $TRAVIS_COMMIT_RANGE | grep -qvE '(\.md$)' || {
+        echo "Only docs were updated, stopping build process."
+        exit
+      }
     fi
-    git diff --name-only $TRAVIS_COMMIT_RANGE | grep -qvE '(\.md$)' || {
-      echo "Only docs were updated, stopping build process."
-      exit
-    }
   - sudo add-apt-repository -y ppa:h-rayflood/llvm;
 
   - sudo apt-get update -qq
 
-  - wget http://h620.inf.usi.ch/nodeprof.js/labsjdk-8u161.tgz
-  - tar xvf labsjdk-8u161.tgz
+  - wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-0.46/openjdk-8u172-jvmci-0.46-linux-amd64.tar.gz
+  - tar xvf openjdk-8u172-jvmci-0.46-linux-amd64.tar.gz
   - git clone https://github.com/graalvm/mx.git
 
 install:
@@ -25,16 +29,20 @@ install:
   - export CXX="clang++-3.9";
 
 before_script:
-  - export JAVA_HOME=$TRAVIS_BUILD_DIR/labsjdk1.8.0_161-jvmci-0.42
+  - export JAVA_HOME=$TRAVIS_BUILD_DIR/openjdk1.8.0_172-jvmci-0.46
   - export PATH=$PATH:$TRAVIS_BUILD_DIR/mx
 
 script:
   - mx sforceimports
   - mx build
   - mx test-all
-  - cp snapshot/nodeprof.jar build/
-  - mx test-all
-  - cd ../graal/vm
-  - mx --dy nodeprof,/substratevm --force-bash-launchers --disable-polyglot build
-  - cd -
-  - mx test-all --svm
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "ZgAJNRliSHrtT0AOv/zpzhy24DoYPAuuR8/17gpO4YgbucVrB7N6MUbLywNiI8yvnGil2xZjcFUaw/mEaz0mO4k4Il2RtEC1vOZGRU9C17kGroaMUlWsdLaNNU2dIDpsHMzFaGTerCnENzuzSo27Op2/LiNJrG++3VFT9Ab9XPq3pGBCiuzwmwDOm73uNovsskRlkVEtj1H0Xp7kfkxXXfEFZFRZl+0Pltg2l+++hj/Ay6RvHvS/QfaAMb6BAjZWQHV9DA7QV0Ezmukwoe7YlKlgOdI5aKq3fx/bBbp3fyCxnQuMjV9CzomT5lenhxhlcawBfdQXkVY+maQsc5JFnEXXFjA88ju2eIkP3TxjMJCsZipT/19QpWHhCjzcNpzjfCF6G9kDB3qMuy0FyDXtyvuHdk3HCAKzY/bfWqPzuspix99E2qHJVONdmS3lv6TgVYEbN+GhsLhqBnGl/typon3YfBZXnv8A6ntkhhiPnr0gwu/sStYR3wFFp8BqaYCpms0p2iVwwbjpKK0dsah/YZ/4WoCbbvEGSq1sx7sbjYnD8kjKBbK3ne121FAQH+ChXeNLpIrsPX9FVjezWCd1bpU4fFEjUYBkTb+P/d3fNOdj/UPGDVgRrNpUUrkY3SvIxPJ/oMGpgdEoGOGzMrvSBt3ObaEKgtaRCtWxMKdNZF8="
+  file: build/nodeprof.jar
+  skip_cleanup: true
+  on:
+    tags: true
+

@@ -47,7 +47,7 @@ public class NodeProfCLI {
 
     static final String scopeHelp = "Instrumentation scope: 'app', 'module', or 'all'.";
     @Option(name = "Scope", help = scopeHelp, category = OptionCategory.USER)//
-    public static final OptionKey<String> SCOPE = new OptionKey<>("app");
+    public static final OptionKey<String> SCOPE = new OptionKey<>("module");
 
     static final String ignoreJExpHelp = "Keep going even if a JS exception was thrown in a Jalangi callback handler";
     @Option(name = "IgnoreJalangiException", help = ignoreJExpHelp, category = OptionCategory.USER)//

@@ -59,6 +59,7 @@ public class JalangiTest {
         assertTrue(v.hasArrayElements());
 
         // test callbacks from template
+        @SuppressWarnings("unchecked")
         List<String> callbacks = v.as(List.class);
         for (String cb : callbacks) {
             if (JalangiAnalysis.unimplementedCallbacks.contains(cb) || JalangiAnalysis.ignoredCallbacks.contains(cb)) {
