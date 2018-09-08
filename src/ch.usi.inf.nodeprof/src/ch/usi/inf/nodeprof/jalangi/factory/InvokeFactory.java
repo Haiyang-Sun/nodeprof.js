@@ -45,7 +45,7 @@ public class InvokeFactory extends AbstractFactory {
                                     getSourceIID(), getFunction(inputs),
                                     getReceiver(inputs),
                                     makeArgs.executeArguments(inputs), // args
-                                    false,// isConstructor
+                                    this.isNew(),// isConstructor
                                     false,// isMethod
                                     0,// functionIid);
                                     0 // functionSid
@@ -61,7 +61,8 @@ public class InvokeFactory extends AbstractFactory {
                                     getSourceIID(), getFunction(inputs),
                                     getReceiver(inputs),
                                     makeArgs.executeArguments(inputs), // args
-                                    convertResult(result), false,// isConstructor
+                                    convertResult(result),
+                                    this.isNew(),// isConstructor
                                     false,// isMethod
                                     0,// functionIid);
                                     0 // functionSid
