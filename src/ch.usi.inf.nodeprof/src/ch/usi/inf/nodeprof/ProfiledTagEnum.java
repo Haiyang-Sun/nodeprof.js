@@ -38,7 +38,8 @@ public enum ProfiledTagEnum {
     INVOKE(JSTags.FunctionCallExpressionTag.class),
     ROOT(StandardTags.RootTag.class),
     BUILTIN(JSTags.BuiltinRootTag.class),
-    LITERAL(JSTags.LiteralExpressionTag.class);
+    LITERAL(JSTags.LiteralExpressionTag.class),
+    NEW(JSTags.ObjectAllocationExpressionTag.class);
 
     private final Class<? extends Tag> clazz;
 

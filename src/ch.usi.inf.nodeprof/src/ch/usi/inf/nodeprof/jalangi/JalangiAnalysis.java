@@ -74,8 +74,8 @@ public class JalangiAnalysis {
                 // function calls
                 put("functionEnter", EnumSet.of(ROOT));
                 put("functionExit", EnumSet.of(ROOT));
-                put("invokeFunPre", EnumSet.of(INVOKE));
-                put("invokeFun", EnumSet.of(INVOKE));
+                put("invokeFunPre", EnumSet.of(INVOKE, NEW));
+                put("invokeFun", EnumSet.of(INVOKE, NEW));
 
                 // builtin calls
                 put("builtinEnter", EnumSet.of(ROOT));
@@ -135,9 +135,13 @@ public class JalangiAnalysis {
             Logger.debug("analysis is ready " + callbacks.keySet());
         }
         if (this.callbacks.containsKey("invokeFunPre") || callbacks.containsKey("invokeFun")) {
+            InvokeFactory invoke = new InvokeFactory(this.jsAnalysis, callbacks.get("invokeFunPre"), callbacks.get("invokeFun"));
             this.instrument.onCallback(
                             ProfiledTagEnum.INVOKE,
-                            new InvokeFactory(this.jsAnalysis, callbacks.get("invokeFunPre"), callbacks.get("invokeFun")));
+                            invoke);
+            this.instrument.onCallback(
+                            ProfiledTagEnum.NEW,
+                            invoke);
         }
 
         if (this.callbacks.containsKey("putFieldPre") || callbacks.containsKey("putField")) {
