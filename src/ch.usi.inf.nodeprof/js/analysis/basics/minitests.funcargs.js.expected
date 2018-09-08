@@ -1,7 +1,7 @@
 invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:20:1:20:11)
 [ 1, 2, 3 ]
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:20:1:20:11)
-invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:22:9:22:23)
+invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:22:9:22:23) isConstructor
 [ 4, 5, 6 ]
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:17:3:17:26)  base type: object  offset type: string  val type: function
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:22:9:22:23)

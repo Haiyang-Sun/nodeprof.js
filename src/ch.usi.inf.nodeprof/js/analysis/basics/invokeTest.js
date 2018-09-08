@@ -30,7 +30,12 @@
 
     function MyAnalysis() {
         this.invokeFunPre = function (iid, f, base, args, isConstructor, isMethod, functionIid, functionSid) {
-            console.log("invokeFunPre @ " + typeof(base) + " " + typeof(f) + " " + getLocation(J$.sid, iid));
+            var logStr = "invokeFunPre @ " + typeof(base) + " " + typeof(f) + " " + getLocation(J$.sid, iid);
+            if (isConstructor)
+              logStr += " isConstructor";
+            if (isMethod)
+              logStr += " isMethod";
+            console.log(logStr);
             argsToString(args);
         };
 
