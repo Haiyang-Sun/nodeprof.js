@@ -41,7 +41,7 @@ public class TypedArrayTest extends BasicAnalysisTest {
         AnalysisEventsVerifier verifier = new AnalysisEventsVerifier(this.analysis.getAnalysisEvents()) {
             @Override
             public void verify() {
-                dequeueAndVerifyEvent("TA_ARRAY_ALLOC", 1, ProfiledTagEnum.INVOKE);
+                dequeueAndVerifyEvent("TA_ARRAY_ALLOC", 1, ProfiledTagEnum.NEW);
                 dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 0);
                 dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 1);
                 dequeueAndVerifyEvent("TA_UNTYPED", 1, ProfiledTagEnum.ELEMENT_WRITE);

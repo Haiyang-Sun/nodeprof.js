@@ -45,6 +45,8 @@ import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
+import com.oracle.truffle.api.profiles.Profile;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 
 public class TypedArray extends TestableNodeProfAnalysis {
     private final ReportDB db = new ReportDB();
@@ -134,10 +136,10 @@ public class TypedArray extends TestableNodeProfAnalysis {
             }
         });
 
-        this.onCallback(ProfiledTagEnum.INVOKE, new AnalysisFactory<BaseEventHandlerNode>() {
+        AnalysisFactory<BaseEventHandlerNode> cb = new AnalysisFactory<BaseEventHandlerNode>() {
             @Override
             public BaseEventHandlerNode create(
-                            EventContext context) {
+                    EventContext context) {
                 return new FunctionCallEventHandler(context) {
                     @Child ReportEntryNode getReportNode = ReportEntryNodeGen.create(db, new TypedArrayFactory());
 
@@ -145,20 +147,23 @@ public class TypedArray extends TestableNodeProfAnalysis {
 
                     @Override
                     public void executePost(VirtualFrame frame,
-                                    Object result, Object[] inputs) {
+                                            Object result, Object[] inputs) {
                         Object funcObj = getFunction(inputs);
                         if (funcObj instanceof DynamicObject) {
                             Object constructor = GlobalObjectCache.getInstance().getArrayConstructor((DynamicObject) funcObj);
                             if (funcObj == constructor) {
                                 trackAllocation(result, getSourceIID());
-                                addDebugEvent("TA_ARRAY_ALLOC", getSourceIID(), ProfiledTagEnum.INVOKE);
+                                addDebugEvent("TA_ARRAY_ALLOC", getSourceIID(),
+                                        context.hasTag(JSTags.ObjectAllocationExpressionTag.class) ? ProfiledTagEnum.NEW : ProfiledTagEnum.INVOKE);
                                 getReportNode.execute(this.getSourceIID());
                             }
                         }
                     }
                 };
             }
-        });
+        };
+        this.onCallback(ProfiledTagEnum.INVOKE, cb);
+        this.onCallback(ProfiledTagEnum.NEW, cb);
 
         this.onCallback(ProfiledTagEnum.BUILTIN, new AnalysisFactory<BaseEventHandlerNode>() {
             @Override
