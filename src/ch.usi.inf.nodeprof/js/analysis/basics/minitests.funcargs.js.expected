@@ -6,6 +6,6 @@ invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/fun
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:17:3:17:26)  base type: object  offset type: string  val type: function
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:22:9:22:23)
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:24:1:24:6)  base type: object  offset type: string  val type: function
-invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:24:1:24:13)
+invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:24:1:24:13) isMethod
 [ 7, 8, 9 ]
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/funcargs.js:24:1:24:13)
