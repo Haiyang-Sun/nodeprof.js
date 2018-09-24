@@ -1,10 +1,9 @@
-new Function body console.log("abc"); return 0;
-result function: function anonymous() {
-console.log("abc"); return 0;
-}
-invoke func:function Function() { [native code] }
-found invocation of new Function at (src/ch.usi.inf.nodeprof.test/js/minitests/evalfunc.js:16:9:16:56) of func function Function() { [native code] }
+new Function body (function foo() { console.log("abc") })(); return 42;
+result function: anonymous
+invoking func: Function
 abc
-invoke func:function anonymous() {
-console.log("abc"); return 0;
-}
+invoking func: bound log
+invoking func: foo
+location inside eval on line: 16
+invoking func: anonymous
+at end of invocation at (src/ch.usi.inf.nodeprof.test/js/minitests/evalfunc.js:17:1:17:4), result: 42

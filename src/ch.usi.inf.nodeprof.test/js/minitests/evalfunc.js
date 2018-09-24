@@ -13,5 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-var f = new Function("console.log(\"abc\"); return 0;");
+var f = new Function("(function foo() { console.log(\"abc\") })(); return 42;");
 f();

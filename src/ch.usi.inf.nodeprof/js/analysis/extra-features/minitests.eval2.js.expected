@@ -1,5 +1,6 @@
 pre var x = 1; function foo(a){console.log(a);}; foo(x);
 1
-invoke func:function () { [native code] }
-invoke func:function foo(a){console.log(a);}
+invoking func: bound log
+invoking func: foo
+location inside eval on line: 16
 post var x = 1; function foo(a){console.log(a);}; foo(x);
