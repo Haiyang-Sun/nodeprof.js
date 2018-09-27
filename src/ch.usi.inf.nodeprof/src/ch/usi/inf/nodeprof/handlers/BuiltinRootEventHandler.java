@@ -15,18 +15,41 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
+
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 
 /**
  * Abstract event handler for function roots
  */
-public abstract class BuiltinRootEventHandler extends FunctionRootEventHandler {
+public abstract class BuiltinRootEventHandler extends BaseSingleTagEventHandler {
+
+    protected final String builtinName;
+
     public BuiltinRootEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.BUILTIN);
+        this.builtinName = getAttribute("name").toString();
     }
 
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == -1;
+    public Object getReceiver(VirtualFrame frame) {
+        return frame.getArguments()[0];
     }
+
+    public Object getBuiltinName() {
+        return this.builtinName;
+    }
+
+    public Object getFunction(VirtualFrame frame) {
+        return frame.getArguments()[1];
+    }
+
+    public Object[] getArguments(VirtualFrame frame) {
+        return frame.getArguments();
+    }
+
+    public Object getArgument(VirtualFrame frame, int index) {
+        return getArguments(frame)[2 + index];
+    }
+
 }

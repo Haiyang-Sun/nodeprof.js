@@ -27,7 +27,10 @@ public class GetElementFactory extends AbstractFactory {
 
     public GetElementFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("getField", jalangiAnalysis, pre, post);
+        super("getField", jalangiAnalysis, pre, post, 6, 7);
+        // TODO
+        setPreArguments(3, true);// isComputed
+        setPostArguments(4, true);// isComputed
     }
 
     @Override
@@ -39,12 +42,12 @@ public class GetElementFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
-                    directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID(), getReceiver(inputs),
-                                    getProperty(inputs), true,// isComputed
-                                    isOpAssign(),// isOpAssign
-                                    isMethodCall(),// isMethodCall
-                    }, true, getSourceIID());
+                    setPreArguments(0, getSourceIID());
+                    setPreArguments(1, getReceiver(inputs));
+                    setPreArguments(2, getProperty(inputs));
+                    setPreArguments(4, isOpAssign());
+                    setPreArguments(5, isMethodCall());
+                    directCall(preCall, true, getSourceIID());
                 }
             }
 
@@ -52,12 +55,13 @@ public class GetElementFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getReceiver(inputs),
-                                    getProperty(inputs), convertResult(result), true,// isComputed
-                                    isOpAssign(),// isOpAssign
-                                    isMethodCall(),// isMethodCall
-                    }, false, getSourceIID());
+                    setPostArguments(0, getSourceIID());
+                    setPostArguments(1, getReceiver(inputs));
+                    setPostArguments(2, getProperty(inputs));
+                    setPostArguments(3, convertResult(result));
+                    setPostArguments(5, isOpAssign());
+                    setPostArguments(6, isMethodCall());
+                    directCall(postCall, false, getSourceIID());
                 }
             }
         };

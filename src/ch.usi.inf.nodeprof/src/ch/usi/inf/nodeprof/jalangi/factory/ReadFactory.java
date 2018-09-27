@@ -30,8 +30,9 @@ public class ReadFactory extends AbstractFactory {
 
     public ReadFactory(Object jalangiAnalysis, DynamicObject post,
                     boolean isProperty) {
-        super("read", jalangiAnalysis, null, post);
+        super("read", jalangiAnalysis, null, post, -1, 5);
         this.isProperty = isProperty;
+        setPostArguments(4, true);// TODO, isScriptLocal
     }
 
     @Override
@@ -48,17 +49,13 @@ public class ReadFactory extends AbstractFactory {
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) {
-                    if (post == null) {
-                        return;
+                    if (post != null && !this.isInternal()) {
+                        setPostArguments(0, getSourceIID());
+                        setPostArguments(1, getName());
+                        setPostArguments(2, convertResult(result));
+                        setPostArguments(3, false);// isGlobal
+                        directCall(postCall, false, getSourceIID());
                     }
-                    if (this.isInternal()) {
-                        return;
-                    }
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getName(), convertResult(result),
-                                    false, // isGlobal
-                                    true, // TODO, isScriptLocal
-                    }, false, getSourceIID());
                 }
             };
         } else {
@@ -73,15 +70,12 @@ public class ReadFactory extends AbstractFactory {
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) {
-                    if (post == null) {
-                        return;
-                    }
-                    if (this.isGlobal(inputs)) {
-                        directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                        getSourceIID(), getProperty(),
-                                        convertResult(result), true, // isGlobal
-                                        true, // TODO, isScriptLocal
-                        }, false, getSourceIID());
+                    if (post != null && this.isGlobal(inputs)) {
+                        setPostArguments(0, getSourceIID());
+                        setPostArguments(1, getProperty());
+                        setPostArguments(2, convertResult(result));
+                        setPostArguments(3, true);// isGlobal
+                        directCall(postCall, false, getSourceIID());
                     }
                 }
 

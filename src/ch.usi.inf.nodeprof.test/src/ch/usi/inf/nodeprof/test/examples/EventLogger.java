@@ -30,6 +30,7 @@ import com.oracle.truffle.api.nodes.Node;
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.analysis.AnalysisFactory;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
+import ch.usi.inf.nodeprof.handlers.BaseSingleTagEventHandler;
 import ch.usi.inf.nodeprof.test.InputChecker;
 import ch.usi.inf.nodeprof.test.TestableNodeProfAnalysis;
 import ch.usi.inf.nodeprof.test.examples.report.Report;
@@ -63,7 +64,7 @@ public class EventLogger extends TestableNodeProfAnalysis {
         for (ProfiledTagEnum tag : ProfiledTagEnum.values()) {
             this.onCallback(tag, new AnalysisFactory<BaseEventHandlerNode>() {
                 public BaseEventHandlerNode create(EventContext context) {
-                    return new BaseEventHandlerNode(context) {
+                    return new BaseSingleTagEventHandler(context, tag) {
                         @Override
                         public void enter(VirtualFrame frame) {
                             addDebugEvent("ENTER", getSourceIID(), tag);
@@ -89,13 +90,6 @@ public class EventLogger extends TestableNodeProfAnalysis {
                             }
                         }
 
-                        @Override
-                        public boolean isLastIndex(int inputCount, int index) {
-                            if (tag == ProfiledTagEnum.ROOT) {
-                                return index == -1;
-                            }
-                            return index == inputCount - 1;
-                        }
                     };
                 }
             });

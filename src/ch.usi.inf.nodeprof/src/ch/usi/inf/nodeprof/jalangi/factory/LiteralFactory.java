@@ -26,7 +26,7 @@ import ch.usi.inf.nodeprof.handlers.LiteralEventHandler;
 public class LiteralFactory extends AbstractFactory {
 
     public LiteralFactory(Object jalangiAnalysis, DynamicObject post) {
-        super("literal", jalangiAnalysis, null, post);
+        super("literal", jalangiAnalysis, null, post, -1, 3);
     }
 
     @Override
@@ -43,9 +43,10 @@ public class LiteralFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), convertResult(result),
-                                    this.hasSetterGetter()}, false, getSourceIID());
+                    setPostArguments(0, getSourceIID());
+                    setPostArguments(1, convertResult(result));
+                    setPostArguments(2, this.hasSetterGetter());
+                    directCall(postCall, false, getSourceIID());
                 }
             }
 

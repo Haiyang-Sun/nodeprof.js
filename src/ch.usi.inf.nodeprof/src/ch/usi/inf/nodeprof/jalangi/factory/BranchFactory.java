@@ -23,9 +23,10 @@ import com.oracle.truffle.api.object.DynamicObject;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.BranchEventHandler;
 
+@SuppressWarnings({"unchecked"})
 public class BranchFactory extends AbstractFactory {
     public BranchFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("branch", jalangiAnalysis, pre, post);
+        super("branch", jalangiAnalysis, pre, post, 1, 1);
     }
 
     @Override
@@ -37,9 +38,8 @@ public class BranchFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
-
-                    directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID()}, true, getSourceIID());
+                    setPreArguments(0, getSourceIID());
+                    directCall(preCall, true, getSourceIID());
                 }
             }
 
@@ -47,8 +47,8 @@ public class BranchFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID()}, false, getSourceIID());
+                    setPostArguments(0, getSourceIID());
+                    directCall(postCall, false, getSourceIID());
                 }
             }
         };

@@ -17,16 +17,17 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 
 /**
  * Abstract event handler for property read events, e.g., a.p
  */
-public abstract class PropertyReadEventHandler extends BaseEventHandlerNode {
+public abstract class PropertyReadEventHandler extends BaseSingleTagEventHandler {
     private final String property;
 
     public PropertyReadEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.PROPERTY_READ);
         this.property = (String) getAttribute("key");
     }
 
@@ -64,8 +65,4 @@ public abstract class PropertyReadEventHandler extends BaseEventHandlerNode {
         return result;
     }
 
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == 0;
-    }
 }

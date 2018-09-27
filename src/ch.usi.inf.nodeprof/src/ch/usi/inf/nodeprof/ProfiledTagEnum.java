@@ -24,25 +24,34 @@ import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 public enum ProfiledTagEnum {
-    UNARY(JSTags.UnaryExpressionTag.class),
-    BINARY(JSTags.BinaryExpressionTag.class),
-    CF_COND(JSTags.ControlFlowBranchTag.class),
-    CF_BRANCH(JSTags.ControlFlowBlockTag.class),
-    CF_ROOT(JSTags.ControlFlowRootTag.class),
-    EVAL(JSTags.EvalCallTag.class),
-    VAR_READ(JSTags.ReadVariableExpressionTag.class),
-    VAR_WRITE(JSTags.WriteVariableExpressionTag.class),
-    PROPERTY_READ(JSTags.ReadPropertyExpressionTag.class),
-    PROPERTY_WRITE(JSTags.WritePropertyExpressionTag.class),
-    ELEMENT_READ(JSTags.ReadElementExpressionTag.class),
-    ELEMENT_WRITE(JSTags.WriteElementExpressionTag.class),
-    INVOKE(JSTags.FunctionCallExpressionTag.class),
-    ROOT(StandardTags.RootTag.class),
-    BUILTIN(JSTags.BuiltinRootTag.class),
-    LITERAL(JSTags.LiteralExpressionTag.class),
-    NEW(JSTags.ObjectAllocationExpressionTag.class);
+    UNARY(JSTags.UnaryExpressionTag.class, -1), // have multiple case
+    BINARY(JSTags.BinaryExpressionTag.class, 2),
+    CF_COND(JSTags.ControlFlowBranchTag.class, -1), // to be checked
+    CF_BRANCH(JSTags.ControlFlowBlockTag.class, -1), // to be checked
+    CF_ROOT(JSTags.ControlFlowRootTag.class, 0), // to be checked
+    EVAL(JSTags.EvalCallTag.class, 2),
+    VAR_READ(JSTags.ReadVariableExpressionTag.class, 0),
+    VAR_WRITE(JSTags.WriteVariableExpressionTag.class, 1),
+    PROPERTY_READ(JSTags.ReadPropertyExpressionTag.class, 1),
+    PROPERTY_WRITE(JSTags.WritePropertyExpressionTag.class, 2),
+    ELEMENT_READ(JSTags.ReadElementExpressionTag.class, 2),
+    ELEMENT_WRITE(JSTags.WriteElementExpressionTag.class, 3),
+    INVOKE(JSTags.FunctionCallExpressionTag.class, -1), // any number of inputs for arguments
+    ROOT(StandardTags.RootTag.class, 0),
+    BUILTIN(JSTags.BuiltinRootTag.class, 0),
+    LITERAL(JSTags.LiteralExpressionTag.class, 0),
+    NEW(JSTags.ObjectAllocationExpressionTag.class, -1);
 
+    // the corresponding JSTags class
     private final Class<? extends Tag> clazz;
+
+    // the number of input arguments the tagged node always expects
+    // -1 means unknown
+    private final int expectedNumInputs;
+
+    public int getExpectedNumInputs() {
+        return expectedNumInputs;
+    }
 
     /**
      * counting the instrumentation
@@ -53,8 +62,9 @@ public enum ProfiledTagEnum {
     public double postHitCount = 0;
     public double exceptionHitCount = 0;
 
-    ProfiledTagEnum(Class<? extends Tag> clazz) {
+    ProfiledTagEnum(Class<? extends Tag> clazz, int expectedNumInputs) {
         this.clazz = clazz;
+        this.expectedNumInputs = expectedNumInputs;
     }
 
     public Class<? extends Tag> getTag() {

@@ -18,10 +18,12 @@ package ch.usi.inf.nodeprof.handlers;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for variable writes
  */
-public abstract class VarEventHandler extends BaseEventHandlerNode {
+public abstract class VarEventHandler extends BaseSingleTagEventHandler {
     private final String name;
     private final boolean isInternal;
 
@@ -30,8 +32,8 @@ public abstract class VarEventHandler extends BaseEventHandlerNode {
         return id.equals(":switch") || (id.startsWith("<") && !id.equals("<this>"));
     }
 
-    public VarEventHandler(EventContext context) {
-        super(context);
+    public VarEventHandler(EventContext context, ProfiledTagEnum tag) {
+        super(context, tag);
         this.name = (String) getAttribute("name");
         this.isInternal = isIdentifierInternal(name);
     }

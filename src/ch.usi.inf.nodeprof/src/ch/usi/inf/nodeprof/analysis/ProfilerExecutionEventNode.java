@@ -72,7 +72,10 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                     int inputIndex, Object inputValue) {
         if (!profilerEnabled)
             return;
-        saveInputValue(frame, inputIndex, inputValue);
+        if (child.expectedNumInputs() < 0 || inputIndex < child.expectedNumInputs()) {
+            // save input only necessary
+            saveInputValue(frame, inputIndex, inputValue);
+        }
         if (this.child.isLastIndex(getInputCount(), inputIndex)) {
             this.cb.preHitCount++;
             this.child.executePre(frame, getSavedInputValues(frame));

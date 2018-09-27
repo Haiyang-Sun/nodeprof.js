@@ -17,21 +17,19 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for variable writes
  */
 public abstract class VarWriteEventHandler extends VarEventHandler {
 
     public VarWriteEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.VAR_WRITE);
     }
 
     public Object getValue(Object[] inputs) {
         return assertGetInput(0, inputs, "getValue");
     }
 
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == 0;
-    }
 }

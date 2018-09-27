@@ -18,15 +18,17 @@ package ch.usi.inf.nodeprof.handlers;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for binary events
  */
-public abstract class BinaryEventHandler extends BaseEventHandlerNode {
+public abstract class BinaryEventHandler extends BaseSingleTagEventHandler {
     private final String op;
     private final boolean isLogic;
 
     public BinaryEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.BINARY);
         op = (String) getAttribute("operator");
         isLogic = op.equals("||") || op.equals("&&");
     }
@@ -69,13 +71,5 @@ public abstract class BinaryEventHandler extends BaseEventHandlerNode {
      */
     public boolean isLogic() {
         return this.isLogic;
-    }
-
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        /**
-         * binary should have 2 input values
-         */
-        return index == 1;
     }
 }

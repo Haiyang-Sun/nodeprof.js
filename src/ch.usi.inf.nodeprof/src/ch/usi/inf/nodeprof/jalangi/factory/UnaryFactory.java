@@ -27,7 +27,7 @@ public class UnaryFactory extends AbstractFactory {
 
     public UnaryFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("unary", jalangiAnalysis, pre, post);
+        super("unary", jalangiAnalysis, pre, post, 3, 4);
     }
 
     @Override
@@ -39,8 +39,10 @@ public class UnaryFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
-                    directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID(), getOp(), getValue(inputs),}, true, getSourceIID());
+                    setPreArguments(0, getSourceIID());
+                    setPreArguments(1, getOp());
+                    setPreArguments(2, getValue(inputs));
+                    directCall(preCall, true, getSourceIID());
                 }
             }
 
@@ -48,9 +50,11 @@ public class UnaryFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getOp(), getValue(inputs),
-                                    convertResult(result)}, false, getSourceIID());
+                    setPostArguments(0, getSourceIID());
+                    setPostArguments(1, getOp());
+                    setPostArguments(2, getValue(inputs));
+                    setPostArguments(3, convertResult(result));
+                    directCall(postCall, false, getSourceIID());
                 }
             }
         };

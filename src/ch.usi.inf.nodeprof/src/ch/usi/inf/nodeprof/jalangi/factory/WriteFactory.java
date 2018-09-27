@@ -31,8 +31,11 @@ public class WriteFactory extends AbstractFactory {
 
     public WriteFactory(Object jalangiAnalysis, DynamicObject post,
                     boolean isProperty) {
-        super("write", jalangiAnalysis, null, post);
+        super("write", jalangiAnalysis, null, post, -1, 6);
         this.isProperty = isProperty;
+        // TODO
+        setPostArguments(3, Undefined.instance); // value before write
+        setPostArguments(5, true); // isScriptLocal
     }
 
     @Override
@@ -49,18 +52,14 @@ public class WriteFactory extends AbstractFactory {
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) {
-                    if (post == null) {
+                    if (post == null || this.isInternal()) {
                         return;
                     }
-                    if (this.isInternal()) {
-                        return;
-                    }
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getName(), getValue(inputs),
-                                    Undefined.instance, // value before write
-                                    false, // isGlobal
-                                    true, // TODO, isScriptLocal
-                    }, false, getSourceIID());
+                    setPostArguments(0, getSourceIID());
+                    setPostArguments(1, getName());
+                    setPostArguments(2, getValue(inputs));
+                    setPostArguments(4, false); // isGlobal
+                    directCall(postCall, false, getSourceIID());
                 }
             };
         } else {
@@ -79,14 +78,11 @@ public class WriteFactory extends AbstractFactory {
                         return;
                     }
                     if (isGlobal(inputs)) {
-                        directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                        getSourceIID(), getProperty(),
-                                        getValue(inputs), Undefined.instance, // value
-                                        // before
-                                        // write
-                                        true, // isGlobal
-                                        true, // TODO, isScriptLocal
-                        }, false, getSourceIID());
+                        setPostArguments(0, getSourceIID());
+                        setPostArguments(1, getProperty());
+                        setPostArguments(2, getValue(inputs));
+                        setPostArguments(4, true); // isGlobal
+                        directCall(postCall, false, getSourceIID());
                     }
                 }
             };

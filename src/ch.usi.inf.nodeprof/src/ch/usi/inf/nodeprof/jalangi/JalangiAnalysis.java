@@ -16,10 +16,31 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import java.util.*;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.BINARY;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.BUILTIN;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.CF_COND;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.ELEMENT_READ;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.ELEMENT_WRITE;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.EVAL;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.INVOKE;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.LITERAL;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.NEW;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.PROPERTY_READ;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.PROPERTY_WRITE;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.ROOT;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.UNARY;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_READ;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_WRITE;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.object.DynamicObject;
 
@@ -44,8 +65,6 @@ import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.*;
-
 /**
  * Java representation of the Jalangi analysis object created in Jalangi ChainedAnalysisNoCheck
  */
@@ -68,59 +87,61 @@ public class JalangiAnalysis {
      */
     final NodeProfJalangi instrument;
 
-    @SuppressWarnings("serial")
-    public static final Map<String, EnumSet<ProfiledTagEnum>> callbackMap = Collections.unmodifiableMap(
-            new HashMap<String, EnumSet<ProfiledTagEnum>>() {{
-                // function calls
-                put("functionEnter", EnumSet.of(ROOT));
-                put("functionExit", EnumSet.of(ROOT));
-                put("invokeFunPre", EnumSet.of(INVOKE, NEW));
-                put("invokeFun", EnumSet.of(INVOKE, NEW));
+    @SuppressWarnings("serial") public static final Map<String, EnumSet<ProfiledTagEnum>> callbackMap = Collections.unmodifiableMap(
+                    new HashMap<String, EnumSet<ProfiledTagEnum>>() {
+                        {
+                            // function calls
+                            put("functionEnter", EnumSet.of(ROOT));
+                            put("functionExit", EnumSet.of(ROOT));
+                            put("invokeFunPre", EnumSet.of(INVOKE, NEW));
+                            put("invokeFun", EnumSet.of(INVOKE, NEW));
 
-                // builtin calls
-                put("builtinEnter", EnumSet.of(ROOT));
-                put("builtinExit", EnumSet.of(ROOT));
+                            // builtin calls
+                            put("builtinEnter", EnumSet.of(BUILTIN));
+                            put("builtinExit", EnumSet.of(BUILTIN));
 
-                // literals
-                put("literal", EnumSet.of(LITERAL));
+                            // literals
+                            put("literal", EnumSet.of(LITERAL));
 
-                // reads and writes
-                put("read", EnumSet.of(VAR_READ, PROPERTY_READ));
-                put("write", EnumSet.of(VAR_WRITE, PROPERTY_WRITE));
+                            // reads and writes
+                            put("read", EnumSet.of(VAR_READ, PROPERTY_READ));
+                            put("write", EnumSet.of(VAR_WRITE, PROPERTY_WRITE));
 
-                // property reads
-                put("getFieldPre", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
-                put("getField", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
+                            // property reads
+                            put("getFieldPre", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
+                            put("getField", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
 
-                // property writes
-                put("putFieldPre", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
-                put("putField", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
+                            // property writes
+                            put("putFieldPre", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
+                            put("putField", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
 
-                // operators
-                put("unaryPre", EnumSet.of(UNARY));
-                put("unary", EnumSet.of(UNARY));
-                put("binaryPre", EnumSet.of(BINARY));
-                put("binary", EnumSet.of(BINARY));
+                            // operators
+                            put("unaryPre", EnumSet.of(UNARY));
+                            put("unary", EnumSet.of(UNARY));
+                            put("binaryPre", EnumSet.of(BINARY));
+                            put("binary", EnumSet.of(BINARY));
 
-                // conditions
-                put("conditional", EnumSet.of(CF_COND));
+                            // conditions
+                            put("conditional", EnumSet.of(CF_COND));
 
-                // eval-like
-                put("evalPre", EnumSet.of(EVAL));
-                put("evalPost", EnumSet.of(EVAL));
-                put("evalFunctionPre", EnumSet.of(BUILTIN));
-                put("evalFunctionPost", EnumSet.of(BUILTIN));
-            }});
+                            // eval-like
+                            put("evalPre", EnumSet.of(EVAL));
+                            put("evalPost", EnumSet.of(EVAL));
+                            put("evalFunctionPre", EnumSet.of(BUILTIN));
+                            put("evalFunctionPost", EnumSet.of(BUILTIN));
+                        }
+                    });
 
     public static final Set<String> unimplementedCallbacks = Collections.unmodifiableSet(
-            new HashSet<>(Arrays.asList("declare", "endExpression", "forinObject",
-                    "instrumentCodePre", "instrumentCode", // TODO will those be supported at all?
-                    "onReady", // TODO should this be ignored instead
-                    "_return", "runInstrumentedFunctionBody", "scriptEnter", "scriptExit", "_throw", "_with")));
+                    new HashSet<>(Arrays.asList("declare", "endExpression", "forinObject",
+                                    "instrumentCodePre", "instrumentCode", // TODO will those be
+                                                                           // supported at all?
+                                    "onReady", // TODO should this be ignored instead
+                                    "_return", "runInstrumentedFunctionBody", "scriptEnter", "scriptExit", "_throw", "_with")));
 
     public static final Set<String> ignoredCallbacks = Collections.unmodifiableSet(
-            // endExecution is a high-level event handled by the jalangi.js script
-            new HashSet<>(Arrays.asList("endExecution")));
+                    // endExecution is a high-level event handled by the jalangi.js script
+                    new HashSet<>(Arrays.asList("endExecution")));
 
     @TruffleBoundary
     public JalangiAnalysis(NodeProfJalangi nodeprofJalangi, Object jsAnalysis) {
@@ -135,13 +156,14 @@ public class JalangiAnalysis {
             Logger.debug("analysis is ready " + callbacks.keySet());
         }
         if (this.callbacks.containsKey("invokeFunPre") || callbacks.containsKey("invokeFun")) {
-            InvokeFactory invoke = new InvokeFactory(this.jsAnalysis, callbacks.get("invokeFunPre"), callbacks.get("invokeFun"));
+            InvokeFactory invokeFactory = new InvokeFactory(this.jsAnalysis, ProfiledTagEnum.INVOKE, callbacks.get("invokeFunPre"), callbacks.get("invokeFun"));
             this.instrument.onCallback(
                             ProfiledTagEnum.INVOKE,
-                            invoke);
+                            invokeFactory);
+            InvokeFactory newFactory = new InvokeFactory(this.jsAnalysis, ProfiledTagEnum.NEW, callbacks.get("invokeFunPre"), callbacks.get("invokeFun"));
             this.instrument.onCallback(
                             ProfiledTagEnum.NEW,
-                            invoke);
+                            newFactory);
         }
 
         if (this.callbacks.containsKey("putFieldPre") || callbacks.containsKey("putField")) {
@@ -203,13 +225,18 @@ public class JalangiAnalysis {
                             new ConditionalFactory(this.jsAnalysis, callbacks.get("conditional"), true));
         }
 
-        Set<String> s = new HashSet<>(Arrays.asList("functionEnter", "functionExit", "builtinEnter", "builtinExit"));
-        if (!Collections.disjoint(this.callbacks.keySet(), s)) {
+        if (this.callbacks.containsKey("functionEnter") || this.callbacks.containsKey("functionExit")) {
             this.instrument.onCallback(
                             ProfiledTagEnum.ROOT,
                             new RootFactory(this.jsAnalysis,
-                                    callbacks.get("functionEnter"), callbacks.get("functionExit"),
-                                    callbacks.get("builtinEnter"), callbacks.get("builtinExit")));
+                                            callbacks.get("functionEnter"), callbacks.get("functionExit")));
+        }
+
+        if (this.callbacks.containsKey("builtinEnter") || this.callbacks.containsKey("builtinExit")) {
+            this.instrument.onCallback(
+                            ProfiledTagEnum.BUILTIN,
+                            new BuiltinFactory(this.jsAnalysis,
+                                            callbacks.get("builtinEnter"), callbacks.get("builtinExit"), null));
         }
 
         /**

@@ -58,6 +58,36 @@ public class CountObjectAllocation extends TestableNodeProfAnalysis {
         }
     }
 
+    private AnalysisFactory<BaseEventHandlerNode> getInvokeOrNewFactory(boolean isInvoke) {
+        ProfiledTagEnum tag = isInvoke ? ProfiledTagEnum.INVOKE : ProfiledTagEnum.NEW;
+        return new AnalysisFactory<BaseEventHandlerNode>() {
+            @Override
+            public BaseEventHandlerNode create(EventContext context) {
+                return new FunctionCallEventHandler(context, tag) {
+
+                    @Child ReportEntryNode getReport = ReportEntryNodeGen.create(db, new SimpleCounterReport.SimleReportFactory());
+
+                    @Override
+                    public void executePost(VirtualFrame frame, Object result,
+                                    Object[] inputs) {
+                        if (this.isNew()) {
+                            SimpleCounterReport report = (SimpleCounterReport) (getReport.execute(this.getSourceIID()));
+                            addDebugEvent("OBJ-NEW", getSourceIID(), tag);
+                            report.incre();
+                        } else {
+                            Object constructor = GlobalObjectCache.getInstance().getArrayConstructor((DynamicObject) getFunction(inputs));
+                            if (getFunction(inputs) == constructor) {
+                                addDebugEvent("OBJ-ARRAY", getSourceIID(), tag);
+                                SimpleCounterReport report = (SimpleCounterReport) (getReport.execute(this.getSourceIID()));
+                                report.incre();
+                            }
+                        }
+                    }
+                };
+            }
+        };
+    }
+
     @Override
     public void initCallbacks() {
         this.onCallback(ProfiledTagEnum.LITERAL, new AnalysisFactory<BaseEventHandlerNode>() {
@@ -81,33 +111,10 @@ public class CountObjectAllocation extends TestableNodeProfAnalysis {
             }
         });
 
-        this.onCallback(ProfiledTagEnum.INVOKE, new AnalysisFactory<BaseEventHandlerNode>() {
+        this.onCallback(ProfiledTagEnum.INVOKE, getInvokeOrNewFactory(true));
 
-            @Override
-            public BaseEventHandlerNode create(EventContext context) {
-                return new FunctionCallEventHandler(context) {
+        this.onCallback(ProfiledTagEnum.NEW, getInvokeOrNewFactory(false));
 
-                    @Child ReportEntryNode getReport = ReportEntryNodeGen.create(db, new SimpleCounterReport.SimleReportFactory());
-
-                    @Override
-                    public void executePost(VirtualFrame frame, Object result,
-                                    Object[] inputs) {
-                        if (this.isNew()) {
-                            SimpleCounterReport report = (SimpleCounterReport) (getReport.execute(this.getSourceIID()));
-                            addDebugEvent("OBJ-NEW", getSourceIID(), ProfiledTagEnum.INVOKE);
-                            report.incre();
-                        } else {
-                            Object constructor = GlobalObjectCache.getInstance().getArrayConstructor((DynamicObject) getFunction(inputs));
-                            if (getFunction(inputs) == constructor) {
-                                addDebugEvent("OBJ-ARRAY", getSourceIID(), ProfiledTagEnum.INVOKE);
-                                SimpleCounterReport report = (SimpleCounterReport) (getReport.execute(this.getSourceIID()));
-                                report.incre();
-                            }
-                        }
-                    }
-                };
-            }
-        });
     }
 
 }

@@ -27,7 +27,14 @@ public class BinaryFactory extends AbstractFactory {
 
     public BinaryFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("binary", jalangiAnalysis, pre, post);
+        super("binary", jalangiAnalysis, pre, post, 7, 8);
+        // TODO
+        setPreArguments(4, false); // isOpAssign
+        setPreArguments(5, false); // isSwitchCaseComparison
+        setPreArguments(6, false); // isComputed
+        setPostArguments(5, false); // isOpAssign
+        setPostArguments(6, false); // isSwitchCaseComparison
+        setPostArguments(7, false); // isComputed
     }
 
     @Override
@@ -39,13 +46,12 @@ public class BinaryFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null && !isLogic()) {
-                    directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID(), getOp(), getLeft(inputs),
-                                    getRight(inputs),
-                                    false, // isOpAssign
-                                    false, // isSwitchCaseComparison
-                                    false  // isComputed
-                    }, true, getSourceIID());
+                    // the arguments array is shared among different nodes
+                    setPreArguments(0, getSourceIID());
+                    setPreArguments(1, getOp());
+                    setPreArguments(2, getLeft(inputs));
+                    setPreArguments(3, getRight(inputs));
+                    directCall(preCall, true, getSourceIID());
                 }
             }
 
@@ -53,13 +59,12 @@ public class BinaryFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null && !isLogic()) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getOp(), getLeft(inputs),
-                                    getRight(inputs), convertResult(result),
-                                    false, // isOpAssign
-                                    false, // isSwitchCaseComparison
-                                    false  // isComputed
-                    }, false, getSourceIID());
+                    setPostArguments(0, getSourceIID());
+                    setPostArguments(1, getOp());
+                    setPostArguments(2, getLeft(inputs));
+                    setPostArguments(3, getRight(inputs));
+                    setPostArguments(4, convertResult(result));
+                    directCall(postCall, false, getSourceIID());
                 }
             }
         };

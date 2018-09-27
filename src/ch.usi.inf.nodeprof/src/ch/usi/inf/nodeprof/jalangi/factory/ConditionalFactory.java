@@ -29,7 +29,7 @@ public class ConditionalFactory extends AbstractFactory {
 
     public ConditionalFactory(Object jalangiAnalysis, DynamicObject post,
                     boolean isBinary) {
-        super("conditional", jalangiAnalysis, null, post);
+        super("conditional", jalangiAnalysis, null, post, -1, 2);
         this.isBinary = isBinary;
     }
 
@@ -48,8 +48,9 @@ public class ConditionalFactory extends AbstractFactory {
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) {
                     if (post != null) {
-                        directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                        getSourceIID(), getCondition(inputs)}, false, getSourceIID());
+                        setPostArguments(0, getSourceIID());
+                        setPostArguments(1, getCondition(inputs));
+                        directCall(postCall, false, getSourceIID());
                     }
                 }
             };
@@ -66,8 +67,9 @@ public class ConditionalFactory extends AbstractFactory {
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) {
                     if (post != null && this.isLogic()) {
-                        directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                        getSourceIID(), convertResult(result)}, false, getSourceIID());
+                        setPostArguments(0, getSourceIID());
+                        setPostArguments(1, convertResult(result));
+                        directCall(postCall, false, getSourceIID());
                     }
                 }
             };

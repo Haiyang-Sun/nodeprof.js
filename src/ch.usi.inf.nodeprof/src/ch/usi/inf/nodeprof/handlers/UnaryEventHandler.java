@@ -19,18 +19,19 @@ import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 
 /**
  * Abstract event handler for unary operations
  */
-public abstract class UnaryEventHandler extends BaseEventHandlerNode {
+public abstract class UnaryEventHandler extends BaseSingleTagEventHandler {
     private final String op;
     private final boolean isDelete;
     private final boolean isVoid;
 
     public UnaryEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.UNARY);
         op = (String) getAttribute("operator");
         this.isDelete = op.equals("delete");
         this.isVoid = op.equals("void");
@@ -61,15 +62,15 @@ public abstract class UnaryEventHandler extends BaseEventHandlerNode {
     }
 
     @Override
-    public boolean isLastIndex(int inputCount, int index) {
+    public int expectedNumInputs() {
         if (this.isDelete) {
             // delete object key need two arguments
-            return index == 1;
+            return 2;
         } else if (this.isVoid) {
             // void needs no argument because it always returns undefined
-            return index == -1;
+            return 0;
         } else {
-            return index == 0;
+            return 1;
         }
     }
 }

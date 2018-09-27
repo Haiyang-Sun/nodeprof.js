@@ -17,20 +17,17 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for conditional events
  */
-public abstract class ConditionalEventHandler extends BaseEventHandlerNode {
+public abstract class ConditionalEventHandler extends BaseSingleTagEventHandler {
     public ConditionalEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.CF_COND);
     }
 
     public Object getCondition(Object[] inputs) {
         return assertGetInput(0, inputs, "conditionVal");
-    }
-
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == 0;
     }
 }

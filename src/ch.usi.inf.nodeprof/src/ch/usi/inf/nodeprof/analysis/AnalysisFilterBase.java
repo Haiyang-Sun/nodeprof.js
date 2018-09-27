@@ -16,9 +16,10 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.analysis;
 
-import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import com.oracle.truffle.api.instrumentation.SourceSectionFilter;
 import com.oracle.truffle.api.source.Source;
+
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 
 /**
  * Base for NodeProf's analysis filters

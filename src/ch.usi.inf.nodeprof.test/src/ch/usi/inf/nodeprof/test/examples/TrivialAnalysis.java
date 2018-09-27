@@ -22,7 +22,9 @@ import com.oracle.truffle.api.instrumentation.ExecutionEventNodeFactory;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.test.TestableNodeProfAnalysis;
+import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 public class TrivialAnalysis extends TestableNodeProfAnalysis {
@@ -33,16 +35,40 @@ public class TrivialAnalysis extends TestableNodeProfAnalysis {
 
     @Override
     public void initCallbacks() {
-        this.onAllCallback(new ExecutionEventNodeFactory() {
-            public ExecutionEventNode create(EventContext context) {
-                return new ExecutionEventNode() {
-                    @Override
-                    protected void onReturnValue(VirtualFrame frame, Object result) {
-                        super.onReturnValue(frame, result);
-                    }
-                };
+        String tagsStr = System.getenv("NODEPROF_BENCH_TAG");
+        if (tagsStr == null || tagsStr.isEmpty()) {
+            Logger.debug("No tag is provided in env NODEPROF_BENCH_TAG, run without instrumentation");
+            return;
+        }
+        for (String tagStr : tagsStr.split(",")) {
+            ProfiledTagEnum tag = null;
+            try {
+                tag = ProfiledTagEnum.valueOf(tagStr);
+                Logger.debug("Tag enabled: " + tag);
+            } catch (Exception e) {
+                Logger.error("Invalid tag given " + tagStr);
+                System.exit(-1);
             }
-        });
+
+            this.onSingleTagCallback(tag.getTag(), new ExecutionEventNodeFactory() {
+                public ExecutionEventNode create(EventContext context) {
+                    return new ExecutionEventNode() {
+                        @Override
+                        protected void onInputValue(VirtualFrame frame, EventContext inputContext, int inputIndex, Object inputValue) {
+                            saveInputValue(frame, inputIndex, inputValue);
+                        }
+
+    void consume(Object[] inputs){
+    }
+    @Override
+    protected void onReturnValue(VirtualFrame frame, Object result) {
+            Object[] inputs = getSavedInputValues(frame);
+            this.consume(inputs);
+    }
+                    };
+                }
+            });
+        }
     }
 
     @Override
@@ -52,7 +78,8 @@ public class TrivialAnalysis extends TestableNodeProfAnalysis {
 
     @Override
     public void printResult() {
-        Logger.info("Trivial analysis finishes.");
+        if (GlobalConfiguration.DEBUG)
+            Logger.debug("Trivial analysis finishes.");
     }
 
 }

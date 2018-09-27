@@ -17,20 +17,18 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for "eval" events
  */
-public abstract class EvalEventHandler extends BaseEventHandlerNode {
+public abstract class EvalEventHandler extends BaseSingleTagEventHandler {
     public EvalEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.EVAL);
     }
 
     protected String getCode(Object[] inputs) {
         return assertGetInput(1, inputs, "code").toString();
     }
 
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == 1;
-    }
 }

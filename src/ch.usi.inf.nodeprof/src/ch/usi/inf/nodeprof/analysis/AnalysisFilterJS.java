@@ -16,22 +16,27 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.analysis;
 
-import ch.usi.inf.nodeprof.ProfiledTagEnum;
-import ch.usi.inf.nodeprof.jalangi.JalangiAnalysis;
-import ch.usi.inf.nodeprof.utils.Logger;
-import ch.usi.inf.nodeprof.utils.SourceMapping;
-import com.oracle.truffle.api.CompilerDirectives;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.interop.*;
+import com.oracle.truffle.api.interop.ArityException;
+import com.oracle.truffle.api.interop.ForeignAccess;
+import com.oracle.truffle.api.interop.Message;
+import com.oracle.truffle.api.interop.TruffleObject;
+import com.oracle.truffle.api.interop.UnsupportedMessageException;
+import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import ch.usi.inf.nodeprof.jalangi.JalangiAnalysis;
+import ch.usi.inf.nodeprof.utils.Logger;
+import ch.usi.inf.nodeprof.utils.SourceMapping;
 
 public class AnalysisFilterJS extends AnalysisFilterBase {
     private final Node call;

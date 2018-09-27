@@ -16,10 +16,11 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
-import ch.usi.inf.nodeprof.analysis.AnalysisFilterBase;
-import ch.usi.inf.nodeprof.analysis.AnalysisFilterJS;
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
@@ -38,9 +39,10 @@ import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Null;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
+import ch.usi.inf.nodeprof.analysis.AnalysisFilterBase;
+import ch.usi.inf.nodeprof.analysis.AnalysisFilterJS;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
 import ch.usi.inf.nodeprof.analysis.NodeProfAnalysis;
-import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 /**

@@ -21,14 +21,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import ch.usi.inf.nodeprof.ProfiledTagEnum;
-import ch.usi.inf.nodeprof.utils.SourceMapping;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.js.runtime.Evaluator;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
+import ch.usi.inf.nodeprof.utils.SourceMapping;
 
 /**
  * Customized SourcePredicate

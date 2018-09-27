@@ -40,6 +40,11 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
     public static final String ID = "nodeprof";
     private Instrumenter instrumenter;
     private Env env;
+
+    public Env getEnv() {
+        return env;
+    }
+
     private boolean readyToLoad = false;
 
     private boolean loaded = false;
@@ -114,7 +119,7 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
          */
         if (GlobalConfiguration.DEBUG_TRACING) {
             RawEventsTracingSupport.enable(instrumenter);
-        } 
+        }
         if (readyToLoad && !loaded) {
             if (GlobalConfiguration.ANALYSIS != null) {
                 String[] names = GlobalConfiguration.ANALYSIS.split(",");

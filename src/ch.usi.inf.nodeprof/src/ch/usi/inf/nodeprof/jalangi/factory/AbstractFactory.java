@@ -30,16 +30,50 @@ import ch.usi.inf.nodeprof.utils.Logger;
 public abstract class AbstractFactory implements
                 AnalysisFactory<BaseEventHandlerNode> {
     protected final Object jalangiAnalysis;
+
     protected final DynamicObject pre;
     protected final DynamicObject post;
+
+    // for a given callback, the arguments have the same layout
+    protected final Object[] preArguments;
+    protected final Object[] postArguments;
+
     protected final String jalangiCallback;
 
     public AbstractFactory(String jalangiCallback, Object jalangiAnalysis, DynamicObject pre,
-                    DynamicObject post) {
+                    DynamicObject post, int numPreArguments, int numPostArguments) {
+        this.jalangiCallback = jalangiCallback;
         this.jalangiAnalysis = jalangiAnalysis;
         this.pre = pre;
         this.post = post;
-        this.jalangiCallback = jalangiCallback;
+        if (this.pre != null) {
+            this.preArguments = new Object[2 + numPreArguments];
+            this.preArguments[0] = this.jalangiAnalysis;
+            this.preArguments[1] = this.pre;
+        } else {
+            this.preArguments = null;
+        }
+        if (this.post != null) {
+            this.postArguments = new Object[2 + numPostArguments];
+            this.postArguments[0] = this.jalangiAnalysis;
+            this.postArguments[1] = this.post;
+        } else {
+            this.postArguments = null;
+        }
+    }
+
+    protected void setPreArguments(int index, Object value) {
+        if (this.pre != null) {
+            assert this.preArguments.length > index + 2;
+            this.preArguments[index + 2] = value;
+        }
+    }
+
+    protected void setPostArguments(int index, Object value) {
+        if (this.post != null) {
+            assert this.postArguments.length > index + 2;
+            this.postArguments[index + 2] = value;
+        }
     }
 
     @TruffleBoundary
@@ -58,7 +92,7 @@ public abstract class AbstractFactory implements
     }
 
     /**
-     * We cannot pass some objects to
+     * Only interop type can be passed to JS
      *
      * @param result Object to be converted
      * @return the converted Object
@@ -72,7 +106,7 @@ public abstract class AbstractFactory implements
     private static boolean nestedControl = false;
 
     /**
-     * TODO: could add a tag here to avoid instrumentation of the Jalangi analysis being called
+     * nestedControl is a tag to avoid instrumentation of the Jalangi analysis being called
      * recursively
      *
      * call from Java to Jalangi JavaScript
@@ -81,12 +115,12 @@ public abstract class AbstractFactory implements
      * @param args
      * @param isPre TODO
      */
-    protected void directCall(DirectCallNode callNode, Object[] args, boolean isPre, int iid) {
+    protected void directCall(DirectCallNode callNode, boolean isPre, int iid) {
         if (nestedControl)
             return;
         nestedControl = true;
         try {
-            callNode.call(args);
+            callNode.call(isPre ? preArguments : postArguments);
         } catch (GraalJSException e) {
             Logger.error(iid, "error happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]");
             Logger.dumpException(e);
@@ -94,4 +128,8 @@ public abstract class AbstractFactory implements
         nestedControl = false;
     }
 
+    @TruffleBoundary
+    protected static Object parseErrorObject(Throwable exception) {
+        return exception instanceof GraalJSException ? ((GraalJSException) exception).getErrorObject() : exception.getMessage();
+    }
 }

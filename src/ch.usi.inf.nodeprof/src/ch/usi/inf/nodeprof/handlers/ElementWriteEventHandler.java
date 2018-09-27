@@ -17,12 +17,14 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for element write events, e.g., a[0] = 1;
  */
-public abstract class ElementWriteEventHandler extends BaseEventHandlerNode {
+public abstract class ElementWriteEventHandler extends BaseSingleTagEventHandler {
     public ElementWriteEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.ELEMENT_WRITE);
     }
 
     // TODO
@@ -48,8 +50,4 @@ public abstract class ElementWriteEventHandler extends BaseEventHandlerNode {
         return false;
     }
 
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == 2;
-    }
 }

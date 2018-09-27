@@ -16,12 +16,10 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
-import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
-import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -29,45 +27,30 @@ import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
 
 public class RootFactory extends AbstractFactory {
 
-    protected final DynamicObject builtinPre;
-    protected final DynamicObject builtinPost;
-
-    public RootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post,
-                    DynamicObject builtinPre, DynamicObject builtinPost) {
-        super("function", jalangiAnalysis, pre, post);
-        this.builtinPre = builtinPre;
-        this.builtinPost = builtinPost;
-    }
-
-    @TruffleBoundary
-    private static Object parseErrorObject(Throwable exception) {
-        return exception instanceof GraalJSException ? ((GraalJSException) exception).getErrorObject() : exception.getMessage();
+    public RootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
+        super("function", jalangiAnalysis, pre, post, 4, 3);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new FunctionRootEventHandler(context) {
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 2, 0);
-            @Child DirectCallNode preCall = createDirectCallNode(this.isBuiltin ? builtinPre : pre);
-            @Child DirectCallNode postCall = createDirectCallNode(this.isBuiltin ? builtinPost : post);
+            @Child DirectCallNode preCall = createDirectCallNode(pre);
+            @Child DirectCallNode postCall = createDirectCallNode(post);
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (isRegularExpression())
                     return;
 
-                if (this.isBuiltin) {
-                    if (builtinPre != null) {
-                        directCall(preCall, new Object[]{jalangiAnalysis, builtinPre,
-                                        this.getBuiltinName(), getFunction(frame), getReceiver(frame),
-                                        makeArgs.executeArguments(getArguments(frame))}, true, getSourceIID());
-                    }
-                } else {
-                    if (pre != null) {
-                        directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                        getSourceIID(), getFunction(frame), getReceiver(frame),
-                                        makeArgs.executeArguments(getArguments(frame))}, true, getSourceIID());
-                    }
+                if (!this.isBuiltin && pre != null) {
+
+                    setPreArguments(0, getSourceIID());
+                    setPreArguments(1, getFunction(frame));
+                    setPreArguments(2, getReceiver(frame));
+                    setPreArguments(3, makeArgs.executeArguments(getArguments(frame)));
+
+                    directCall(preCall, true, getSourceIID());
                 }
             }
 
@@ -77,18 +60,11 @@ public class RootFactory extends AbstractFactory {
                 if (isRegularExpression())
                     return;
 
-                if (this.isBuiltin) {
-                    if (builtinPost != null) {
-                        directCall(postCall, new Object[]{jalangiAnalysis, builtinPost,
-                                        this.getBuiltinName(), convertResult(result)
-                        }, false, getSourceIID());
-                    }
-                } else {
-                    if (post != null) {
-                        directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                        getSourceIID(), convertResult(result)
-                        }, false, getSourceIID());
-                    }
+                if (!this.isBuiltin && post != null) {
+                    setPostArguments(0, this.getSourceIID());
+                    setPostArguments(1, convertResult(result));
+                    setPostArguments(2, Undefined.instance);
+                    directCall(postCall, false, getSourceIID());
                 }
             }
 
@@ -96,25 +72,15 @@ public class RootFactory extends AbstractFactory {
             public void executeExceptional(VirtualFrame frame, Throwable exception) {
                 if (isRegularExpression())
                     return;
-                if (this.isBuiltin) {
-                    if (builtinPost != null) {
-                        Object exceptionValue = parseErrorObject(exception);
-                        directCall(postCall, new Object[]{jalangiAnalysis, builtinPost,
-                                        getSourceIID(), Undefined.instance, exceptionValue == null ? "" : exceptionValue
+                if (!this.isBuiltin && post != null) {
+                    Object exceptionValue = parseErrorObject(exception);
+                    setPostArguments(0, getSourceIID());
+                    setPostArguments(1, Undefined.instance);
+                    setPostArguments(2, exceptionValue == null ? "" : exceptionValue);
 
-                        }, false, getSourceIID());
-                    }
-                } else {
-                    if (post != null) {
-                        Object exceptionValue = parseErrorObject(exception);
-                        directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                        getSourceIID(), Undefined.instance, exceptionValue == null ? "" : exceptionValue
-                        }, false, getSourceIID());
-                    }
+                    directCall(postCall, false, getSourceIID());
                 }
-
             }
-
         };
     }
 }

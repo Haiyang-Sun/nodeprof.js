@@ -22,10 +22,12 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 import com.oracle.truffle.regex.RegexBodyNode;
 import com.oracle.truffle.regex.RegexRootNode;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for function roots
  */
-public abstract class FunctionRootEventHandler extends BaseEventHandlerNode {
+public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler {
     protected final String funcName = context.getInstrumentedNode().getRootNode().getName();
     protected final boolean isRegExp = context.getInstrumentedNode().getRootNode() instanceof RegexRootNode || context.getInstrumentedNode() instanceof RegexBodyNode;
     protected final boolean isBuiltin = context.getInstrumentedNode() instanceof JSBuiltinNode;
@@ -33,7 +35,7 @@ public abstract class FunctionRootEventHandler extends BaseEventHandlerNode {
     protected final String builtinName;
 
     public FunctionRootEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.ROOT);
         if (isBuiltin) {
             builtinName = getAttribute("name").toString();
         } else {
@@ -67,11 +69,6 @@ public abstract class FunctionRootEventHandler extends BaseEventHandlerNode {
 
     public Object getArgument(VirtualFrame frame, int index) {
         return getArguments(frame)[2 + index];
-    }
-
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == -1;
     }
 
     public String getFunctionName() {

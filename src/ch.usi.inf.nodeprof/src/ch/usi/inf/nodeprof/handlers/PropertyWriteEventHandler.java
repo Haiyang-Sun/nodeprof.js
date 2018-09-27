@@ -17,16 +17,17 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 
 /**
  * Abstract event handler for property write events, e.g., a.p = 1
  */
-public abstract class PropertyWriteEventHandler extends BaseEventHandlerNode {
+public abstract class PropertyWriteEventHandler extends BaseSingleTagEventHandler {
     final private String property;
 
     public PropertyWriteEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.PROPERTY_WRITE);
         this.property = (String) getAttribute("key");
     }
 
@@ -64,11 +65,4 @@ public abstract class PropertyWriteEventHandler extends BaseEventHandlerNode {
         return false;
     }
 
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        /**
-         * TODO, check if it is correct in some cases with both target and receiver
-         */
-        return index == (inputCount > 2 ? 2 : 1);
-    }
 }

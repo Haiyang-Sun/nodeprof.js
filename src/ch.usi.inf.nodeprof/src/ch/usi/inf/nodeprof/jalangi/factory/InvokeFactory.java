@@ -20,20 +20,29 @@ import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.FunctionCallEventHandler;
 
 public class InvokeFactory extends AbstractFactory {
-    public InvokeFactory(Object jalangiAnalysis, DynamicObject pre,
+    private final ProfiledTagEnum tag; // can be INVOKE or NEW
+
+    public InvokeFactory(Object jalangiAnalysis, ProfiledTagEnum tag, DynamicObject pre,
                     DynamicObject post) {
-        super("invokeFun", jalangiAnalysis, pre, post);
+        super("invokeFun", jalangiAnalysis, pre, post, 8, 9);
+        this.tag = tag;
+        // TODO
+        setPreArguments(6, 0);// functionIid
+        setPreArguments(7, 0);// functionSid
+        setPostArguments(7, 0);// functionIid
+        setPostArguments(8, 0);// functionSid
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
-        return new FunctionCallEventHandler(context) {
+        return new FunctionCallEventHandler(context, tag) {
 
-            @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, getOffSet(), getTillEnd());
+            @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, getOffSet(), 0);
             @Child DirectCallNode preCall = createPreCallNode();
 
             @Child DirectCallNode postCall = createPostCallNode();
@@ -41,15 +50,14 @@ public class InvokeFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
-                    directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID(), getFunction(inputs),
-                                    getReceiver(inputs),
-                                    makeArgs.executeArguments(inputs), // args
-                                    this.isNew(),// isConstructor
-                                    this.isInvoke(),// isMethod
-                                    0,// functionIid);
-                                    0 // functionSid
-                    }, true, getSourceIID());
+
+                    setPreArguments(0, getSourceIID());
+                    setPreArguments(1, getFunction(inputs));
+                    setPreArguments(2, getReceiver(inputs));
+                    setPreArguments(3, makeArgs.executeArguments(inputs));
+                    setPreArguments(4, this.isNew());
+                    setPreArguments(5, this.isInvoke());
+                    directCall(preCall, true, getSourceIID());
                 }
             }
 
@@ -57,16 +65,14 @@ public class InvokeFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getFunction(inputs),
-                                    getReceiver(inputs),
-                                    makeArgs.executeArguments(inputs), // args
-                                    convertResult(result),
-                                    this.isNew(),// isConstructor
-                                    this.isInvoke(),// isMethod
-                                    0,// functionIid);
-                                    0 // functionSid
-                    }, false, getSourceIID());
+                    setPostArguments(0, getSourceIID());
+                    setPostArguments(1, getFunction(inputs));
+                    setPostArguments(2, getReceiver(inputs));
+                    setPostArguments(3, makeArgs.executeArguments(inputs));
+                    setPostArguments(4, convertResult(result));
+                    setPostArguments(5, this.isNew());
+                    setPostArguments(6, this.isInvoke());
+                    directCall(postCall, false, getSourceIID());
                 }
             }
         };

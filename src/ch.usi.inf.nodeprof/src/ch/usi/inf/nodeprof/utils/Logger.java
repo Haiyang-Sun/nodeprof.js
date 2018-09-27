@@ -16,11 +16,9 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.utils;
 
-import java.io.File;
 import java.io.PrintStream;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.runtime.GraalJSException;
 

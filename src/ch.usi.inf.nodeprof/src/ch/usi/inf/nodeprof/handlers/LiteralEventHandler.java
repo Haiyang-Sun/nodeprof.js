@@ -17,14 +17,16 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for literal events
  */
-public abstract class LiteralEventHandler extends BaseEventHandlerNode {
+public abstract class LiteralEventHandler extends BaseSingleTagEventHandler {
     private final String literalType;
 
     public LiteralEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.LITERAL);
         this.literalType = (String) getAttribute("type");
     }
 
@@ -45,8 +47,4 @@ public abstract class LiteralEventHandler extends BaseEventHandlerNode {
         return this.literalType;
     }
 
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == -1;
-    }
 }

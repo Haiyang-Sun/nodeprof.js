@@ -17,12 +17,14 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for element read events, e.g., a[10]
  */
-public abstract class ElementReadEventHandler extends BaseEventHandlerNode {
+public abstract class ElementReadEventHandler extends BaseSingleTagEventHandler {
     public ElementReadEventHandler(EventContext context) {
-        super(context);
+        super(context, ProfiledTagEnum.ELEMENT_READ);
     }
 
     public Object getReceiver(Object[] inputs) {
@@ -51,8 +53,4 @@ public abstract class ElementReadEventHandler extends BaseEventHandlerNode {
         return false;
     }
 
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == 1;
-    }
 }

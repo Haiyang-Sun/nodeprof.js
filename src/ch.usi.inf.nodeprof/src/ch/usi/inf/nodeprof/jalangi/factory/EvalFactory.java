@@ -19,7 +19,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
-import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.EvalEventHandler;
@@ -28,7 +27,7 @@ public class EvalFactory extends AbstractFactory {
 
     public EvalFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("eval", jalangiAnalysis, pre, post);
+        super("eval", jalangiAnalysis, pre, post, 2, 3);
     }
 
     @Override
@@ -40,8 +39,9 @@ public class EvalFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
-                    directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID(), getCode(inputs), Undefined.instance}, true, getSourceIID());
+                    setPreArguments(0, getSourceIID());
+                    setPreArguments(1, getCode(inputs));
+                    directCall(preCall, true, getSourceIID());
                 }
             }
 
@@ -49,8 +49,10 @@ public class EvalFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getCode(inputs), Undefined.instance}, false, getSourceIID());
+                    setPostArguments(0, getSourceIID());
+                    setPostArguments(1, getCode(inputs));
+                    setPostArguments(2, convertResult(result));
+                    directCall(postCall, false, getSourceIID());
                 }
             }
         };

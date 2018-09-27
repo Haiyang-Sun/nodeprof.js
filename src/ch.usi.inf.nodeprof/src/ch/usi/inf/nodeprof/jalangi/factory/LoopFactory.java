@@ -25,7 +25,7 @@ import ch.usi.inf.nodeprof.handlers.LoopEventHandler;
 
 public class LoopFactory extends AbstractFactory {
     public LoopFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("loop", jalangiAnalysis, pre, post);
+        super("loop", jalangiAnalysis, pre, post, 1, 1);
     }
 
     @Override
@@ -37,8 +37,8 @@ public class LoopFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
-                    directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID()}, true, getSourceIID());
+                    setPreArguments(0, getSourceIID());
+                    directCall(preCall, true, getSourceIID());
                 }
             }
 
@@ -46,8 +46,9 @@ public class LoopFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID()}, false, getSourceIID());
+
+                    setPostArguments(0, getSourceIID());
+                    directCall(postCall, false, getSourceIID());
                 }
             }
         };

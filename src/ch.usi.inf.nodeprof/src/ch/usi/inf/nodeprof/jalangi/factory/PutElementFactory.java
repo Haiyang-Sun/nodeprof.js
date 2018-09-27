@@ -27,7 +27,10 @@ public class PutElementFactory extends AbstractFactory {
 
     public PutElementFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("putField", jalangiAnalysis, pre, post);
+        super("putField", jalangiAnalysis, pre, post, 6, 6);
+        // TODO
+        setPreArguments(4, true);// isComputed
+        setPostArguments(4, true);// isComputed
     }
 
     @Override
@@ -39,11 +42,12 @@ public class PutElementFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
-                    directCall(preCall, new Object[]{jalangiAnalysis, pre,
-                                    getSourceIID(), getReceiver(inputs),
-                                    getProperty(inputs), getValue(inputs), true,// isComputed
-                                    isOpAssign(),// isOpAssign
-                    }, true, getSourceIID());
+                    setPreArguments(0, getSourceIID());
+                    setPreArguments(1, getReceiver(inputs));
+                    setPreArguments(2, getProperty(inputs));
+                    setPreArguments(3, getValue(inputs));
+                    setPreArguments(5, isOpAssign());
+                    directCall(preCall, true, getSourceIID());
                 }
             }
 
@@ -51,11 +55,12 @@ public class PutElementFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-                    directCall(postCall, new Object[]{jalangiAnalysis, post,
-                                    getSourceIID(), getReceiver(inputs),
-                                    getProperty(inputs), getValue(inputs), true,// isComputed
-                                    isOpAssign(),// isOpAssign
-                    }, false, getSourceIID());
+                    setPostArguments(0, getSourceIID());
+                    setPostArguments(1, getReceiver(inputs));
+                    setPostArguments(2, getProperty(inputs));
+                    setPostArguments(3, getValue(inputs));
+                    setPostArguments(5, isOpAssign());
+                    directCall(postCall, false, getSourceIID());
                 }
             }
         };

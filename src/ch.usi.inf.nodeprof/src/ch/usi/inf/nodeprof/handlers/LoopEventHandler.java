@@ -17,16 +17,13 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for loop events
  */
-public abstract class LoopEventHandler extends BaseEventHandlerNode {
+public abstract class LoopEventHandler extends BaseSingleTagEventHandler {
     public LoopEventHandler(EventContext context) {
-        super(context);
-    }
-
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == 0;
+        super(context, ProfiledTagEnum.CF_ROOT);
     }
 }

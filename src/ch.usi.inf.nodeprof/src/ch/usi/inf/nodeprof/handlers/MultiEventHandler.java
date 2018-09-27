@@ -18,7 +18,9 @@ package ch.usi.inf.nodeprof.handlers;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 
-public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseEventHandlerNode {
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
+public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingleTagEventHandler {
 
     @Children final T[] handlers;
 
@@ -26,14 +28,14 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseEvent
      *
      * @param handlers should be of the same kind T
      */
-    protected MultiEventHandler(T[] handlers) {
-        super(handlers[0].context);
+    protected MultiEventHandler(ProfiledTagEnum tag, T[] handlers) {
+        super(handlers[0].context, tag);
         this.handlers = handlers;
     }
 
-    public static <T extends BaseEventHandlerNode> MultiEventHandler<T> create(T[] handlers) {
+    public static <T extends BaseEventHandlerNode> MultiEventHandler<T> create(ProfiledTagEnum tag, T[] handlers) {
         assert (handlers != null && handlers.length > 0);
-        return new MultiEventHandler<>(handlers);
+        return new MultiEventHandler<>(tag, handlers);
     }
 
     @Override
@@ -50,11 +52,6 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseEvent
         for (T handler : handlers) {
             handler.executePost(frame, result, inputs);
         }
-    }
-
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return handlers[0].isLastIndex(inputCount, index);
     }
 
     @ExplodeLoop

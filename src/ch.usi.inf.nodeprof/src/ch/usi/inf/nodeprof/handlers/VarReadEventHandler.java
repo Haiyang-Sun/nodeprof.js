@@ -17,16 +17,13 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
+
 /**
  * Abstract event handler for variable reads
  */
 public abstract class VarReadEventHandler extends VarEventHandler {
     public VarReadEventHandler(EventContext context) {
-        super(context);
-    }
-
-    @Override
-    public boolean isLastIndex(int inputCount, int index) {
-        return index == -1;
+        super(context, ProfiledTagEnum.VAR_READ);
     }
 }

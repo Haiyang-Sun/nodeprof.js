@@ -156,14 +156,26 @@ public abstract class BaseEventHandlerNode extends Node {
         }
     }
 
+    public abstract int expectedNumInputs();
+
+    public Object onUnwind(VirtualFrame frame, Object info) {
+        return null;
+    }
+
     /**
      * used to determinate whether the necessary inputs are all collected
      *
      * @return the index or -1 if no inputs are needed
      */
-    public abstract boolean isLastIndex(int inputCount, int index);
-
-    public Object onUnwind(VirtualFrame frame, Object info) {
-        return null;
+    public final boolean isLastIndex(int inputCount, int index) {
+        int expected = expectedNumInputs();
+        assert inputCount >= expected : Logger.printSourceSectionWithCode(this.getInstrumentedSourceSection()).append(context.getInstrumentedNode().getClass()).append(" ").append(inputCount).append(
+                        " < ").append(expected + " ").toString();
+        if (expected == -1) {
+            // not sure how many inputs
+            return index == inputCount - 1;
+        } else {
+            return index == expected - 1;
+        }
     }
 }
