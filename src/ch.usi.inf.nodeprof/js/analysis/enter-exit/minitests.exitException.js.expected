@@ -1,12 +1,12 @@
 builtinEnter: Object.create / 4
-builtinExit: Object.create / 2
+builtinExit: Object.create / 6
 builtinEnter: Object.create / 4
-builtinExit: Object.create / 2
-functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:1:37:4) / 2
+builtinExit: Object.create / 6
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:1:37:4) / 3
 functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:17:1:19:2) / 4
 functionExit with exception "this is an exception(string)": (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:17:1:19:2) / 3
 exception: this is an exception
 functionExit with exception "Error: this is an error(object)": (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:21:1:23:2) / 3
 exception: Error: this is an error
-functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:2:37:2) / 2
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:2:37:2) / 3
 [ 'Object.create', 'foo' ]

@@ -80,7 +80,7 @@
          **/
         this.builtinEnter = function (name, f, dis, args) {
         };
-        this.builtinExit = function (name, returnVal) {
+        this.builtinExit = function (name, f, dis, args, returnVal, exceptionVal) {
             return {returnVal: returnVal};
         };
 

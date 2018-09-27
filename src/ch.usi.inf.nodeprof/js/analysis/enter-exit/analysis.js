@@ -41,7 +41,7 @@
       allFuncs.add(name);
     };
 
-    this.builtinExit = function (name, returnVal) {
+    this.builtinExit = function (name, f, dis, args, returnVal, exception) {
       if (funcNameFilter.has(name))
         console.log("builtinExit: %s / %d", name, arguments.length);
       allFuncs.add(name);
