@@ -76,7 +76,7 @@ public class RootFactory extends AbstractFactory {
                     Object exceptionValue = parseErrorObject(exception);
                     setPostArguments(0, getSourceIID());
                     setPostArguments(1, Undefined.instance);
-                    setPostArguments(2, exceptionValue == null ? "" : exceptionValue);
+                    setPostArguments(2, exceptionValue == null ? "Unknown Exception" : exceptionValue);
 
                     directCall(postCall, false, getSourceIID());
                 }

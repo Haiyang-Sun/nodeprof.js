@@ -50,6 +50,7 @@ import ch.usi.inf.nodeprof.jalangi.factory.BranchFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BuiltinFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ConditionalFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.EvalFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.EvalFunctionFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.GetElementFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.GetFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.InvokeFactory;
@@ -257,7 +258,7 @@ public class JalangiAnalysis {
         if (this.callbacks.containsKey("evalFunctionPre") || this.callbacks.containsKey("evalFunctionPost")) {
             this.instrument.onCallback(
                             ProfiledTagEnum.BUILTIN,
-                            new BuiltinFactory(this.jsAnalysis, callbacks.get("evalFunctionPre"), callbacks.get("evalFunctionPost"), "Function"));
+                            new EvalFunctionFactory(this.jsAnalysis, callbacks.get("evalFunctionPre"), callbacks.get("evalFunctionPost")));
         }
 
         /**

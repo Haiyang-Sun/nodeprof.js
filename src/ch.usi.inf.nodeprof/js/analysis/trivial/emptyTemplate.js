@@ -131,9 +131,9 @@
             /**
              *  These callabcks are called before and after body of functions defined with the Function constructor are executed.
              **/
-            this.evalFunctionPre = function(iid, f, base, args) {
+            this.evalFunctionPre = function(f, base, args) {
             };
-            this.evalFunctionPost = function(iid, f, base, args, ret) {
+            this.evalFunctionPost = function(f, base, args, ret) {
             };
         }
 
