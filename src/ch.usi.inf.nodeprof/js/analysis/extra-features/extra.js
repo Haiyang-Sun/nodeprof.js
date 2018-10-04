@@ -23,7 +23,7 @@
     this.evalPost = function (iid, str) {
       console.log("post "+str);
     }
-    this.evalFunctionPost = function(func, receiver, args, ret){
+    this.evalFunctionPost = function(args, ret){
       console.log("new Function body "+args[0]);
       console.log("result function: "+ret.name);
       this.cache = ret;

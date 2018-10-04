@@ -28,7 +28,7 @@ public class EvalFunctionFactory extends AbstractFactory {
 
     public EvalFunctionFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("evalfunc", jalangiAnalysis, pre, post, 3, 5);
+        super("evalfunc", jalangiAnalysis, pre, post, 1, 3);
     }
 
     @Override
@@ -43,9 +43,7 @@ public class EvalFunctionFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (isTarget && pre != null) {
-                    setPreArguments(0, getFunction(frame));
-                    setPreArguments(1, getReceiver(frame));
-                    setPreArguments(2, makeArgs.executeArguments(getArguments(frame)));
+                    setPreArguments(0, makeArgs.executeArguments(getArguments(frame)));
 
                     directCall(preCall, true, getSourceIID());
                 }
@@ -55,11 +53,9 @@ public class EvalFunctionFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (isTarget && post != null) {
-                    setPostArguments(0, getFunction(frame));
-                    setPostArguments(1, getReceiver(frame));
-                    setPostArguments(2, makeArgs.executeArguments(getArguments(frame)));
-                    setPostArguments(3, convertResult(result));
-                    setPostArguments(4, Undefined.instance);
+                    setPostArguments(0, makeArgs.executeArguments(getArguments(frame)));
+                    setPostArguments(1, convertResult(result));
+                    setPostArguments(2, Undefined.instance);
                     directCall(postCall, false, getSourceIID());
                 }
             }
@@ -68,11 +64,9 @@ public class EvalFunctionFactory extends AbstractFactory {
             public void executeExceptional(VirtualFrame frame, Throwable exception) {
                 if (isTarget && post != null) {
                     Object exceptionValue = parseErrorObject(exception);
-                    setPostArguments(0, getFunction(frame));
-                    setPostArguments(1, getReceiver(frame));
-                    setPostArguments(2, makeArgs.executeArguments(getArguments(frame)));
-                    setPostArguments(3, Undefined.instance);
-                    setPostArguments(4, exceptionValue == null ? "Unknown Exception" : exceptionValue);
+                    setPostArguments(0, makeArgs.executeArguments(getArguments(frame)));
+                    setPostArguments(1, Undefined.instance);
+                    setPostArguments(2, exceptionValue == null ? "Unknown Exception" : exceptionValue);
                     directCall(postCall, false, getSourceIID());
                 }
             }
