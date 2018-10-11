@@ -1,2 +1,2 @@
-{ '0': 'bar' }
-{ '0': 42, '1': 'baz' }
+[Arguments] { '0': 'bar' }
+[Arguments] { '0': 42, '1': 'baz' }

@@ -23,10 +23,7 @@
   var entered = false;
 
   function NodeInternal() {
-    const analysis = 'node-console';
-    this.getField = function(iid, base, offset, val, isComputed, isOpAssign, isMethodCall) {
-      console.log("%s: getField: %s / %s / %d", analysis, offset, J$.iidToLocation(iid), arguments.length);
-    };
+    const analysis = 'node-fs';
     this.functionEnter = function (iid, f, dis, args) {
       if (f.name == '' || mute)
         return;
@@ -41,7 +38,7 @@
     };
   }
   sandbox.addAnalysis(new NodeInternal(), function filter(source) {
-    if (source.internal && source.name.includes('console')) {
+    if (source.internal && source.name.includes('fs')) {
       internals.add(source.name);
       return true;
     }
