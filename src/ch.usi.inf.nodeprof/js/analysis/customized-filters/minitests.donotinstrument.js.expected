@@ -1,54 +1,14 @@
-node-fs: functionEnter: realpathSync / (*fs.js:1340:1:1472:2) / 4
-node-fs: functionEnter: getOptions / (*internal/fs/utils.js:52:1:69:2) / 4
-node-fs: functionEnter: assertEncoding / (*internal/fs/utils.js:39:1:43:2) / 4
-node-fs: functionEnter: validatePath / (*internal/fs/utils.js:326:1:339:2) / 4
-node-fs: functionEnter: nullCheck / (*internal/fs/utils.js:73:1:99:2) / 4
-node-fs: functionEnter: splitRoot / (*fs.js:1302:15:1308:4) / 4
-node-fs: functionEnter: nextPart / (*fs.js:1336:14:1336:67) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: nextPart / (*fs.js:1336:14:1336:67) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: nextPart / (*fs.js:1336:14:1336:67) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: nextPart / (*fs.js:1336:14:1336:67) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: nextPart / (*fs.js:1336:14:1336:67) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: nextPart / (*fs.js:1336:14:1336:67) / 4
-node-fs: functionEnter: handleErrorFromBinding / (*fs.js:109:1:121:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: nextPart / (*fs.js:1336:14:1336:67) / 4
-node-fs: functionEnter: handleErrorFromBinding / (*fs.js:109:1:121:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: nextPart / (*fs.js:1336:14:1336:67) / 4
-node-fs: functionEnter: handleErrorFromBinding / (*fs.js:109:1:121:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: nextPart / (*fs.js:1336:14:1336:67) / 4
-node-fs: functionEnter: handleErrorFromBinding / (*fs.js:109:1:121:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: encodeRealpathResult / (*fs.js:1311:1:1320:2) / 4
-node-fs: functionEnter: readFileSync / (*fs.js:336:1:385:2) / 4
-node-fs: functionEnter: getOptions / (*internal/fs/utils.js:52:1:69:2) / 4
-node-fs: functionEnter: assertEncoding / (*internal/fs/utils.js:39:1:43:2) / 4
-node-fs: functionEnter: openSync / (*fs.js:424:1:436:2) / 4
-node-fs: functionEnter: validatePath / (*internal/fs/utils.js:326:1:339:2) / 4
-node-fs: functionEnter: nullCheck / (*internal/fs/utils.js:73:1:99:2) / 4
-node-fs: functionEnter: stringToFlags / (*internal/fs/utils.js:206:1:241:2) / 4
-node-fs: functionEnter: handleErrorFromBinding / (*fs.js:109:1:121:2) / 4
-node-fs: functionEnter: tryStatSync / (*fs.js:299:1:307:2) / 4
-node-fs: functionEnter: isFileType / (*fs.js:159:1:163:2) / 4
-node-fs: functionEnter: tryCreateBuffer / (*fs.js:309:1:322:2) / 4
-node-fs: functionEnter: tryReadSync / (*fs.js:324:1:334:2) / 4
-node-fs: functionEnter: readSync / (*fs.js:470:1:491:2) / 4
-node-fs: functionEnter: validateBuffer / (*internal/fs/utils.js:283:1:290:2) / 4
-node-fs: functionEnter: validateOffsetLengthRead / (*internal/fs/utils.js:292:1:306:2) / 4
-node-fs: functionEnter: handleErrorFromBinding / (*fs.js:109:1:121:2) / 4
-node-fs: functionEnter: closeSync / (*fs.js:394:1:400:2) / 4
-node-fs: functionEnter: handleErrorFromBinding / (*fs.js:109:1:121:2) / 4
-Set { 'fs.js', 'internal/fs/streams.js', 'internal/fs/utils.js' }
+node-module: functionEnter: require / (*internal/modules/cjs/helpers.js:17:3:24:4) / 4
+node-module: functionEnter: stat / (*internal/modules/cjs/loader.js:83:1:93:2) / 4
+node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js:201:1:205:2) / 4
+node-module: functionEnter: Module / (*internal/modules/cjs/loader.js:102:1:110:2) / 4
+node-module: functionEnter: updateChildren / (*internal/modules/cjs/loader.js:96:1:100:2) / 4
+node-module: functionEnter: tryModuleLoad / (*internal/modules/cjs/loader.js:535:1:545:2) / 4
+node-module: functionEnter: stripBOM / (*internal/modules/cjs/helpers.js:59:1:64:2) / 4
+node-module: functionEnter: stripShebang / (*internal/modules/cjs/helpers.js:69:1:98:2) / 4
+node-module: functionEnter: makeRequireFunction / (*internal/modules/cjs/helpers.js:14:1:52:2) / 4
+Set {
+  'internal/modules/cjs/loader.js',
+  'internal/modules/cjs/helpers.js',
+  'module.js' }
 [ 'Object.create' ]

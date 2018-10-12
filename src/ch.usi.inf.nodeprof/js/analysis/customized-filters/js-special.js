@@ -23,7 +23,7 @@
   var entered = false;
 
   function NodeInternal() {
-    const analysis = 'node-fs';
+    const analysis = 'node-module';
     this.functionEnter = function (iid, f, dis, args) {
       if (f.name == '' || mute)
         return;
@@ -38,7 +38,7 @@
     };
   }
   sandbox.addAnalysis(new NodeInternal(), function filter(source) {
-    if (source.internal && source.name.includes('fs')) {
+    if (source.internal && source.name.includes('module')) {
       internals.add(source.name);
       return true;
     }
