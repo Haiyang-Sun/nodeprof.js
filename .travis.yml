@@ -3,7 +3,20 @@ language: cpp
 compiler:
   - clang
 
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+
 before_install:
+  - eval "${MATRIX_EVAL}"
   - |
     if [ "${TRAVIS_BRANCH}" == "${TRAVIS_TAG}" ]; then
       echo "Building a tag."
@@ -24,9 +37,6 @@ before_install:
   - tar xvf openjdk-8u172-jvmci-0.46-linux-amd64.tar.gz
   - git clone https://github.com/graalvm/mx.git
 
-install:
-  - sudo apt-get install --allow-unauthenticated -qq clang-3.9;
-  - export CXX="clang++-3.9";
 
 before_script:
   - export JAVA_HOME=$TRAVIS_BUILD_DIR/openjdk1.8.0_172-jvmci-0.46
