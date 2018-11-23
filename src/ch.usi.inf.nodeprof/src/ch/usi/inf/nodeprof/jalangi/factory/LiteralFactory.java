@@ -59,7 +59,7 @@ public class LiteralFactory extends AbstractFactory {
                         LiteralExpressionTag.Type.valueOf(type);
                         types.add(type);
                     } catch (IllegalArgumentException e) {
-                        Logger.warning("Ignored invalid type " + type + "given for the literal callback");
+                        Logger.warning("Ignored invalid type " + type + " given for the literal callback");
                     }
                 }
             }
