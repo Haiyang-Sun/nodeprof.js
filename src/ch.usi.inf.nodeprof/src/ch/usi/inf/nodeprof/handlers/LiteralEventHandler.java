@@ -31,13 +31,6 @@ public abstract class LiteralEventHandler extends BaseSingleTagEventHandler {
     }
 
     /**
-     * TODO
-     */
-    public boolean hasSetterGetter() {
-        return false;
-    }
-
-    /**
      *
      * @return type of the literal, including ObjectLiteral, ArrayLiteral, FunctionLiteral,
      *         NumericLiteral, BooleanLiteral, StringLiteral, NullLiteral, UndefinedLiteral,
