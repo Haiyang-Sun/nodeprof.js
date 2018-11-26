@@ -1,0 +1,8 @@
+(src/ch.usi.inf.nodeprof.test/js/minitests/foo.js:1:2:6:2) FunctionLiteral function (exports, require, module, __filename, __dirname) { function foo(a){
+}
+
+foo(1);
+
+}
+(src/ch.usi.inf.nodeprof.test/js/minitests/foo.js:1:63:2:2) FunctionLiteral function foo(a){
+}

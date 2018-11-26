@@ -17,11 +17,19 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.Truffle;
+import com.oracle.truffle.api.interop.ForeignAccess;
+import com.oracle.truffle.api.interop.Message;
+import com.oracle.truffle.api.interop.UnknownIdentifierException;
+import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.GraalJSException;
+import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
+import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.Null;
+import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.analysis.AnalysisFactory;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -39,6 +47,55 @@ public abstract class AbstractFactory implements
     protected final Object[] postArguments;
 
     protected final String jalangiCallback;
+
+    // used to read the callback object for configuration
+    protected static final Node read = Message.READ.createNode();
+
+    protected static boolean readBoolean(DynamicObject cb, String name) {
+        Object ret = readCBProperty(cb, name);
+        if (ret == null)
+            return false;
+        else
+            return ret instanceof Boolean && (Boolean) ret; // unchecked
+    }
+
+    @TruffleBoundary
+    protected static String readString(DynamicObject cb, String name) {
+        Object ret = readCBProperty(cb, name);
+        if (ret == null)
+            return null;
+        else
+            return ret.toString();
+    }
+
+    @TruffleBoundary
+    protected static Object[] readArray(DynamicObject cb, String name) {
+        Object ret = readCBProperty(cb, name);
+        if (JSArray.isJSArray(ret)) {
+            return JSAbstractArray.toArray((DynamicObject) ret);
+        }
+        return null;
+    }
+
+    @TruffleBoundary
+    protected static boolean isPropertyUndefined(DynamicObject cb, String name) {
+        Object ret = readCBProperty(cb, name);
+        if (ret == null)
+            return true;
+        else
+            return ret == Undefined.instance;
+    }
+
+    protected static Object readCBProperty(DynamicObject cb, String name) {
+        if (cb == null)
+            return null;
+        try {
+            Object val = ForeignAccess.sendRead(read, cb, name);
+            return val == null ? null : val;
+        } catch (UnknownIdentifierException | UnsupportedMessageException e) {
+            return null;
+        }
+    }
 
     public AbstractFactory(String jalangiCallback, Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post, int numPreArguments, int numPostArguments) {
@@ -112,8 +169,8 @@ public abstract class AbstractFactory implements
      * call from Java to Jalangi JavaScript
      *
      * @param callNode
-     * @param args
-     * @param isPre TODO
+     * @param isPre pre or post callback
+     * @param iid source section id
      */
     protected void directCall(DirectCallNode callNode, boolean isPre, int iid) {
         if (nestedControl)
