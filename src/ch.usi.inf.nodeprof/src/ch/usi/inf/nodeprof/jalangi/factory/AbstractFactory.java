@@ -25,6 +25,8 @@ import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.GraalJSException;
+import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
+import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.Null;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -64,6 +66,15 @@ public abstract class AbstractFactory implements
             return null;
         else
             return ret.toString();
+    }
+
+    @TruffleBoundary
+    protected static Object[] readArray(DynamicObject cb, String name) {
+        Object ret = readCBProperty(cb, name);
+        if (JSArray.isJSArray(ret)) {
+            return JSAbstractArray.toArray((DynamicObject) ret);
+        }
+        return null;
     }
 
     @TruffleBoundary

@@ -16,6 +16,7 @@
 package ch.usi.inf.nodeprof.jalangi.factory;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
@@ -30,8 +31,8 @@ import ch.usi.inf.nodeprof.handlers.LiteralEventHandler;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 public class LiteralFactory extends AbstractFactory {
-    // an array of filters
-    final private ArrayList<String> types;
+    // enabled literal types (all by default)
+    final private EnumSet<LiteralExpressionTag.Type> types = EnumSet.allOf(LiteralExpressionTag.Type.class);
 
     @TruffleBoundary
     public LiteralFactory(Object jalangiAnalysis, DynamicObject post) {
@@ -44,40 +45,27 @@ public class LiteralFactory extends AbstractFactory {
          */
         setPostArguments(2, Undefined.instance);
 
-        if (isPropertyUndefined(post, "types")) {
-            types = null;
-        } else {
-            String literalTypes = readString(post, "types"); // get types filter separated by ','
-            if (literalTypes == null || literalTypes.isEmpty()) {
-                types = null;
-            } else {
-                types = new ArrayList<String>();
-                for (String type : literalTypes.split(",")) {
-                    if (type.isEmpty())
-                        continue;
+        if (!isPropertyUndefined(post, "types")) {
+            Object[] literalTypes = readArray(post, "types");
+            if (literalTypes != null) {
+                // filter property has been set, start with empty set and add only specified types
+                types.removeAll(EnumSet.allOf(LiteralExpressionTag.Type.class));
+                for (Object elem : literalTypes) {
                     try {
-                        LiteralExpressionTag.Type.valueOf(type);
-                        types.add(type);
+                        LiteralExpressionTag.Type enumType = LiteralExpressionTag.Type.valueOf(elem.toString());
+                        types.add(enumType);
                     } catch (IllegalArgumentException e) {
-                        Logger.warning("Ignored invalid type " + type + " given for the literal callback");
+                        Logger.warning("Ignored invalid type " + elem.toString() + " given for the literal callback");
                     }
                 }
             }
         }
     }
 
-    @TruffleBoundary
-    protected boolean isValidType(String someType) {
-        // always return true if no type filter is given
-        if (types == null || types.size() == 0)
-            return true;
-        return types.indexOf(someType) >= 0;
-    }
-
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new LiteralEventHandler(context) {
-            private final boolean skip = !isValidType(getLiteralType());
+            private final boolean skip = !types.contains(LiteralExpressionTag.Type.valueOf(getLiteralType()));
             @Child DirectCallNode postCall = skip ? null : createPostCallNode();
 
             @Override
@@ -86,6 +74,7 @@ public class LiteralFactory extends AbstractFactory {
                 if (post != null && !skip) {
                     setPostArguments(0, getSourceIID());
                     setPostArguments(1, convertResult(result));
+                    // Jalangi's hasGetterSetter: undefined (see above)
                     setPostArguments(3, getLiteralType());
                     directCall(postCall, false, getSourceIID());
                 }

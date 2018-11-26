@@ -31,14 +31,16 @@
          * This callback is called after the creation of a literal. A literal can be a function
          * literal, an object literal, an array literal, a number, a string, a boolean, a regular
          * expression, null, NaN, Infinity, or undefined.
+         *
+         * hasGetterSetter is always undefined, can be computed with val (kept for Jalangi compability)
+         * literalType is a new argument provided by NodeProf showing the type of literal
          **/
-        this.literal = function (iid, val, 
-          /* hasGetterSetter is not computed by NodeProf as it can be computed with val, we keep this arg for Jalangi's compability */ hasGetterSetter, 
-          /* literalType is a new argument provided by NodeProf showing the type of literal */ literalType) {
+        this.literal = function (iid, val, hasGetterSetter, literalType) {
             return {result: val};
         };
-        // optional literal type filter: by specifying the types in a string split by ',', only given types of literals will be instrumented
-        this.literal.types = "ObjectLiteral,ArrayLiteral,FunctionLiteral,NumericLiteral,BooleanLiteral,StringLiteral,NullLiteral,UndefinedLiteral,RegExpLiteral";
+        // optional literal type filter: by specifying the types in an array, only given types of literals will be instrumented
+        this.literal.types = ["ObjectLiteral", "ArrayLiteral", "FunctionLiteral", "NumericLiteral", "BooleanLiteral", "StringLiteral",
+            "NullLiteral", "UndefinedLiteral", "RegExpLiteral"];
 
         /**
          * These callbacks are called before and after a property of an object is accessed.
