@@ -18,17 +18,47 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.nodes.Node.Child;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
+import ch.usi.inf.nodeprof.utils.Logger;
+import ch.usi.inf.nodeprof.utils.PropertyExistsNode;
 
 public class RootFactory extends AbstractFactory {
 
-    public RootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
+    private final DynamicObject stackEnter;
+    private final DynamicObject stackExit;
+    private final boolean needStack;
+
+    private int stackDepth = 0;
+
+    // used to filter functions
+    @Child PropertyExistsNode preFilter;
+    @Child PropertyExistsNode postFilter;
+
+    public RootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post, DynamicObject stackEnter, DynamicObject stackExit) {
         super("function", jalangiAnalysis, pre, post, 4, 3);
+        this.stackEnter = stackEnter;
+        this.stackExit = stackExit;
+        if (this.stackEnter != null || this.stackExit != null) {
+            this.needStack = true;
+        } else {
+            this.needStack = false;
+        }
+        String preFilterKey = readString(pre, "filterKey");
+        if (preFilterKey != null) {
+            preFilter = PropertyExistsNode.create(preFilterKey);
+        }
+
+        String postFilterKey = readString(post, "filterKey");
+        if (postFilterKey != null) {
+            postFilter = PropertyExistsNode.create(postFilterKey);
+        }
     }
 
     @Override
@@ -38,18 +68,30 @@ public class RootFactory extends AbstractFactory {
             @Child DirectCallNode preCall = createDirectCallNode(pre);
             @Child DirectCallNode postCall = createDirectCallNode(post);
 
+            @Child DirectCallNode stackPreCall = createDirectCallNode(stackEnter);
+            @Child DirectCallNode stackPostCall = createDirectCallNode(stackExit);
+
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (isRegularExpression())
                     return;
 
                 if (!this.isBuiltin && pre != null) {
-
+                    Object func = getFunction(frame);
+                    if (!needStack && preFilter != null && !preFilter.executePropertyExists((TruffleObject) func)) {
+                        return;
+                    }
                     setPreArguments(0, getSourceIID());
-                    setPreArguments(1, getFunction(frame));
+                    setPreArguments(1, func);
                     setPreArguments(2, getReceiver(frame));
                     setPreArguments(3, makeArgs.executeArguments(getArguments(frame)));
 
+                    if (needStack) {
+                        if (stackDepth == 0) {
+                            directCall(stackPreCall, true, getSourceIID());
+                        }
+                        stackDepth++;
+                    }
                     directCall(preCall, true, getSourceIID());
                 }
             }
@@ -61,10 +103,20 @@ public class RootFactory extends AbstractFactory {
                     return;
 
                 if (!this.isBuiltin && post != null) {
+                    Object func = getFunction(frame);
+                    if (!needStack && postFilter != null && !postFilter.executePropertyExists((TruffleObject) func)) {
+                        return;
+                    }
                     setPostArguments(0, this.getSourceIID());
                     setPostArguments(1, convertResult(result));
                     setPostArguments(2, Undefined.instance);
                     directCall(postCall, false, getSourceIID());
+                    if (needStack) {
+                        stackDepth--;
+                        if (stackDepth == 0) {
+                            directCall(stackPostCall, false, getSourceIID());
+                        }
+                    }
                 }
             }
 
@@ -73,11 +125,20 @@ public class RootFactory extends AbstractFactory {
                 if (isRegularExpression())
                     return;
                 if (!this.isBuiltin && post != null) {
+                    Object func = getFunction(frame);
+                    if (!needStack && postFilter != null && !postFilter.executePropertyExists((TruffleObject) func)) {
+                        return;
+                    }
                     Object exceptionValue = parseErrorObject(exception);
                     setPostArguments(0, getSourceIID());
                     setPostArguments(1, Undefined.instance);
                     setPostArguments(2, exceptionValue == null ? "Unknown Exception" : exceptionValue);
-
+                    if (needStack) {
+                        stackDepth--;
+                        if (stackDepth == 0) {
+                            directCall(stackPostCall, false, getSourceIID());
+                        }
+                    }
                     directCall(postCall, false, getSourceIID());
                 }
             }

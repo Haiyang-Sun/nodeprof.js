@@ -16,6 +16,8 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
+import java.util.HashMap;
+
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.ArityException;
@@ -88,7 +90,7 @@ public class JalangiAdapterMessageResolution {
                     }
                     return result == null ? Undefined.instance : result;
                 }
-            }  else if (identifier.equals("iidToSourceObject")) {
+            } else if (identifier.equals("iidToSourceObject")) {
                 if (checkArguments(1, arguments, identifier)) {
                     try {
                         return SourceMapping.getJSObjectForIID(convertIID(arguments[0]));
@@ -114,6 +116,15 @@ public class JalangiAdapterMessageResolution {
                 }
             } else if (identifier.equals("registerCallback")) {
                 adapter.getNodeProfJalangi().registerCallback(arguments[0], arguments[1], arguments[2]);
+            } else if (identifier.equals("createHashMap")) {
+                return new JSHashMap();
+            } else if (identifier.equals("getHashcode")) {
+                return arguments[0].hashCode();
+            } else if (identifier.equals("nativeLog")) {
+                if (arguments.length == 1)
+                    Logger.info(arguments[0].toString());
+                else if (arguments.length == 2)
+                    Logger.info(convertIID(arguments[0]), arguments[1].toString());
             } else if (identifier.equals("instrumentationSwitch")) {
                 // update instrumentation using the first argument given and return the updated
                 // status of the instrumentation (true for enabled and false for disabled)

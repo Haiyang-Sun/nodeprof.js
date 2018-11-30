@@ -32,6 +32,8 @@ import static ch.usi.inf.nodeprof.ProfiledTagEnum.UNARY;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_READ;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_WRITE;
 
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.AWAIT;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -45,6 +47,8 @@ import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import ch.usi.inf.nodeprof.jalangi.factory.AsyncRootFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.AwaitFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BinaryFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BranchFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BuiltinFactory;
@@ -56,6 +60,7 @@ import ch.usi.inf.nodeprof.jalangi.factory.GetFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.InvokeFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.LiteralFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.LoopFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.PromiseFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutElementFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ReadFactory;
@@ -94,6 +99,7 @@ public class JalangiAnalysis {
                             // function calls
                             put("functionEnter", EnumSet.of(ROOT));
                             put("functionExit", EnumSet.of(ROOT));
+
                             put("invokeFunPre", EnumSet.of(INVOKE, NEW));
                             put("invokeFun", EnumSet.of(INVOKE, NEW));
 
@@ -130,6 +136,14 @@ public class JalangiAnalysis {
                             put("evalPost", EnumSet.of(EVAL));
                             put("evalFunctionPre", EnumSet.of(BUILTIN));
                             put("evalFunctionPost", EnumSet.of(BUILTIN));
+
+                            // promise-related builtins
+                            put("promisePre", EnumSet.of(BUILTIN));
+                            put("promisePost", EnumSet.of(BUILTIN));
+
+                            // async / await
+                            put("awaitPre", EnumSet.of(AWAIT));
+                            put("asyncRootPost", EnumSet.of(ProfiledTagEnum.ASYNC_ROOT));
                         }
                     });
 
@@ -226,11 +240,11 @@ public class JalangiAnalysis {
                             new ConditionalFactory(this.jsAnalysis, callbacks.get("conditional"), true));
         }
 
-        if (this.callbacks.containsKey("functionEnter") || this.callbacks.containsKey("functionExit")) {
+        if (this.callbacks.containsKey("functionEnter") || this.callbacks.containsKey("functionExit") || this.callbacks.containsKey("stackEnter") || this.callbacks.containsKey("stackExit")) {
             this.instrument.onCallback(
                             ProfiledTagEnum.ROOT,
                             new RootFactory(this.jsAnalysis,
-                                            callbacks.get("functionEnter"), callbacks.get("functionExit")));
+                                            callbacks.get("functionEnter"), callbacks.get("functionExit"), callbacks.get("stackEnter"), callbacks.get("stackExit")));
         }
 
         if (this.callbacks.containsKey("builtinEnter") || this.callbacks.containsKey("builtinExit")) {
@@ -259,6 +273,24 @@ public class JalangiAnalysis {
             this.instrument.onCallback(
                             ProfiledTagEnum.BUILTIN,
                             new EvalFunctionFactory(this.jsAnalysis, callbacks.get("evalFunctionPre"), callbacks.get("evalFunctionPost")));
+        }
+
+        if (this.callbacks.containsKey("promisePre") || this.callbacks.containsKey("promisePost")) {
+            this.instrument.onCallback(
+                            ProfiledTagEnum.BUILTIN,
+                            new PromiseFactory(this.jsAnalysis, callbacks.get("promisePre"), callbacks.get("promisePost")));
+        }
+
+        if (this.callbacks.containsKey("awaitPre")) {
+            this.instrument.onCallback(
+                            ProfiledTagEnum.AWAIT,
+                            new AwaitFactory(this.jsAnalysis, callbacks.get("awaitPre")));
+        }
+
+        if (this.callbacks.containsKey("asyncRootPost")) {
+            this.instrument.onCallback(
+                            ProfiledTagEnum.ASYNC_ROOT,
+                            new AsyncRootFactory(this.jsAnalysis, callbacks.get("asyncRootPost")));
         }
 
         /**

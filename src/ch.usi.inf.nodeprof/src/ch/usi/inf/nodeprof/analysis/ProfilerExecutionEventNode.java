@@ -101,7 +101,9 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
         if (hasOnEnter > 0) {
             hasOnEnter--;
             this.cb.postHitCount++;
-            Object[] inputs = getSavedInputValues(frame);
+            Object[] inputs = null;
+            if (child.expectedNumInputs() != 0)
+                inputs = getSavedInputValues(frame);
             try {
                 this.child.executePost(frame, result, inputs);
             } catch (Exception e) {

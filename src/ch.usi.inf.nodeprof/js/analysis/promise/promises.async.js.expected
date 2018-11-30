@@ -1,0 +1,17 @@
+promise pre Promise
+promise pre Promise
+promise pre Promise.resolve
+promise pre Promise
+async root post true
+await pre
+promise pre Promise
+promise pre Promise
+async root post true
+promise pre Promise.prototype.then
+promise pre Promise
+promise pre Promise.prototype.then
+promise pre Promise
+promise pre Promise.prototype.then
+promise pre Promise
+async root post true
+1

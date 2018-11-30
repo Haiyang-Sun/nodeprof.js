@@ -17,7 +17,12 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.Truffle;
+import com.oracle.truffle.api.interop.ForeignAccess;
+import com.oracle.truffle.api.interop.Message;
+import com.oracle.truffle.api.interop.UnknownIdentifierException;
+import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
@@ -40,6 +45,40 @@ public abstract class AbstractFactory implements
 
     protected final String jalangiCallback;
 
+    // used to read the callback object for configuration
+    protected static Node read = Message.READ.createNode();
+
+    // if the callback function has a property "skipInputs", we don't need to store the inputs
+    protected final boolean skipInputs;
+
+    protected static boolean readBoolean(DynamicObject cb, String name) {
+        Object ret = readCBProperty(cb, name);
+        if (ret == null)
+            return false;
+        else
+            return ret instanceof Boolean && (Boolean) ret; // unchecked
+    }
+
+    @TruffleBoundary
+    protected static String readString(DynamicObject cb, String name) {
+        Object ret = readCBProperty(cb, name);
+        if (ret == null)
+            return null;
+        else
+            return ret.toString();
+    }
+
+    protected static Object readCBProperty(DynamicObject cb, String name) {
+        if (cb == null)
+            return null;
+        try {
+            Object val = ForeignAccess.sendRead(read, cb, name);
+            return val == null ? null : val;
+        } catch (UnknownIdentifierException | UnsupportedMessageException e) {
+            return null;
+        }
+    }
+
     public AbstractFactory(String jalangiCallback, Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post, int numPreArguments, int numPostArguments) {
         this.jalangiCallback = jalangiCallback;
@@ -60,6 +99,7 @@ public abstract class AbstractFactory implements
         } else {
             this.postArguments = null;
         }
+        this.skipInputs = (pre != null ? (readBoolean(pre, "skipInputs")) : false) || (post != null ? (readBoolean(post, "skipInputs")) : false);
     }
 
     protected void setPreArguments(int index, Object value) {
@@ -112,7 +152,6 @@ public abstract class AbstractFactory implements
      * call from Java to Jalangi JavaScript
      *
      * @param callNode
-     * @param args
      * @param isPre TODO
      */
     protected void directCall(DirectCallNode callNode, boolean isPre, int iid) {

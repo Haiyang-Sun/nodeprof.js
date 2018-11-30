@@ -31,7 +31,8 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
     protected final String funcName = context.getInstrumentedNode().getRootNode().getName();
     protected final boolean isRegExp = context.getInstrumentedNode().getRootNode() instanceof RegexRootNode || context.getInstrumentedNode() instanceof RegexBodyNode;
     protected final boolean isBuiltin = context.getInstrumentedNode() instanceof JSBuiltinNode;
-
+    protected final boolean isAsyncRoot = context.getInstrumentedNode().getRootNode().getClass().getSimpleName().equals("AsyncFunctionRootNode");
+    protected final boolean isAsyncRootGenerator = context.getInstrumentedNode().getClass().getSimpleName().equals("GeneratorWrapperNode");
     protected final String builtinName;
 
     public FunctionRootEventHandler(EventContext context) {
@@ -57,6 +58,14 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
 
     public Object getBuiltinName() {
         return this.isBuiltin ? this.builtinName : Undefined.instance;
+    }
+
+    public boolean isAsyncRoot() {
+        return this.isAsyncRoot;
+    }
+
+    public boolean isAsyncRootGenerator() {
+        return this.isAsyncRootGenerator;
     }
 
     public Object getFunction(VirtualFrame frame) {

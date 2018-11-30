@@ -15,41 +15,21 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
-import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.js.runtime.objects.PromiseCapabilityRecord;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import ch.usi.inf.nodeprof.utils.Logger;
 
 /**
- * Abstract event handler for function roots
+ * Abstract event handler for unary operations
  */
-public abstract class BuiltinRootEventHandler extends BaseSingleTagEventHandler {
-
-    protected final String builtinName;
-
-    public BuiltinRootEventHandler(EventContext context) {
-        super(context, ProfiledTagEnum.BUILTIN);
-        this.builtinName = getAttribute("name").toString();
+public abstract class AsyncRootEventHandler extends BaseSingleTagEventHandler {
+    public AsyncRootEventHandler(EventContext context) {
+        super(context, ProfiledTagEnum.ASYNC_ROOT);
     }
 
-    public Object getReceiver(VirtualFrame frame) {
-        return frame.getArguments()[0];
+    protected Object getPromise(Object[] inputs) {
+        return ((PromiseCapabilityRecord) assertGetInput(0, inputs, "promise")).getPromise();
     }
-
-    public String getBuiltinName() {
-        return this.builtinName;
-    }
-
-    public Object getFunction(VirtualFrame frame) {
-        return frame.getArguments()[1];
-    }
-
-    public Object[] getArguments(VirtualFrame frame) {
-        return frame.getArguments();
-    }
-
-    public Object getArgument(VirtualFrame frame, int index) {
-        return getArguments(frame)[2 + index];
-    }
-
 }

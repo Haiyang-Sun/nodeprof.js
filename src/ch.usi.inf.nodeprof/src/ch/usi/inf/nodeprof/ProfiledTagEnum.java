@@ -40,7 +40,9 @@ public enum ProfiledTagEnum {
     ROOT(StandardTags.RootTag.class, 0),
     BUILTIN(JSTags.BuiltinRootTag.class, 0),
     LITERAL(JSTags.LiteralExpressionTag.class, 0),
-    NEW(JSTags.ObjectAllocationExpressionTag.class, -1);
+    NEW(JSTags.ObjectAllocationExpressionTag.class, -1),
+    ASYNC_ROOT(JSTags.AsyncRootTag.class, 1), // TODO
+    AWAIT(JSTags.AwaitTag.class, 1); // TODO
 
     // the corresponding JSTags class
     private final Class<? extends Tag> clazz;

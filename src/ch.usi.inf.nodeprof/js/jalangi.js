@@ -43,6 +43,18 @@ J$={};
     sandbox.disableAnalysis = function() {
       return sandbox.adapter.instrumentationSwitch(false);
     }
+    sandbox.getHashcode = function(obj) {
+      return __jalangiAdapter.getHashcode(obj);
+    }
+    sandbox.getHashMap = function(){
+        return __jalangiAdapter.createHashMap();
+      try{
+        let HashMap = Java.type("java.util.HashMap");
+        return new HashMap();
+      }catch(e){
+        return __jalangiAdapter.createHashMap();
+      }
+    }
   }catch (e){
     console.log("cannot load nodeprof jalangi adapter");
   }
