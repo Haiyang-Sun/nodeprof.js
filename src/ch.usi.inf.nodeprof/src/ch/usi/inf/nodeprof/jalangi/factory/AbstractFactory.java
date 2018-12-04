@@ -64,8 +64,11 @@ public abstract class AbstractFactory implements
         Object ret = readCBProperty(cb, name);
         if (ret == null)
             return null;
-        else
-            return ret.toString();
+        else if (ret instanceof CharSequence) {
+            return ((CharSequence) ret).toString();
+        } else {
+            return null;
+        }
     }
 
     protected static Object readCBProperty(DynamicObject cb, String name) {
