@@ -1,0 +1,4 @@
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/bar.js:1:9:1:20)  base type: string  offset type: string  val type: function
+invokeFunPre @ string function (src/ch.usi.inf.nodeprof.test/js/minitests/bar.js:1:10:1:25) isMethod
+[ '.' ]
+invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/bar.js:1:10:1:25)
