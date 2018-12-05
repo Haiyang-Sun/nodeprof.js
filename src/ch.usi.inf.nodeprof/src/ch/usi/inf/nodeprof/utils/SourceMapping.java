@@ -78,6 +78,8 @@ public abstract class SourceMapping {
         return getJSObjectForSourceSection(getSourceSectionForIID(iid));
     }
 
+    final static String append = "(function (exports, require, module, __filename, __dirname) { ";
+
     @TruffleBoundary
     public static DynamicObject getJSObjectForSourceSection(SourceSection section) {
         if (section == null)
@@ -85,6 +87,20 @@ public abstract class SourceMapping {
         Source source = section.getSource();
         DynamicObject o = getJSObjectForSource(source);
         JSObject.set(o, "section", makeSectionString(section).toString());
+
+        JSObject.set(o, "si", section.getCharIndex() - append.length());
+        JSObject.set(o, "ei", section.getCharEndIndex() - append.length());
+
+        int startLine = section.getStartLine();
+        int endLine = section.getEndLine();
+        int startCol = startLine == 1 ? (section.getStartColumn() - append.length()) : section.getStartColumn();
+        int endCol = endLine == 1 ? (section.getEndColumn() - append.length()) : section.getEndColumn();
+
+        JSObject.set(o, "sl", startLine);
+        JSObject.set(o, "sc", startCol);
+        JSObject.set(o, "el", endLine);
+        JSObject.set(o, "ec", endCol);
+
         return o;
     }
 
@@ -124,10 +140,13 @@ public abstract class SourceMapping {
 
     private static StringBuilder makeSectionString(SourceSection sourceSection) {
         StringBuilder b = new StringBuilder();
-        b.append(sourceSection.getStartLine()).append(":")
-                .append(sourceSection.getStartColumn())
-                .append(":").append(sourceSection.getEndLine())
-                .append(":").append(sourceSection.getEndColumn() + 1);
+
+        int startLine = sourceSection.getStartLine();
+        int endLine = sourceSection.getEndLine();
+        int startCol = startLine == 1 ? (sourceSection.getStartColumn() - append.length()) : sourceSection.getStartColumn();
+        int endCol = endLine == 1 ? (sourceSection.getEndColumn() - append.length()) : sourceSection.getEndColumn();
+
+        b.append(startLine).append(":").append(startCol).append(":").append(endLine).append(":").append(endCol + 1);
         return b;
     }
 
