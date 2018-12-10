@@ -9,6 +9,14 @@ Get the [mx](https://github.com/graalvm/mx) build tool:
 git clone https://github.com/graalvm/mx.git
 ```
 
+Download and set the JAVA_HOME to the given JDK needed for building:
+
+```
+wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-0.46/openjdk-8u172-jvmci-0.46-linux-amd64.tar.gz
+tar xvf openjdk-8u172-jvmci-0.46-linux-amd64.tar.gz
+export JAVA_HOME=PATH_TO_THIS_JDK
+```
+
 Get dependent projects and build:
 
 ```
