@@ -24,6 +24,9 @@ J$={};
   try {
     sandbox.adapter = __jalangiAdapter;
     sandbox.deprecatedIIDUsed = false;
+    sandbox.nativeLog = function(str) {
+      __jalangiAdapter.nativeLog(str);
+    }
     sandbox.iidToLocation = function(iid, _deprecatedIID){
       if(_deprecatedIID) {
         if(!sandbox.deprecatedIIDUsed){

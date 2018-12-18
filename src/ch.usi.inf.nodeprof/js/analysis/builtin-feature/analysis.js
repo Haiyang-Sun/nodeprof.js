@@ -19,17 +19,17 @@
   function TestBuiltin() {
     function getLocation(iid) {
       if (process.config.variables.graalvm)
-        return  sandbox.iidToLocation(iid);
+        return sandbox.iidToLocation(iid);
       else
         return sandbox.iidToLocation(sandbox.sid, iid);
     }
     this.builtinEnter = function(builtinName, func, base, args){
       if(builtinName && builtinName.indexOf("Promise") > -1){
-        console.log("builtin used "+builtinName);
+        J$.nativeLog("builtin used "+builtinName);
       }
     }
     this.invokeFunPre = function(iid, func, base, args){
-      console.log("invoking "+getLocation(iid)+" "+func.name);
+      J$.nativeLog("invoking "+getLocation(iid)+" "+func.name);
     }
   };
   sandbox.addAnalysis(new TestBuiltin(), {includes:"builtin"});

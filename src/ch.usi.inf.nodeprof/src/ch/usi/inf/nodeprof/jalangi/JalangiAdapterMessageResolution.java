@@ -98,6 +98,11 @@ public class JalangiAdapterMessageResolution {
                         throw UnsupportedTypeException.raise(e, arguments);
                     }
                 }
+            } else if (identifier.equals("nativeLog")) {
+                if (arguments.length == 1) {
+                    Logger.info(arguments[0]);
+                    return 0;
+                }
             } else if (identifier.equals("valueOf")) {
                 return "jalangi-adapter";
             } else if (identifier.equals("onReady")) {
