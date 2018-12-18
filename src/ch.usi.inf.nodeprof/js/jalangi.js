@@ -24,6 +24,12 @@ J$={};
   try {
     sandbox.adapter = __jalangiAdapter;
     sandbox.deprecatedIIDUsed = false;
+    /*
+     * J$.nativeLog(msg)
+     * - print the message string using the logger (i.e., System.out) inside the engine
+     * - consider using this function instead of console.log in the analysis in case you 
+     *   want to dump messages while instrumenting some internal library or builtins
+     */
     sandbox.nativeLog = function(str) {
       __jalangiAdapter.nativeLog(str);
     }
