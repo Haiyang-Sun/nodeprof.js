@@ -45,6 +45,7 @@ If benchmarkName is specified, only test files inside nodeprof/src/ch.usi.inf.no
   * add a ```// DO NOT INSTRMENT``` at the beginning of the source code file
   * specify an exclusion list with ```mx jalangi --excl="keyword1,keyword2"``` so that any source code file whose full path containing one of these key words will be excluded from instrumentation.
 
+- Attach a debugger ```mx jalangi -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000 ... ``` 
 ### Run using GraalVM
 
   You can directly run NodeProf with a pre-built jar file and the latest GraalVM.
