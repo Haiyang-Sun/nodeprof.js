@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +25,20 @@ J$={};
   try {
     sandbox.adapter = __jalangiAdapter;
     sandbox.deprecatedIIDUsed = false;
+    /*
+     * J$.nativeLog(msg, logLevel)
+     * - print the message string using the logger (i.e., System.out/err) inside the engine
+     * - default log level is INFO
+     * - consider using this function instead of console.log in the analysis in case you
+     *   want to dump messages while instrumenting some internal library or builtins
+     */
+    sandbox.nativeLog = function(str, logLevel) {
+      __jalangiAdapter.nativeLog(...arguments);
+    }
+    sandbox.nativeLog.DEBUG = 0;
+    sandbox.nativeLog.INFO = 1;
+    sandbox.nativeLog.WARNING = 2;
+    sandbox.nativeLog.ERROR = 3;
     sandbox.iidToLocation = function(iid, _deprecatedIID){
       if(_deprecatedIID) {
         if(!sandbox.deprecatedIIDUsed){

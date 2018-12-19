@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-
-// DO NOT INSTRUMENT
-((function(sandbox){
-  function TestBuiltin() {
-    function getLocation(iid) {
-      if (process.config.variables.graalvm)
-        return sandbox.iidToLocation(iid);
-      else
-        return sandbox.iidToLocation(sandbox.sid, iid);
-    }
-    this.builtinEnter = function(builtinName, func, base, args){
-      if(builtinName && builtinName.indexOf("Promise") > -1){
-        J$.nativeLog("builtin used "+builtinName);
-      }
-    }
-    this.invokeFunPre = function(iid, func, base, args){
-      J$.nativeLog("invoking "+getLocation(iid)+" "+func.name);
-    }
-  };
-  sandbox.addAnalysis(new TestBuiltin(), {includes:"builtin"});
+//DO NOT INSTRUMENT
+(function(sandbox){
+  J$.nativeLog('default');
+  J$.nativeLog('debug', J$.nativeLog.DEBUG); // unchecked: debug off in tests
+  J$.nativeLog('info', J$.nativeLog.INFO);
+  J$.nativeLog('warning', J$.nativeLog.WARNING); // unchecked: emits to stderr
+  J$.nativeLog('error', J$.nativeLog.ERROR); // unchecked: emits to stderr
+  J$.nativeLog('neg level', -1);
+  J$.nativeLog('string level', "1");
 }
-)(J$));
+)(J$);
