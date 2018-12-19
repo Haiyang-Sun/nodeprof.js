@@ -99,8 +99,16 @@ public class JalangiAdapterMessageResolution {
                     }
                 }
             } else if (identifier.equals("nativeLog")) {
-                if (arguments.length == 1) {
-                    Logger.info(arguments[0]);
+                Logger.Level level = Logger.Level.INFO;
+                if (arguments.length >= 2) {
+                    int i = convertIID(arguments[1]);
+                    Logger.Level[] enumValues = Logger.Level.values();
+                    if (i >= 0 && i < enumValues.length) {
+                        level = enumValues[i];
+                    }
+                }
+                if (arguments.length > 0) {
+                    Logger.log(arguments[0], level);
                     return 0;
                 }
             } else if (identifier.equals("valueOf")) {

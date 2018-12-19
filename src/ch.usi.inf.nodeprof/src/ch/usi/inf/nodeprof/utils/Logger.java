@@ -23,6 +23,13 @@ import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.runtime.GraalJSException;
 
 public class Logger {
+    public enum Level {
+        DEBUG,   // 0
+        INFO,    // 1
+        WARNING, // 2
+        ERROR    // 3
+    }
+
     private static PrintStream out = System.out;
     private static PrintStream err = System.err;
 
@@ -39,6 +46,23 @@ public class Logger {
     @TruffleBoundary
     private static void print(PrintStream stream, String tag, SourceSection sourceSection, Object msg) {
         stream.printf("[%s] %s: %s\n", tag, SourceMapping.makeLocationString(sourceSection).toString(), msg.toString());
+    }
+
+    public static void log(Object msg, Level l) {
+        switch (l) {
+            case DEBUG:
+                debug(msg);
+                break;
+            case INFO:
+                info(msg);
+                break;
+            case WARNING:
+                warning(msg);
+                break;
+            case ERROR:
+                error(msg);
+                break;
+        }
     }
 
     public static void info(Object msg) {
