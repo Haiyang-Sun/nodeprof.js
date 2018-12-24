@@ -190,44 +190,57 @@ process.on('exit', function () { J$.endExecution(); });
 path=require('path');
 
 
-// jalangi.js [--analysis XXX]* [testFile [testArgs]*]
+// jalangi.js [--analysis XXX]* [--initParam key:value]* [testFile [testArgs]*]
 function loadAnalysis(){
-  var analysisArr = [];
-  var analysisFlag = false;
   var arg0 = process.argv[0];
-  var i = 2; //0 => node, 1 => jalangi.js
-  for(; i < process.argv.length; i++){
-    var arg = process.argv[i];
-    if(arg == '--analysis'){
-      analysisFlag = true;
-    }else {
-      if(analysisFlag){
-        analysisArr.push(arg);
-        analysisFlag = false;
-      }else {
-        //the real app code
-        process.argv[i] = path.resolve(process.argv[i]);
-        break;
-      }
-    }
+  var i = 2; // start from 3rd arg: 0 => node, 1 => jalangi.js
+  var analyses = [];
+  var length = process.argv.length;
+  
+  // read analyses
+  for (; i < length && process.argv[i] == '--analysis'; i++) {
+    if (++i >= length)
+      throw 'missing analysis';
+    
+    analyses.push(process.argv[i]);
   }
-  if(i == process.argv.length){
-    throw "no main program is given";
+  
+  // read args
+  J$.initParams = {};
+  for (; i < length && process.argv[i] == '--initParam'; ++i) {
+    if (++i >= length)
+      throw 'missing key:value pair'
+    
+    // key:value pair
+    var pair = process.argv[i]
+    // take the first ':' to allow more occurrences in the value string
+    var separatorIndex = pair.indexOf(':');
+    var key = pair.substring(0, separatorIndex);
+    var value = pair.substring(separatorIndex+1);
+    
+    J$.initParams[key] = value;
   }
-  analysisArr.forEach((analysis) =>{
-    try{
+  
+  // the real program to run  
+  if (i == process.argv.length)
+    throw 'no main program is given';
+  process.argv[i] = path.resolve(process.argv[i]);
+  
+  // load analyses
+  analyses.forEach(analysis => {
+    try {
       require(path.resolve(analysis));
-    }catch(e){
-      console.log("error while loading analysis %s", analysis);
+    } catch(e) {
+      console.log('error while loading analysis %s', analysis);
       console.log(e);
       process.exit(-1);
     }
   });
 
-  //remove the analysis part in the argv
+  // remove the analysis part in the argv
   process.argv = process.argv.slice(i);
 
-  //put back the entry program
+  // put back the entry program
   process.argv.unshift(arg0);
 }
 
