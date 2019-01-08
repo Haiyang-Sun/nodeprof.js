@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2019, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,5 +23,20 @@
   J$.nativeLog('error', J$.nativeLog.ERROR); // unchecked: emits to stderr
   J$.nativeLog('neg level', -1);
   J$.nativeLog('string level', "1");
+
+  function SourceObjTest() {
+    this.functionEnter = function (iid, f, dis, args) {
+      if (f.name !== 'foo')
+        return;
+      var locObj = J$.iidToSourceObject(iid);
+      console.log('num props:', Object.getOwnPropertyNames(locObj).length);
+      console.log('name:', locObj.name);
+      console.log('range:', locObj.range);
+      console.log('loc.start:', locObj.loc.start);
+      console.log('loc.end:', locObj.loc.end);
+    };
+  }
+
+  sandbox.addAnalysis(new SourceObjTest());
 }
 )(J$);

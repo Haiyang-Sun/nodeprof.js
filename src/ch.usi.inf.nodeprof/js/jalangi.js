@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2019, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,9 @@ J$={};
       }
       return sandbox.adapter.iidToLocation(iid);
     };
+    sandbox.iidToSourceObject = function(iid) {
+      return sandbox.adapter.iidToSourceObject(iid);
+    }
     sandbox.getGlobalIID = function(iid) {
       return iid;
     };

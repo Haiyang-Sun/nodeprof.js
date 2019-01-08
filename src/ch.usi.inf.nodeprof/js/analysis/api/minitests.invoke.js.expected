@@ -2,3 +2,8 @@
 [i] info
 [i] neg level
 [i] string level
+num props: 4
+name: src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js
+range: [ 866, 884 ]
+loc.start: { line: 16, column: 1 }
+loc.end: { line: 16, column: 18 }

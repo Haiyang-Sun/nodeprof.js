@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2019, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSUserObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -87,9 +88,24 @@ public abstract class SourceMapping {
     public static DynamicObject getJSObjectForSourceSection(SourceSection section) {
         if (section == null)
             return Undefined.instance;
+
+        JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
         Source source = section.getSource();
         DynamicObject o = getJSObjectForSource(source);
-        JSObject.set(o, "section", makeSectionString(section).toString());
+
+        DynamicObject range = JSArray.createConstant(ctx, new Object[]{ section.getCharIndex(), section.getCharEndIndex()});
+        JSObject.set(o, "range", range);
+
+        DynamicObject loc = JSUserObject.create(ctx);
+        DynamicObject start = JSUserObject.create(ctx);
+        DynamicObject end = JSUserObject.create(ctx);
+        JSObject.set(start, "line", section.getStartLine());
+        JSObject.set(start, "column", section.getStartColumn());
+        JSObject.set(end, "line", section.getEndLine());
+        JSObject.set(end, "column", section.getEndColumn());
+        JSObject.set(loc, "start", start);
+        JSObject.set(loc, "end", end);
+        JSObject.set(o, "loc", loc);
         return o;
     }
 
