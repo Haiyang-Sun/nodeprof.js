@@ -230,7 +230,7 @@ public abstract class NodeProfAnalysis {
 
             // A built-in node has also the root tag, so we need a separate factory
             if (handlerMapping.containsKey(ProfiledTagEnum.BUILTIN)) {
-                SourceSectionFilter builtinFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.BUILTIN.getTag()).sourceIs(AnalysisFilterSourceList.getBuiltinFilter()).build();
+                SourceSectionFilter builtinFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.BUILTIN.getTag()).sourceIs(AnalysisFilterSourceList.getFilter(AnalysisFilterSourceList.ScopeEnum.builtin)).build();
                 getInstrumenter().attachExecutionEventFactory(
                                 builtinFilter,
                                 new ExecutionEventNodeFactory() {
