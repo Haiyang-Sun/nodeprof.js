@@ -65,7 +65,8 @@ def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
         config = open (join(analysisHome, "config"));
         for line in config:
             line = line.rstrip()
-            f = line.split(" ")[0];
+            words = line.split(" ");
+            f = words[0];
             if not os.path.exists (join(analysisHome, f)):
                 if len(line.split(" ")) == 1:
                     print("analysis file "+f + " doesn't exist!")
@@ -80,6 +81,16 @@ def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
                         print("downloaded analysis file "+f + " from "+url)
                 else:
                     continue;
+
+            for initParam in words[1:]:
+                # extra config for J$.initParams
+                if ":" in initParam:
+                    analysisOpt += ["--initParam"];
+                    analysisOpt += [initParam];
+                else:
+                    print("init param should be key:value")
+                    print("config file "+f+" has an invalid init param "+initParam)
+
             analysisOpt += ["--analysis"];
             analysisOpt += [join(analysisHome, f)];
     else:

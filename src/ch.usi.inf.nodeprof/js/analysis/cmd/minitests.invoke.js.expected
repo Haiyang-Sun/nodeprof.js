@@ -1,0 +1,3 @@
+[i] write => (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:16:1:16:19)
+[i] read => (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:4)
+[i] invokeFunPre => (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:15)
