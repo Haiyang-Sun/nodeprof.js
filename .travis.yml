@@ -45,6 +45,7 @@ before_script:
 script:
   - mx sforceimports
   - mx build
+  - mx test-specific --svm cmd-exclude
   - mx test-all
 
 deploy:
