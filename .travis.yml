@@ -45,6 +45,10 @@ before_script:
 script:
   - mx sforceimports
   - mx build
+  - cd ../graal/vm
+  - mx --dy nodeprof,/substratevm --force-bash-launchers=true --disable-polyglot build
+  - cd -
+  - mx test-specific --svm cmd-exclude
   - mx test-all
 
 deploy:

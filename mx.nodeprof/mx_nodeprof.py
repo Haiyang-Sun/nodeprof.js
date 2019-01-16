@@ -82,14 +82,19 @@ def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
                 else:
                     continue;
 
-            for initParam in words[1:]:
-                # extra config for J$.initParams
-                if ":" in initParam:
-                    analysisOpt += ["--initParam"];
-                    analysisOpt += [initParam];
+            mx.logv("analysis parameters from config: " + str(words[1:]))
+
+            # read analysis parameters from config
+            for w in words[1:]:
+                # ignore download URLs
+                if w.startswith('http'):
+                    continue
+                # detect --nodeprof.Foo=bar style parameters
+                if w.startswith('--nodeprof'):
+                    args += [w]
+                # otherwise treat as analysis (jalangi.js) parameters
                 else:
-                    print("init param should be key:value")
-                    print("config file "+f+" has an invalid init param "+initParam)
+                    analysisOpt += [w]
 
             analysisOpt += ["--analysis"];
             analysisOpt += [join(analysisHome, f)];
