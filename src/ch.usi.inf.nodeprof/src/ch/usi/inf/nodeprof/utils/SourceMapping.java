@@ -55,9 +55,6 @@ public abstract class SourceMapping {
         }
         int newIId = ++iidGen;
         assert (newIId < Integer.MAX_VALUE);
-        StringBuilder b = makeLocationString(sourceSection);
-
-        iidMap.put(newIId, b.toString());
         sourceSet.put(sourceSection, newIId);
         idToSource.put(newIId, sourceSection);
         return newIId;
@@ -65,7 +62,15 @@ public abstract class SourceMapping {
 
     @TruffleBoundary
     public static String getLocationForIID(int iid) {
-        return iidMap.get(iid);
+        if (iidMap.containsKey(iid)) {
+            return iidMap.get(iid);
+        } else if (idToSource.containsKey(iid)) {
+            String res = makeLocationString(idToSource.get(iid)).toString();
+            iidMap.put(iid, res);
+            return res;
+        } else {
+            return null;
+        }
     }
 
     @TruffleBoundary
