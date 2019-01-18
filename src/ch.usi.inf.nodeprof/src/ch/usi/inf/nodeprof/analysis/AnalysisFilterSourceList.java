@@ -35,10 +35,27 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
  */
 public class AnalysisFilterSourceList extends AnalysisFilterBase {
     private static final List<String> NO_EXCLUDES = Collections.emptyList();
-    private static final AnalysisFilterSourceList allExceptInternal = addGlobalExcludes(makeExcludeFilter(Collections.singletonList(Evaluator.FUNCTION_SOURCE_NAME), true));
-    private static final AnalysisFilterSourceList all = addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, false));
-    private static final AnalysisFilterSourceList app = addGlobalExcludes(makeExcludeFilter(Arrays.asList("node_modules", Evaluator.FUNCTION_SOURCE_NAME), true));
-    private static final AnalysisFilterSourceList builtinFilter = makeIncludeFilter(Collections.singletonList("<builtin>"), "(builtin-filter)");
+
+    public static enum ScopeEnum {
+        app,
+        allExceptInternal,
+        all,
+        builtin
+    }
+
+    public static final AnalysisFilterSourceList getFilter(ScopeEnum scope) {
+        switch (scope) {
+            case all:
+                return addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, false));
+            case builtin:
+                return makeIncludeFilter(Collections.singletonList("<builtin>"), "(builtin-filter)");
+            case app:
+                return addGlobalExcludes(makeExcludeFilter(Arrays.asList("node_modules", Evaluator.FUNCTION_SOURCE_NAME), true));
+            case allExceptInternal:
+            default:
+                return addGlobalExcludes(makeExcludeFilter(Collections.singletonList(Evaluator.FUNCTION_SOURCE_NAME), true));
+        }
+    }
 
     private final boolean instrumentInternal;
     private final boolean filterExcludes;
@@ -112,31 +129,22 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
         AnalysisFilterSourceList res;
         switch (GlobalConfiguration.SCOPE) {
             case "all":
-                res = AnalysisFilterSourceList.all;
+                res = AnalysisFilterSourceList.getFilter(ScopeEnum.all);
                 break;
             case "module":
-                res = AnalysisFilterSourceList.allExceptInternal;
+                res = AnalysisFilterSourceList.getFilter(ScopeEnum.allExceptInternal);
                 break;
             case "app":
-                res = AnalysisFilterSourceList.app;
+                res = AnalysisFilterSourceList.getFilter(ScopeEnum.app);
                 break;
             default:
-                res = AnalysisFilterSourceList.allExceptInternal;
+                res = AnalysisFilterSourceList.getFilter(ScopeEnum.allExceptInternal);
                 break;
         }
+        if (GlobalConfiguration.DEBUG) {
+            Logger.debug("default source filter " + res.filterExcludes + " " + res.matchSources.toString());
+        }
         return res;
-    }
-
-    public static AnalysisFilterSourceList getAll() {
-        return AnalysisFilterSourceList.all;
-    }
-
-    public static AnalysisFilterSourceList allExceptInternal() {
-        return AnalysisFilterSourceList.allExceptInternal;
-    }
-
-    public static AnalysisFilterSourceList getBuiltinFilter() {
-        return AnalysisFilterSourceList.builtinFilter;
     }
 
     @Override

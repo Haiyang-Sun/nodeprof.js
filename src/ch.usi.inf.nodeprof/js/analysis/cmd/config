@@ -1,1 +1,1 @@
-analysis.js analysis:read,write,invokeFunPre
+analysis.js --initParam analysis:read,write,invokeFunPre

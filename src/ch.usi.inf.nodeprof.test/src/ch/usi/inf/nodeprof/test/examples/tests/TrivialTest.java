@@ -34,7 +34,7 @@ public class TrivialTest extends BasicAnalysisTest {
 
     @Override
     public AnalysisFilterSourceList getFilter() {
-        return AnalysisFilterSourceList.getAll();
+        return AnalysisFilterSourceList.getFilter(AnalysisFilterSourceList.ScopeEnum.all);
     }
 
     /**
