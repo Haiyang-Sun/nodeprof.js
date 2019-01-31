@@ -18,9 +18,9 @@
 // DO NOT INSTRUMENT
 J$={};
 (function (sandbox) {
-  if(!process.config.variables.graalvm) {
-    console.log("nodeprof only works in graalvm")
-    return;
+  if(typeof Graal !== 'object') {
+    console.error("NodeProf only works with GraalVM")
+    process.exit(1);
   }
   try {
     sandbox.adapter = __jalangiAdapter;
