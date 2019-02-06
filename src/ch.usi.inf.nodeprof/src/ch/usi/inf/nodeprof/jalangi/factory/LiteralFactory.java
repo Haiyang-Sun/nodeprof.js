@@ -15,7 +15,6 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;

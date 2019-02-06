@@ -16,6 +16,7 @@
 package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 
@@ -23,11 +24,17 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
  * Abstract event handler for conditional events
  */
 public abstract class ConditionalEventHandler extends BaseSingleTagEventHandler {
+    private final boolean isConditional;
+
     public ConditionalEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.CF_COND);
+        boolean typeIsCond = false;
+        typeIsCond = JSTags.ControlFlowBranchTag.Type.Condition.name().equals(getAttributeNoReport("type"));
+        this.isConditional = typeIsCond;
     }
 
-    public Object getCondition(Object[] inputs) {
-        return assertGetInput(0, inputs, "conditionVal");
+    public boolean isConditional() {
+        return this.isConditional;
     }
+
 }

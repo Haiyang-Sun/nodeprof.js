@@ -108,11 +108,8 @@ public class InputChecker {
                 break;
             case CF_COND:
                 /**
-                 * 0 - conditional value
+                 * no inputs needed
                  */
-                if (inputs.length != 1) {
-                    return false;
-                }
                 break;
             case LITERAL:
                 /**

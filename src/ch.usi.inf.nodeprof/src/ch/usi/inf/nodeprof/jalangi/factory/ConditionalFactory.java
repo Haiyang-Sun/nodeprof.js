@@ -37,7 +37,7 @@ public class ConditionalFactory extends AbstractFactory {
     public BaseEventHandlerNode create(EventContext context) {
         if (!isBinary) {
             return new ConditionalEventHandler(context) {
-                @Child DirectCallNode postCall = createPostCallNode();
+                @Child DirectCallNode postCall = isConditional() ? createPostCallNode() : null;
 
                 @Override
                 public void executePre(VirtualFrame frame, Object[] inputs) {
@@ -47,9 +47,9 @@ public class ConditionalFactory extends AbstractFactory {
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) {
-                    if (post != null) {
+                    if (post != null && isConditional()) {
                         setPostArguments(0, getSourceIID());
-                        setPostArguments(1, getCondition(inputs));
+                        setPostArguments(1, result);
                         directCall(postCall, false, getSourceIID());
                     }
                 }

@@ -30,6 +30,7 @@ import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 
@@ -97,8 +98,7 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
                     include = JSAbstractArray.arrayGetLength((DynamicObject) ret) > 0;
                     includeTags = mapToTags(JSAbstractArray.toArray((DynamicObject) ret));
                 } else {
-                    // TODO JSBoolean.isJSBoolean(ret) is false, is this really the right way?
-                    include = Boolean.parseBoolean(ret.toString());
+                    include = JSRuntime.toBoolean(ret);
                 }
             } catch (UnsupportedTypeException | ArityException | UnsupportedMessageException e) {
                 Logger.error("JS Analysis filter: call to JS predicate failed");

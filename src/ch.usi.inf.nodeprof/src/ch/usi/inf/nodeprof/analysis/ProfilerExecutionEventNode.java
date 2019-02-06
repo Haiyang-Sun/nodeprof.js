@@ -78,7 +78,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
         }
         if (this.child.isLastIndex(getInputCount(), inputIndex)) {
             this.cb.preHitCount++;
-            this.child.executePre(frame, getSavedInputValues(frame));
+            this.child.executePre(frame, child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null);
         }
     }
 
@@ -101,7 +101,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
         if (hasOnEnter > 0) {
             hasOnEnter--;
             this.cb.postHitCount++;
-            Object[] inputs = getSavedInputValues(frame);
+            Object[] inputs = child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null;
             try {
                 this.child.executePost(frame, result, inputs);
             } catch (Exception e) {
@@ -112,10 +112,12 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     @TruffleBoundary
     private void reportError(Object[] inputs, Exception e) {
-        Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + inputs.length);
-        for (int i = 0; i < inputs.length; i++) {
-            Logger.error(context.getInstrumentedSourceSection(),
-                            "\targ[" + i + "]: " + inputs[i]);
+        Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + (inputs == null ? "null" : inputs.length));
+        if (inputs != null) {
+            for (int i = 0; i < inputs.length; i++) {
+                Logger.error(context.getInstrumentedSourceSection(),
+                                "\targ[" + i + "]: " + inputs[i]);
+            }
         }
         e.printStackTrace();
         System.exit(-1);

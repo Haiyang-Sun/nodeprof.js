@@ -46,8 +46,11 @@ public abstract class AnalysisEventsVerifier {
     ArrayList<AnalysisEvent> events = new ArrayList<>();
 
     public void dequeueAndVerifyEvent(String eventName, int line, ProfiledTagEnum tag, Object... data) {
-        Assert.assertTrue(!events.isEmpty());
-        AnalysisEvent head = events.remove(0);
+        AnalysisEvent head;
+        do {
+            Assert.assertTrue(!events.isEmpty());
+            head = events.remove(0);
+        } while (head.getTag() == ProfiledTagEnum.STATEMENT);
         assertEquals("expected event " + eventName + ", actual " + head.getEventName() + ".", eventName,
                         head.getEventName());
         int startLine = SourceMapping.getSourceSectionForIID(head.getIId()).getStartLine();
