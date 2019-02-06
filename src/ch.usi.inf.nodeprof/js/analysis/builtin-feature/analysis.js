@@ -18,7 +18,7 @@
 ((function(sandbox){
   function TestBuiltin() {
     function getLocation(iid) {
-      if (process.config.variables.graalvm)
+      if (typeof Graal === 'object')
         return sandbox.iidToLocation(iid);
       else
         return sandbox.iidToLocation(sandbox.sid, iid);

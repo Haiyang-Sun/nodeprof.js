@@ -17,7 +17,7 @@
 ((function(sandbox){
   function FieldTest() {
     function getLocation(sid, iid) {
-      if (process.config.variables.graalvm)
+      if (typeof Graal === 'object')
         return  J$.iidToLocation(iid);
       else
         return J$.iidToLocation(sid, iid);

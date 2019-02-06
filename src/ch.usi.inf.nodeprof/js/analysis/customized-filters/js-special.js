@@ -27,7 +27,7 @@
     this.functionEnter = function (iid, f, dis, args) {
       if (f.name == '' || mute)
         return;
-      console.log("%s: functionEnter: %s / %s / %d", analysis, f.name, J$.iidToLocation(iid), arguments.length);
+      console.log("%s: functionEnter: %s / %s / %d", analysis, f.name, J$.iidToLocation(iid).replace(/:.*[0-9]/,''), arguments.length);
       entered = true;
     };
     this.endExecution = function () {

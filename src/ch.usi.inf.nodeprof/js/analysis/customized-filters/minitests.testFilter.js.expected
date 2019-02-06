@@ -1,12 +1,12 @@
-node-module: functionEnter: require / (*internal/modules/cjs/helpers.js:17:3:24:4) / 4
-node-module: functionEnter: stat / (*internal/modules/cjs/loader.js:83:1:93:2) / 4
-node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js:201:1:205:2) / 4
-node-module: functionEnter: Module / (*internal/modules/cjs/loader.js:102:1:110:2) / 4
-node-module: functionEnter: updateChildren / (*internal/modules/cjs/loader.js:96:1:100:2) / 4
-node-module: functionEnter: tryModuleLoad / (*internal/modules/cjs/loader.js:535:1:545:2) / 4
-node-module: functionEnter: stripBOM / (*internal/modules/cjs/helpers.js:59:1:64:2) / 4
-node-module: functionEnter: stripShebang / (*internal/modules/cjs/helpers.js:69:1:98:2) / 4
-node-module: functionEnter: makeRequireFunction / (*internal/modules/cjs/helpers.js:14:1:52:2) / 4
+node-module: functionEnter: require / (*internal/modules/cjs/helpers.js) / 4
+node-module: functionEnter: stat / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: Module / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: updateChildren / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: tryModuleLoad / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: stripBOM / (*internal/modules/cjs/helpers.js) / 4
+node-module: functionEnter: stripShebang / (*internal/modules/cjs/helpers.js) / 4
+node-module: functionEnter: makeRequireFunction / (*internal/modules/cjs/helpers.js) / 4
 getField (src/ch.usi.inf.nodeprof.test/js/minitests/testFilter.js:19:7:19:10) in inclusion.js
 Set {
   'internal/modules/cjs/loader.js',

@@ -18,9 +18,9 @@
   function FieldTest() {
     var assert = require("assert");
     function getLocation(sid, iid) {
-      if (process.config.variables.graalvm)
+      if (typeof Graal === 'object')
         // Truffle-Jalangi has unique IIDs
-        return  J$.iidToLocation(iid);
+        return  J$.iidToLocation(iid).split(':')[0];
       else
         // Jalangi on V8/Node needs sid
         return J$.iidToLocation(sid, iid);
