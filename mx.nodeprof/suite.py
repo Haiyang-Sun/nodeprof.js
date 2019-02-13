@@ -89,8 +89,10 @@ suite = {
       "layout" : {
         "./" : [
           "file:mx.nodeprof/native-image.properties",
+          "file:src/ch.usi.inf.nodeprof/js/analysis/trivial/emptyTemplate.js",
+          "file:src/ch.usi.inf.nodeprof/js/jalangi.js",
           "file:README.md",
-          "file:Tutorial.md",
+          "file:Tutorial.md"
         ],
       },
     },
