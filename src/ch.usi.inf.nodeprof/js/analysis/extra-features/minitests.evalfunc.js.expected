@@ -1,3 +1,5 @@
+newSource: evalfunc.js / 2
+newSource matches: 2
 new Function body (function foo() { console.log("abc") })(); return 42;
 result function: anonymous
 invoking func: Function

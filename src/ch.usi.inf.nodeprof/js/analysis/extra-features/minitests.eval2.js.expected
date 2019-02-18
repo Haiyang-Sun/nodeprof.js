@@ -1,3 +1,5 @@
+newSource: eval2.js / 2
+newSource matches: 3
 pre var x = 1; function foo(a){console.log(a);}; foo(x);
 1
 invoking func: bound log

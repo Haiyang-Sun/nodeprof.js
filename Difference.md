@@ -44,6 +44,12 @@ this.builtinExit = function (name, returnVal) {
 };
 ```
 
+A callback similar to `instrumentCodePre`, but limited to observing code as it is encountered by NodeProf:
+
+```
+this.newSource = function (name, source) {
+};
+```
 
 Examples can be found:
 [1](https://github.com/Haiyang-Sun/nodeprof.js/blob/master/src/ch.usi.inf.nodeprof/js/analysis/extra-features/extra.js), [2](https://github.com/Haiyang-Sun/nodeprof.js/blob/master/src/ch.usi.inf.nodeprof/js/analysis/builtin-feature/analysis.js)

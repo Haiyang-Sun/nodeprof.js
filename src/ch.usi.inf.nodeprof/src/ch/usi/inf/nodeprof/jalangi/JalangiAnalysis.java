@@ -47,6 +47,7 @@ import ch.usi.inf.nodeprof.jalangi.factory.GetFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.InvokeFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.LiteralFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.LoopFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.NewSourceFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutElementFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ReadFactory;
@@ -134,6 +135,8 @@ public class JalangiAnalysis {
 
             put("startExpression", EnumSet.of(EXPRESSION));
             put("endExpression", EnumSet.of(EXPRESSION));
+
+            put("newSource", EnumSet.of(ROOT));
         }
     });
 
@@ -322,6 +325,14 @@ public class JalangiAnalysis {
                             new ReturnFactory(this.jsAnalysis, callbacks.get("_return")));
         }
 
+        /**
+         * New source code callback
+         */
+        if (this.callbacks.containsKey("newSource")) {
+            this.instrument.onCallback(
+                            ProfiledTagEnum.ROOT,
+                            new NewSourceFactory(this.jsAnalysis, callbacks.get("newSource")));
+        }
     }
 
     /**

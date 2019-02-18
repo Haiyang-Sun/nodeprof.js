@@ -14,6 +14,9 @@
  * limitations under the License.
  *******************************************************************************/
 //DO NOT INSTRUMENT
+
+const path = require('path');
+
 ((function(sandbox){
   function TestEval() {
     this.cache = null;
@@ -42,6 +45,18 @@
       if(this.cache == func) {
         console.log("at end of invocation at %s, result: %d", J$.iidToLocation(iid), result);
       }
+    }
+
+    this.newSource = function (name, contents) {
+      // XXX skip eval for now
+      if (name.startsWith('eval'))
+        return;
+      // mangle absolute path name for test output
+      name = path.parse(name).base;
+      // count something in source contents to make sure it's there
+      const re = /foo|var/g;
+      console.log("newSource: %s / %d", name, arguments.length);
+      console.log("newSource matches: %d", (contents.match(re) || []).length);
     }
   };
   sandbox.addAnalysis(new TestEval(), {includes: 'eval.js,eval2.js,evalfunc.js'});

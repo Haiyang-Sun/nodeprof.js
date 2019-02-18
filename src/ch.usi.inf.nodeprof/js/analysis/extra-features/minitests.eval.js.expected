@@ -1,2 +1,4 @@
+newSource: eval.js / 2
+newSource matches: 1
 pre var a = 0;
 post var a = 0;

@@ -159,6 +159,12 @@
             };
 
             /**
+             * This callback is called when new source code is encountered during instrumentation.
+             **/
+            this.newSource = function(name, source) {
+            };
+
+            /**
              *  Declaration of a symbol, type can be `const, let, var`
              *  Jalangi version: this.declare = function (iid, name, val, isArgument, argumentIndex, isCatchParam) {
              **/
