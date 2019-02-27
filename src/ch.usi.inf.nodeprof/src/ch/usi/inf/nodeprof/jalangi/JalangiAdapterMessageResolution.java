@@ -25,6 +25,7 @@ import com.oracle.truffle.api.interop.Resolve;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.analysis.ProfilerExecutionEventNode;
@@ -88,7 +89,7 @@ public class JalangiAdapterMessageResolution {
                     }
                     return result == null ? Undefined.instance : result;
                 }
-            }  else if (identifier.equals("iidToSourceObject")) {
+            } else if (identifier.equals("iidToSourceObject")) {
                 if (checkArguments(1, arguments, identifier)) {
                     try {
                         return SourceMapping.getJSObjectForIID(convertIID(arguments[0]));
@@ -132,7 +133,7 @@ public class JalangiAdapterMessageResolution {
                 // status of the instrumentation (true for enabled and false for disabled)
                 if (arguments.length >= 1) {
                     if (arguments[0] != null) {
-                        boolean value = Boolean.parseBoolean(arguments[0].toString());
+                        boolean value = JSRuntime.toBoolean(arguments[0]);
                         ProfilerExecutionEventNode.updateEnabled(value);
                     }
                 }

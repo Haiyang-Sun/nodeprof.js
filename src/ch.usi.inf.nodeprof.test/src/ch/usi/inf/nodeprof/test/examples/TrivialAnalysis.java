@@ -15,6 +15,9 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.test.examples;
 
+import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.ExecutionEventNode;
@@ -34,40 +37,99 @@ public class TrivialAnalysis extends TestableNodeProfAnalysis {
     }
 
     @Override
+    @TruffleBoundary
     public void initCallbacks() {
         String tagsStr = System.getenv("NODEPROF_BENCH_TAG");
+        final boolean saveInput = "true".equals(System.getenv("NODEPROF_SAVE_INPUT"));
+        final boolean saveInputLocal = "true".equals(System.getenv("NODEPROF_LOCAL_INPUT"));
+        final boolean useInput = saveInput && "true".equals(System.getenv("NODEPROF_USE_INPUT"));
         if (tagsStr == null || tagsStr.isEmpty()) {
             Logger.debug("No tag is provided in env NODEPROF_BENCH_TAG, run without instrumentation");
             return;
         }
         for (String tagStr : tagsStr.split(",")) {
-            ProfiledTagEnum tag = null;
             try {
-                tag = ProfiledTagEnum.valueOf(tagStr);
+                final ProfiledTagEnum tag = ProfiledTagEnum.valueOf(tagStr);
                 Logger.debug("Tag enabled: " + tag);
+
+                if (!saveInputLocal) {
+                    this.onSingleTagCallback(tag.getTag(), new ExecutionEventNodeFactory() {
+                        public ExecutionEventNode create(EventContext context) {
+                            return new ExecutionEventNode() {
+                                @Override
+                                protected void onInputValue(VirtualFrame frame, EventContext inputContext, int inputIndex, Object inputValue) {
+                                    if (saveInput && tag.getExpectedNumInputs() != 0) {
+                                        saveInputValue(frame, inputIndex, inputValue);
+                                    }
+                                }
+
+                                void consume(Object[] inputs) {
+                                }
+
+                                @Override
+                                protected void onReturnValue(VirtualFrame frame, Object result) {
+                                    if (useInput && tag.getExpectedNumInputs() != 0) {
+                                        Object[] inputs = getSavedInputValues(frame);
+                                        this.consume(inputs);
+                                    }
+                                }
+                            };
+                        }
+                    });
+                } else {
+                    this.onSingleTagCallback(tag.getTag(), new ExecutionEventNodeFactory() {
+
+                        public ExecutionEventNode create(EventContext context) {
+
+                            return new ExecutionEventNode() {
+                                @CompilationFinal Object[] inputs = null;
+
+                                @Override
+                                protected void onInputValue(VirtualFrame frame, EventContext inputContext, int inputIndex, Object inputValue) {
+                                    if (saveInput && tag.getExpectedNumInputs() != 0) {
+                                        if (tag.getExpectedNumInputs() > 0) {
+                                            if (inputs == null) {
+                                                CompilerDirectives.transferToInterpreterAndInvalidate();
+                                                inputs = new Object[tag.getExpectedNumInputs()];
+                                            }
+                                            if (inputIndex >= inputs.length) {
+                                                return;
+                                            }
+                                        } else {
+                                            if (inputs == null) {
+                                                CompilerDirectives.transferToInterpreterAndInvalidate();
+                                                inputs = new Object[inputIndex + 1];
+                                            } else if (inputs.length <= inputIndex) {
+                                                CompilerDirectives.transferToInterpreterAndInvalidate();
+                                                Object[] newInputs = new Object[inputIndex + 1];
+                                                for (int i = 0; i < inputs.length; i++) {
+                                                    newInputs[i] = inputs[i];
+                                                }
+                                                inputs = newInputs;
+                                            }
+                                        }
+                                        inputs[inputIndex] = inputValue;
+                                    }
+                                }
+
+                                void consume(Object[] inputs) {
+                                }
+
+                                @Override
+                                protected void onReturnValue(VirtualFrame frame, Object result) {
+                                    if (useInput && tag.getExpectedNumInputs() != 0) {
+                                        this.consume(inputs);
+                                    }
+                                }
+                            };
+                        }
+                    });
+                }
             } catch (Exception e) {
                 Logger.error("Invalid tag given " + tagStr);
                 System.exit(-1);
             }
 
-            this.onSingleTagCallback(tag.getTag(), new ExecutionEventNodeFactory() {
-                public ExecutionEventNode create(EventContext context) {
-                    return new ExecutionEventNode() {
-                        @Override
-                        protected void onInputValue(VirtualFrame frame, EventContext inputContext, int inputIndex, Object inputValue) {
-                            saveInputValue(frame, inputIndex, inputValue);
-                        }
-
-    void consume(Object[] inputs){
-    }
-    @Override
-    protected void onReturnValue(VirtualFrame frame, Object result) {
-            Object[] inputs = getSavedInputValues(frame);
-            this.consume(inputs);
-    }
-                    };
-                }
-            });
         }
     }
 

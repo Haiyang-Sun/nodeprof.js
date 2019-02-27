@@ -34,6 +34,7 @@ import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.js.parser.JavaScriptLanguage;
+import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Null;
@@ -57,10 +58,11 @@ public class NodeProfJalangi extends NodeProfAnalysis {
 
     @Override
     @TruffleBoundary
-    public void onLoad() throws Exception {
+    public Object onLoad() throws Exception {
         Source src = Source.newBuilder(JavaScriptLanguage.ID, "__jalangiAdapter = adapterVar", "nodeprof").build();
         CallTarget bootstrap = this.getEnv().parse(src, "adapterVar");
         bootstrap.call(new JalangiAdapter(this));
+        return null;
     }
 
     /**
@@ -131,7 +133,7 @@ public class NodeProfJalangi extends NodeProfAnalysis {
         } else {
 
             Object internal = getProperty(configObj, "internal");
-            boolean instrumentInternal = internal == null ? false : Boolean.parseBoolean(internal.toString());
+            boolean instrumentInternal = internal == null ? false : JSRuntime.toBoolean(internal);
 
             boolean excludeFilter = true;
             String filters;
@@ -142,8 +144,7 @@ public class NodeProfJalangi extends NodeProfAnalysis {
                 excludeFilter = false;
             } else {
                 if (getProperty(configObj, "includes") != null) {
-                    Logger.error("Filter config must not define 'include' and 'exclude' at the same time (config: "
-                            + JSObject.safeToString((DynamicObject) configObj) + ")");
+                    Logger.error("Filter config must not define 'include' and 'exclude' at the same time (config: " + JSObject.safeToString((DynamicObject) configObj) + ")");
                     System.exit(-1);
                 }
                 filters = excludes.toString();

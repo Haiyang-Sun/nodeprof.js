@@ -108,6 +108,17 @@ public abstract class BaseEventHandlerNode extends Node {
         return result;
     }
 
+    public Object getAttributeNoReport(String key) {
+        Object result = null;
+        try {
+            result = ForeignAccess.sendRead(read, (TruffleObject) ((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(),
+                            key);
+        } catch (Exception e) {
+            return null;
+        }
+        return result;
+    }
+
     @TruffleBoundary
     private void reportError(String key, Exception e) {
         Logger.error(getInstrumentedSourceSection(), "attribute " + key + " doesn't exist " + context.getInstrumentedNode().getClass().getSimpleName());

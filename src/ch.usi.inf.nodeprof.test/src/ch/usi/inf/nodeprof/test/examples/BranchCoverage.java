@@ -21,6 +21,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
+import com.oracle.truffle.js.runtime.JSRuntime;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.analysis.AnalysisFactory;
@@ -61,8 +62,7 @@ public class BranchCoverage extends TestableNodeProfAnalysis {
 
                     @Override
                     public void executePost(VirtualFrame frame, Object result, Object[] inputs) {
-                        Object cond = getCondition(inputs);
-                        if (cond instanceof Boolean && (Boolean) cond) {
+                        if (JSRuntime.toBoolean(result)) {
                             addDebugEvent("BC", getSourceIID(), ProfiledTagEnum.CF_COND, true);
                             ((SimpleCounterReport) (trueCounter.execute(getSourceIID()))).incre();
                         } else {

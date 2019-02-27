@@ -17,6 +17,7 @@
 package ch.usi.inf.nodeprof.analysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -36,6 +37,7 @@ import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.InputNodeTag;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList.ScopeEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.MultiEventHandler;
 import ch.usi.inf.nodeprof.jalangi.NodeProfJalangi;
@@ -95,8 +97,8 @@ public abstract class NodeProfAnalysis {
     /**
      * executed after constructor, could throw an exception
      */
-    public void onLoad() throws Exception {
-
+    public Object onLoad() throws Exception {
+        return null;
     }
 
     public static void addAnalysis(NodeProfAnalysis analysis) {
@@ -106,7 +108,7 @@ public abstract class NodeProfAnalysis {
     @TruffleBoundary
     public static void enableAnalysis(Instrumenter instrumenter, Env env, String analysisClass) {
         if (!analysisClass.isEmpty()) {
-            NodeProfAnalysis analysis;
+            NodeProfAnalysis analysis = null;
             if (analysisClass.contains("NodeProfJalangi")) {
                 analysis = new NodeProfJalangi(instrumenter, env);
                 try {
@@ -114,10 +116,20 @@ public abstract class NodeProfAnalysis {
                 } catch (Exception e) {
                     Logger.error("error happens in loading the analysis " + analysisClass);
                     e.printStackTrace();
-                    // System.exit(-1);
                 }
             } else {
-                analysis = loadAnalysisFromClass(analysisClass, instrumenter, env);
+                HashMap<String, NodeProfAnalysis> instances = new HashMap<>();
+
+                for (Entry<String, NodeProfAnalysis> entry : instances.entrySet()) {
+                    if (analysisClass.equals(entry.getKey())) {
+                        analysis = entry.getValue();
+                        break;
+                    }
+                }
+                if (analysis == null) {
+                    analysis = loadAnalysisFromClass(analysisClass, instrumenter, env);
+                }
+
                 try {
                     analysis.onLoad();
                 } catch (Exception e) {
@@ -131,7 +143,7 @@ public abstract class NodeProfAnalysis {
             if (analysis != null) {
                 addAnalysis(analysis);
             } else {
-                Logger.debug("failed in loading analysis " + analysisClass);
+                Logger.warning("failed in loading analysis " + analysisClass);
             }
         }
     }
@@ -216,40 +228,47 @@ public abstract class NodeProfAnalysis {
         analysisReady(filter, handlers);
     }
 
+    // tags that require a separate factory for instrumentation
+    private static final ProfiledTagEnum[] separateFactoryTags = {ProfiledTagEnum.BUILTIN, ProfiledTagEnum.STATEMENT, ProfiledTagEnum.CF_COND};
+
     @TruffleBoundary
     private void analysisReady(AnalysisFilterBase sourceFilter, HashMap<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> handlerMapping) {
         // check if any new callback is registered
         if (handlerMapping.size() > 0) {
-            ArrayList<Class<?>> nonBuiltinCallbacks = new ArrayList<>();
+            ArrayList<Class<? extends Tag>> definedTags = new ArrayList<>();
             for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
                 entry.getKey().usedAnalysis++;
-                if (entry.getKey() != ProfiledTagEnum.BUILTIN) {
-                    nonBuiltinCallbacks.add(entry.getKey().getTag());
+                if (!Arrays.asList(separateFactoryTags).contains(entry.getKey())) {
+                    definedTags.add(entry.getKey().getTag());
                 }
             }
 
-            // A built-in node has also the root tag, so we need a separate factory
-            if (handlerMapping.containsKey(ProfiledTagEnum.BUILTIN)) {
-                SourceSectionFilter builtinFilter = SourceSectionFilter.newBuilder().tagIs(ProfiledTagEnum.BUILTIN.getTag()).sourceIs(AnalysisFilterSourceList.getFilter(AnalysisFilterSourceList.ScopeEnum.builtin)).build();
-                getInstrumenter().attachExecutionEventFactory(
-                                builtinFilter,
-                                new ExecutionEventNodeFactory() {
-                                    @TruffleBoundary
-                                    public ExecutionEventNode create(EventContext context) {
-                                        InstrumentableNode instrumentedNode = (InstrumentableNode) context.getInstrumentedNode();
-                                        if (instrumentedNode.hasTag(ProfiledTagEnum.BUILTIN.getTag())) {
-                                            return createAndSimplifyExecutionEventNode(context, ProfiledTagEnum.BUILTIN, handlerMapping.get(ProfiledTagEnum.BUILTIN));
-                                        } else {
-                                            return new ExecutionEventNode() {
-                                            };
+            for (ProfiledTagEnum tag : separateFactoryTags) {
+                if (handlerMapping.containsKey(tag)) {
+                    SourcePredicate sourcePredicate = tag.equals(ProfiledTagEnum.BUILTIN) ? AnalysisFilterSourceList.getFilter(ScopeEnum.builtin) : sourceFilter;
+                    SourceSectionFilter filter = SourceSectionFilter.newBuilder().tagIs(tag.getTag()).sourceIs(sourcePredicate).build();
+
+                    getInstrumenter().attachExecutionEventFactory(
+                                    filter,
+                                    tag.getExpectedNumInputs() == 0 ? null : SourceSectionFilter.newBuilder().tagIs(StandardTags.ExpressionTag.class, InputNodeTag.class).build(),
+                                    new ExecutionEventNodeFactory() {
+                                        @TruffleBoundary
+                                        public ExecutionEventNode create(EventContext context) {
+                                            InstrumentableNode instrumentedNode = (InstrumentableNode) context.getInstrumentedNode();
+                                            if (instrumentedNode.hasTag(tag.getTag())) {
+                                                return createAndSimplifyExecutionEventNode(context, tag, handlerMapping.get(tag));
+                                            } else {
+                                                return new ExecutionEventNode() {
+                                                };
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                }
             }
 
-            if (nonBuiltinCallbacks.size() > 0) {
-                Class<?>[] eventTags = new Class<?>[nonBuiltinCallbacks.size()];
-                nonBuiltinCallbacks.toArray(eventTags);
+            if (definedTags.size() > 0) {
+                Class<?>[] eventTags = new Class<?>[definedTags.size()];
+                definedTags.toArray(eventTags);
                 SourceSectionFilter eventFilter = SourceSectionFilter.newBuilder().tagIs(eventTags).sourceIs(sourceFilter).build();
                 SourceSectionFilter inputFilter = SourceSectionFilter.newBuilder().tagIs(StandardTags.ExpressionTag.class, InputNodeTag.class).build();
 
@@ -264,7 +283,7 @@ public abstract class NodeProfAnalysis {
                                         int count = 0;
                                         InstrumentableNode instrumentedNode = (InstrumentableNode) context.getInstrumentedNode();
                                         for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
-                                            if (instrumentedNode.hasTag(entry.getKey().getTag()) && entry.getKey() != ProfiledTagEnum.BUILTIN) {
+                                            if (instrumentedNode.hasTag(entry.getKey().getTag()) && !Arrays.asList(separateFactoryTags).contains(entry.getKey())) {
                                                 count += 1;
                                             }
                                         }
@@ -274,7 +293,7 @@ public abstract class NodeProfAnalysis {
                                             Logger.error("a node has more than 1 profiling tags!!");
                                             String tags = "";
                                             for (Entry<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> entry : handlerMapping.entrySet()) {
-                                                if (instrumentedNode.hasTag(entry.getKey().getTag()) && entry.getKey() != ProfiledTagEnum.BUILTIN) {
+                                                if (instrumentedNode.hasTag(entry.getKey().getTag()) && !Arrays.asList(separateFactoryTags).contains(entry.getKey())) {
                                                     tags += entry.getKey().getTag().getSimpleName() + " ";
                                                 }
                                             }
@@ -286,7 +305,7 @@ public abstract class NodeProfAnalysis {
                                             try {
                                                 ProfiledTagEnum key = entry.getKey();
                                                 Source source = context.getInstrumentedSourceSection().getSource();
-                                                if (instrumentedNode.hasTag(key.getTag()) && key != ProfiledTagEnum.BUILTIN && sourceFilter.testTag(source, key)) {
+                                                if (instrumentedNode.hasTag(key.getTag()) && !Arrays.asList(separateFactoryTags).contains(entry.getKey()) && sourceFilter.testTag(source, key)) {
                                                     return createAndSimplifyExecutionEventNode(context, entry.getKey(), entry.getValue());
                                                 }
                                             } catch (Exception exception) {
