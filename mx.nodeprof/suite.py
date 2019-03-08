@@ -6,7 +6,7 @@ suite = {
     "suites" : [
       {
         "name" : "graal-nodejs",
-        "version" : "7d77f3d2d3ec36a98633763c56feae5f4bcc7052",
+        "version" : "87206f4d7d3d7fcb785bf31240078293f2802403",
         "subdir" : True,
         "urls" : [
           {"url" : "https://github.com/graalvm/graaljs.git", "kind" : "git"},
@@ -42,7 +42,7 @@ suite = {
       "annotationProcessors" : ["truffle:TRUFFLE_DSL_PROCESSOR"],
       "javaCompliance" : "1.8",
       "workingSets" : "Truffle,JavaScript",
-      "checkstyle" : "com.oracle.truffle.js.runtime",      
+      "checkstyle" : "com.oracle.truffle.js",
     },
     "ch.usi.inf.nodeprof.test" : {
       "subDir" : "src",

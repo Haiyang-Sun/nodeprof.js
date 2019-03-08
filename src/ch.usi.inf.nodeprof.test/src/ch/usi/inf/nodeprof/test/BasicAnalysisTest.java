@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import com.oracle.js.parser.Source;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
-import com.oracle.truffle.js.parser.JavaScriptLanguage;
+import com.oracle.truffle.js.lang.JavaScriptLanguage;
 
 import ch.usi.inf.nodeprof.NodeProfInstrument;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
