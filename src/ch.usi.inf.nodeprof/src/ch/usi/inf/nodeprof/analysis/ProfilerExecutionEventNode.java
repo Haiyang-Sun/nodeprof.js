@@ -24,6 +24,7 @@ import com.oracle.truffle.api.instrumentation.ExecutionEventNode;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
+import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 public class ProfilerExecutionEventNode extends ExecutionEventNode {
@@ -119,9 +120,10 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                                 "\targ[" + i + "]: " + inputs[i]);
             }
         }
-        e.printStackTrace();
-        System.exit(-1);
-
+        if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
+            Thread.dumpStack();
+            System.exit(-1);
+        }
     }
 
     @Override

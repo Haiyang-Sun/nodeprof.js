@@ -94,6 +94,8 @@ public abstract class BaseEventHandlerNode extends Node {
 
     /**
      *
+     * get the node-specific attribute, in case of missing such attributes report an error
+     *
      * @param key of the current InstrumentableNode
      * @return the value of this key
      */
@@ -103,11 +105,18 @@ public abstract class BaseEventHandlerNode extends Node {
             result = ForeignAccess.sendRead(read, (TruffleObject) ((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(),
                             key);
         } catch (Exception e) {
-            reportError(key, e);
+            reportAttributeMissingError(key, e);
         }
         return result;
     }
 
+    /**
+     *
+     * get the node-specific attribute, in case of missing such attributes, return null
+     *
+     * @param key of the current InstrumentableNode
+     * @return the value of this key
+     */
     public Object getAttributeNoReport(String key) {
         Object result = null;
         try {
@@ -120,10 +129,13 @@ public abstract class BaseEventHandlerNode extends Node {
     }
 
     @TruffleBoundary
-    private void reportError(String key, Exception e) {
+    private void reportAttributeMissingError(String key, Exception e) {
         Logger.error(getInstrumentedSourceSection(), "attribute " + key + " doesn't exist " + context.getInstrumentedNode().getClass().getSimpleName());
         e.printStackTrace();
-        System.exit(-1);
+        if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
+            Thread.dumpStack();
+            System.exit(-1);
+        }
     }
 
     /**
@@ -136,32 +148,32 @@ public abstract class BaseEventHandlerNode extends Node {
      */
     protected Object assertGetInput(int index, Object[] inputs, String inputName) {
         if (inputs == null) {
-            reportError(index, inputs, "InputsArrayNull");
+            reportInputsError(index, inputs, "InputsArrayNull");
             return Undefined.instance;
         }
         if (index < inputs.length) {
             Object result = inputs[index];
             if (result == null) {
                 result = Undefined.instance;
-                reportError(index, inputs, "InputElementNull " + index);
+                reportInputsError(index, inputs, "InputElementNull " + index);
             }
             return result;
         } else {
             /**
              * if the inputs are not there, report the detail and stop the engine.
              */
-            reportError(index, inputs, "MissingInput");
+            reportInputsError(index, inputs, "MissingInput");
         }
         return Undefined.instance;
     }
 
     @TruffleBoundary
-    private void reportError(int index, Object[] inputs, String info) {
+    private void reportInputsError(int index, Object[] inputs, String info) {
         Logger.error(context.getInstrumentedSourceSection(),
                         "Error[" + info + "] getting inputs at index '" + index + "' from " +
                                         context.getInstrumentedNode().getClass().getSimpleName() + " (has " + (inputs == null ? 0 : inputs.length) + " input(s))");
 
-        if (false && !GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
+        if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
             Thread.dumpStack();
             System.exit(-1);
         }
