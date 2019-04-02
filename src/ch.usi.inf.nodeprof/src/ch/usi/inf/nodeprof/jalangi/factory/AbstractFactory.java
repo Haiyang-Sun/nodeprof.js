@@ -25,6 +25,7 @@ import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.GraalJSException;
+import com.oracle.truffle.js.runtime.JSCancelledExecutionException;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
@@ -181,8 +182,14 @@ public abstract class AbstractFactory implements
         } catch (GraalJSException e) {
             Logger.error(iid, "error happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]");
             Logger.dumpException(e);
+        } catch (JSCancelledExecutionException e) {
+            Logger.error(iid, "execution cancelled probably due to timeout");
+        } catch (Exception e) {
+            Logger.error(iid, "unknown exception happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]" + " " + e.getClass().getSimpleName());
+            throw e;
+        } finally {
+            nestedControl = false;
         }
-        nestedControl = false;
     }
 
     @TruffleBoundary
