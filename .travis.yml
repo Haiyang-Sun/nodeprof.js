@@ -17,7 +17,7 @@ before_install:
         exit
       }
     fi
-  - wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-0.55/openjdk-8u202-jvmci-0.55-linux-amd64.tar.gz
+  - wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-0.58/openjdk-8u202-jvmci-0.58-linux-amd64.tar.gz
   - mkdir openjdk1.8.0-jvmci
   - tar --strip 1 -C openjdk1.8.0-jvmci -xvf openjdk-*.tar.gz
   - git clone https://github.com/graalvm/mx.git
