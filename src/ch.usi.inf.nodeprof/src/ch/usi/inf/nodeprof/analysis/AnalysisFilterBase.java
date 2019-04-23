@@ -20,6 +20,7 @@ import com.oracle.truffle.api.instrumentation.SourceSectionFilter;
 import com.oracle.truffle.api.source.Source;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import com.oracle.truffle.js.lang.JavaScriptLanguage;
 
 /**
  * Base for NodeProf's analysis filters
@@ -54,5 +55,15 @@ public abstract class AnalysisFilterBase implements SourceSectionFilter.SourcePr
             }
         }
         return false;
+    }
+
+    /**
+     * check whether source is not JavaScript but another language (e.g. regex)
+     *
+     * @param source the Source to test
+     * @return true if not a JavaScript source
+     */
+    static boolean isForeignSource(final Source source) {
+        return !JavaScriptLanguage.ID.equals(source.getLanguage());
     }
 }

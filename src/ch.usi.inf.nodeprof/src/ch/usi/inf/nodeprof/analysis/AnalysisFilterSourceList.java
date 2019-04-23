@@ -150,6 +150,10 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
     @Override
     @TruffleBoundary
     public boolean test(final Source source) {
+        // don't try to instrument other languages
+        if (isForeignSource(source))
+            return false;
+
         // if it's an exclusion filter, we include the source by default
         boolean res = filterExcludes;
 

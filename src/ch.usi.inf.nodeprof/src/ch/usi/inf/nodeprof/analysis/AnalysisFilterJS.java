@@ -30,6 +30,7 @@ import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.js.lang.JavaScriptLanguage;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
@@ -57,7 +58,7 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
     @Override
     @TruffleBoundary
     public boolean test(final Source source) {
-        if (excludedSources.contains(source))
+        if (isForeignSource(source) || excludedSources.contains(source))
             return false;
         if (includedSources.containsKey(source))
             return true;
@@ -71,7 +72,7 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
             name = source.getPath();
         }
 
-        Logger.debug("JS Analysis filter testing: " + name);
+        Logger.debug("JS Analysis filter testing: " + name + (SourceMapping.isInternal(source) ? " (internal)" : ""));
 
         if (include && containsDoNotInstrument(source)) {
             include = false;
