@@ -17,12 +17,10 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.Truffle;
-import com.oracle.truffle.api.interop.ForeignAccess;
-import com.oracle.truffle.api.interop.Message;
+import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.JSCancelledExecutionException;
@@ -48,9 +46,6 @@ public abstract class AbstractFactory implements
     protected final Object[] postArguments;
 
     protected final String jalangiCallback;
-
-    // used to read the callback object for configuration
-    protected static final Node read = Message.READ.createNode();
 
     protected static boolean readBoolean(DynamicObject cb, String name) {
         Object ret = readCBProperty(cb, name);
@@ -91,7 +86,7 @@ public abstract class AbstractFactory implements
         if (cb == null)
             return null;
         try {
-            Object val = ForeignAccess.sendRead(read, cb, name);
+            Object val = InteropLibrary.getFactory().getUncached(cb).readMember(cb, name);
             return val == null ? null : val;
         } catch (UnknownIdentifierException | UnsupportedMessageException e) {
             return null;
