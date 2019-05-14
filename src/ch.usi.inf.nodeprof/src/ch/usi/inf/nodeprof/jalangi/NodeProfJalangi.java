@@ -144,7 +144,7 @@ public class NodeProfJalangi extends NodeProfAnalysis {
                 excludeFilter = false;
             } else {
                 if (getProperty(configObj, "includes") != null) {
-                    Logger.error("Filter config must not define 'include' and 'exclude' at the same time (config: " + JSObject.safeToString((DynamicObject) configObj) + ")");
+                    Logger.error("Filter config must not define 'include' and 'exclude' at the same time (config: " + JSObject.safeToString((DynamicObject) configObj, 3) + ")");
                     System.exit(-1);
                 }
                 filters = excludes.toString();
