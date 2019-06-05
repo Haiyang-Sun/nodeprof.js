@@ -4,6 +4,10 @@ language: cpp
 compiler:
   - clang
 
+cache:
+  directories:
+    - $HOME/.mx
+
 before_install:
   - |
     if [ "${TRAVIS_BRANCH}" == "${TRAVIS_TAG}" ]; then
