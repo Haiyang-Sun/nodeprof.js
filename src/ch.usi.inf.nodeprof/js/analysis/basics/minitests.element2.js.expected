@@ -40,52 +40,52 @@ getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:22:14:22:22) 
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:22:23:33)  base type: object  offset type: string  val type: number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:13:23:34)  base type: object  offset type: number  val type: number
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:24:3:24:18)  base type: object  offset type: boolean  val type: number
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: boolean
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:14)  base type: object  offset type: string  val type: function
 invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25) isMethod
 [ 0 ]
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: boolean  val type: number
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: number  val type: number
 0
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25)
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: boolean
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: string
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:14)  base type: object  offset type: string  val type: function
 invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25) isMethod
-[ 0 ]
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: boolean  val type: number
-0
+[ [Object: null prototype] {} ]
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: string  val type: object
+[Object: null prototype] {}
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25)
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: boolean
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: string
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:14)  base type: object  offset type: string  val type: function
 invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25) isMethod
-[ 0 ]
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: boolean  val type: number
-0
+[ undefined ]
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: string  val type: undefined
+undefined
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25)
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: boolean
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: string
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:14)  base type: object  offset type: string  val type: function
 invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25) isMethod
-[ 0 ]
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: boolean  val type: number
-0
+[ null ]
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: string  val type: object
+null
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25)
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: boolean
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: undefined
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:14)  base type: object  offset type: string  val type: function
 invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25) isMethod
-[ 0 ]
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: boolean  val type: number
-0
+[ 'abc' ]
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: undefined  val type: string
+abc
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25)
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: boolean
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: object
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:14)  base type: object  offset type: string  val type: function
 invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25) isMethod
-[ 0 ]
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: boolean  val type: number
-0
+[ Symbol(t) ]
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: object  val type: symbol
+Symbol(t)
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25)
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: boolean
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: symbol
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:14)  base type: object  offset type: string  val type: function
 invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25) isMethod
-[ 0 ]
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: boolean  val type: number
-0
+[ true ]
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:15:28:24)  base type: object  offset type: symbol  val type: boolean
+true
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:28:3:28:25)

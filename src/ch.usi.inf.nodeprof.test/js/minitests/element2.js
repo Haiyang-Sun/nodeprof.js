@@ -24,6 +24,6 @@ for(i in elems) {
   obj[elem] = val;
 }
 for(j in vals) {
-  var elem = elems[i];
+  var elem = elems[j];
   console.log(obj[elem]);
 }
