@@ -62,6 +62,8 @@ public class EventLogger extends TestableNodeProfAnalysis {
     @Override
     public void initCallbacks() {
         for (ProfiledTagEnum tag : ProfiledTagEnum.values()) {
+            if (tag == ProfiledTagEnum.EXPRESSION)
+                continue;
             this.onCallback(tag, new AnalysisFactory<BaseEventHandlerNode>() {
                 public BaseEventHandlerNode create(EventContext context) {
                     return new BaseSingleTagEventHandler(context, tag) {

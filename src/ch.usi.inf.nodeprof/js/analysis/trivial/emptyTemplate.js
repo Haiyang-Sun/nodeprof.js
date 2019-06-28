@@ -118,6 +118,17 @@
         };
 
         /**
+         * The callbacks are called before and after an expression
+         * @param iid {integer} source code location id 
+         * @param type {string} type of the expression, TODO: use some standard type names, e.g., ESTree
+         **/
+        this.startExpression = function (iid, type) {
+        };
+
+        this.endExpression = function (iid, type ) {
+        };
+
+        /**
          * This callback is called when an execution terminates in node.js.
          **/
         this.endExecution = function () {
@@ -174,9 +185,6 @@
 
             //not supported yet
             this.scriptExit = function (iid, wrappedExceptionVal) {
-            };
-            //not supported yet
-            this.endExpression = function (iid) {
             };
 
             //not supported yet
