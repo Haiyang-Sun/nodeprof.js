@@ -104,6 +104,8 @@ public abstract class BasicAnalysisTest {
                 }
                 Logger.info("testing micro benchmark " + f.getName());
                 try {
+                    // every test need to be executed in a new context
+                    init();
                     context.eval("js", Source.readFully(new FileReader(f)));
                 } catch (IOException e) {
                     assertTrue(e.getMessage(), false);
