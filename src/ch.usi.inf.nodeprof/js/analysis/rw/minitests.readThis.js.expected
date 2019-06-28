@@ -1,0 +1,6 @@
+write 1 (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:1:63:4:2) Foo function
+read 3 (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:6:15:6:18) Foo function
+read 5 (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:2:16:2:20) <this> object
+write 4 (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:2:9:2:20) self object
+read 7 (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:3:5:3:9) self object
+write 2 (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:6:5:6:20) foo object

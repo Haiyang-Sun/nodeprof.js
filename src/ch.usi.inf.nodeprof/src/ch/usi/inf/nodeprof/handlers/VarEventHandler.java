@@ -25,24 +25,18 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
  */
 public abstract class VarEventHandler extends BaseSingleTagEventHandler {
     private final String name;
-    private final boolean isInternal;
 
     @TruffleBoundary
-    public static boolean isIdentifierInternal(String id) {
-        return id.equals(":switch") || (id.startsWith("<") && !id.equals("<this>"));
+    public static boolean isThis(String id) {
+        return id.equals("<this>");
     }
 
     public VarEventHandler(EventContext context, ProfiledTagEnum tag) {
         super(context, tag);
         this.name = (String) getAttribute("name");
-        this.isInternal = isIdentifierInternal(name);
     }
 
     public String getName() {
         return this.name;
-    }
-
-    public boolean isInternal() {
-        return this.isInternal;
     }
 }

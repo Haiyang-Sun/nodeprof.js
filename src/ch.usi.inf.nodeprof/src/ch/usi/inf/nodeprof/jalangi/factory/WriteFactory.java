@@ -52,7 +52,7 @@ public class WriteFactory extends AbstractFactory {
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) {
-                    if (post == null || this.isInternal()) {
+                    if (post == null) {
                         return;
                     }
                     setPostArguments(0, getSourceIID());
