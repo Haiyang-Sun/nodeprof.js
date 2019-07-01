@@ -30,6 +30,7 @@ public enum ProfiledTagEnum {
     CF_BRANCH(JSTags.ControlFlowBlockTag.class, -1), // to be checked
     CF_ROOT(JSTags.ControlFlowRootTag.class, 0), // to be checked
     EVAL(JSTags.EvalCallTag.class, 2),
+    DECLARE(JSTags.DeclareTag.class, 0),
     VAR_READ(JSTags.ReadVariableExpressionTag.class, 0),
     VAR_WRITE(JSTags.WriteVariableExpressionTag.class, 1),
     PROPERTY_READ(JSTags.ReadPropertyExpressionTag.class, 1),

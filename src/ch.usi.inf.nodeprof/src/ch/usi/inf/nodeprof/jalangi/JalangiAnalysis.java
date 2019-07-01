@@ -23,6 +23,7 @@ import static ch.usi.inf.nodeprof.ProfiledTagEnum.ELEMENT_READ;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.ELEMENT_WRITE;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.EVAL;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.INVOKE;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.DECLARE;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.LITERAL;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.NEW;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.PROPERTY_READ;
@@ -49,6 +50,7 @@ import ch.usi.inf.nodeprof.jalangi.factory.BinaryFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BranchFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BuiltinFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ConditionalFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.DeclareFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.EvalFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.EvalFunctionFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.GetElementFactory;
@@ -88,53 +90,53 @@ public class JalangiAnalysis {
      */
     final NodeProfJalangi instrument;
 
-    @SuppressWarnings("serial") public static final Map<String, EnumSet<ProfiledTagEnum>> callbackMap = Collections.unmodifiableMap(
-                    new HashMap<String, EnumSet<ProfiledTagEnum>>() {
-                        {
-                            // function calls
-                            put("functionEnter", EnumSet.of(ROOT));
-                            put("functionExit", EnumSet.of(ROOT));
-                            put("invokeFunPre", EnumSet.of(INVOKE, NEW));
-                            put("invokeFun", EnumSet.of(INVOKE, NEW));
+    @SuppressWarnings("serial") public static final Map<String, EnumSet<ProfiledTagEnum>> callbackMap = Collections.unmodifiableMap(new HashMap<String, EnumSet<ProfiledTagEnum>>() {
+        {
+            // function calls
+            put("functionEnter", EnumSet.of(ROOT));
+            put("functionExit", EnumSet.of(ROOT));
+            put("invokeFunPre", EnumSet.of(INVOKE, NEW));
+            put("invokeFun", EnumSet.of(INVOKE, NEW));
 
-                            // builtin calls
-                            put("builtinEnter", EnumSet.of(BUILTIN));
-                            put("builtinExit", EnumSet.of(BUILTIN));
+            // builtin calls
+            put("builtinEnter", EnumSet.of(BUILTIN));
+            put("builtinExit", EnumSet.of(BUILTIN));
 
-                            // literals
-                            put("literal", EnumSet.of(LITERAL));
+            // literals
+            put("literal", EnumSet.of(LITERAL));
+            put("declare", EnumSet.of(DECLARE));
 
-                            // reads and writes
-                            put("read", EnumSet.of(VAR_READ, PROPERTY_READ));
-                            put("write", EnumSet.of(VAR_WRITE, PROPERTY_WRITE));
+            // reads and writes
+            put("read", EnumSet.of(VAR_READ, PROPERTY_READ));
+            put("write", EnumSet.of(VAR_WRITE, PROPERTY_WRITE));
 
-                            // property reads
-                            put("getFieldPre", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
-                            put("getField", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
+            // property reads
+            put("getFieldPre", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
+            put("getField", EnumSet.of(PROPERTY_READ, ELEMENT_READ));
 
-                            // property writes
-                            put("putFieldPre", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
-                            put("putField", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
+            // property writes
+            put("putFieldPre", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
+            put("putField", EnumSet.of(PROPERTY_WRITE, ELEMENT_WRITE));
 
-                            // operators
-                            put("unaryPre", EnumSet.of(UNARY));
-                            put("unary", EnumSet.of(UNARY));
-                            put("binaryPre", EnumSet.of(BINARY));
-                            put("binary", EnumSet.of(BINARY));
+            // operators
+            put("unaryPre", EnumSet.of(UNARY));
+            put("unary", EnumSet.of(UNARY));
+            put("binaryPre", EnumSet.of(BINARY));
+            put("binary", EnumSet.of(BINARY));
 
-                            // conditions
-                            put("conditional", EnumSet.of(CF_COND));
+            // conditions
+            put("conditional", EnumSet.of(CF_COND));
 
-                            // eval-like
-                            put("evalPre", EnumSet.of(EVAL));
-                            put("evalPost", EnumSet.of(EVAL));
-                            put("evalFunctionPre", EnumSet.of(BUILTIN));
-                            put("evalFunctionPost", EnumSet.of(BUILTIN));
-                        }
-                    });
+            // eval-like
+            put("evalPre", EnumSet.of(EVAL));
+            put("evalPost", EnumSet.of(EVAL));
+            put("evalFunctionPre", EnumSet.of(BUILTIN));
+            put("evalFunctionPost", EnumSet.of(BUILTIN));
+        }
+    });
 
     public static final Set<String> unimplementedCallbacks = Collections.unmodifiableSet(
-                    new HashSet<>(Arrays.asList("declare", "endExpression", "forinObject",
+                    new HashSet<>(Arrays.asList("endExpression", "forinObject",
                                     "instrumentCodePre", "instrumentCode", // TODO will those be
                                                                            // supported at all?
                                     "onReady", // TODO should this be ignored instead
@@ -210,6 +212,11 @@ public class JalangiAnalysis {
         if (this.callbacks.containsKey("literal")) {
             this.instrument.onCallback(ProfiledTagEnum.LITERAL, new LiteralFactory(
                             this.jsAnalysis, callbacks.get("literal")));
+        }
+
+        if (this.callbacks.containsKey("declare")) {
+            this.instrument.onCallback(ProfiledTagEnum.DECLARE, new DeclareFactory(
+                            this.jsAnalysis, callbacks.get("declare")));
         }
 
         if (this.callbacks.containsKey("unaryPre") || this.callbacks.containsKey("unary")) {

@@ -141,15 +141,19 @@
             };
             this.evalFunctionPost = function(args, ret, exceptionVal) {
             };
+
+            /**
+             *  Declaration of a symbol, type can be `const, let, var`
+             *  Jalangi version: this.declare = function (iid, name, val, isArgument, argumentIndex, isCatchParam) {
+             **/
+            this.declare = function (iid, name, type) {
+            };
+
         }
 
         if(false) {
             //not supported yet
             this.forinObject = function (iid, val) {
-            };
-
-            //not supported yet
-            this.declare = function (iid, name, val, isArgument, argumentIndex, isCatchParam) {
             };
 
             //not supported yet
