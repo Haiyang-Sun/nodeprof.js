@@ -22,7 +22,7 @@ before_install:
         exit
       }
     fi
-  - wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-20-b03/openjdk-8u212_1-jvmci-20-b03-linux-amd64.tar.gz
+  - wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-20-b04/openjdk-8u212-jvmci-20-b04-linux-amd64.tar.gz
   - mkdir openjdk1.8.0-jvmci
   - tar --strip 1 -C openjdk1.8.0-jvmci -xvf openjdk-*.tar.gz
   - git clone https://github.com/graalvm/mx.git
