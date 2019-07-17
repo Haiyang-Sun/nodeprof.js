@@ -82,7 +82,7 @@ public class GlobalObjectCache extends Node {
                 global = jscontext.getRealm().getGlobalObject();
             }
             if (arrayConstructor == null) {
-                arrayConstructor = jscontext.getRealm().getArrayConstructor().getFunctionObject();
+                arrayConstructor = jscontext.getRealm().getArrayConstructor();
             }
         }
     }
