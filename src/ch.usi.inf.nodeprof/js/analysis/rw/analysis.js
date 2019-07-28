@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright 2019 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package ch.usi.inf.nodeprof.handlers;
 
-import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.instrumentation.EventContext;
-
-import ch.usi.inf.nodeprof.ProfiledTagEnum;
-
-/**
- * Abstract event handler for variable writes
- */
-public abstract class VarEventHandler extends BaseSingleTagEventHandler {
-    private final String name;
-
-    public VarEventHandler(EventContext context, ProfiledTagEnum tag) {
-        super(context, tag);
-        this.name = (String) getAttribute("name");
+// DO NOT INSTRUMENT
+((function(sandbox){
+  function RW() {
+    this.read = function(iid, name, val){
+        console.log('read', iid, J$.iidToLocation(iid), name, typeof(val));
     }
-
-    public String getName() {
-        return this.name;
+    this.write = function(iid, name, val){
+        console.log('write', iid, J$.iidToLocation(iid), name, typeof(val));
     }
+  };
+  sandbox.addAnalysis(new RW());
 }
+)(J$));

@@ -49,7 +49,7 @@ public class ReadFactory extends AbstractFactory {
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) {
-                    if (post != null && !this.isInternal()) {
+                    if (post != null) {
                         setPostArguments(0, getSourceIID());
                         setPostArguments(1, getName());
                         setPostArguments(2, convertResult(result));

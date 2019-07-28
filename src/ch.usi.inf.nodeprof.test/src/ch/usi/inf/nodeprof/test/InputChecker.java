@@ -127,9 +127,6 @@ public class InputChecker {
                  *
                  * a = Expr.
                  */
-                if (VarEventHandler.isIdentifierInternal((String) node.getAttribute("name"))) {
-                    break;
-                }
                 if (inputs == null)
                     return false;
                 if (inputs.length != 1) {
