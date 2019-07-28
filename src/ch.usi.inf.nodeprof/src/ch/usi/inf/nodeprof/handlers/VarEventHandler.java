@@ -26,11 +26,6 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
 public abstract class VarEventHandler extends BaseSingleTagEventHandler {
     private final String name;
 
-    @TruffleBoundary
-    public static boolean isThis(String id) {
-        return id.equals("<this>");
-    }
-
     public VarEventHandler(EventContext context, ProfiledTagEnum tag) {
         super(context, tag);
         this.name = (String) getAttribute("name");
