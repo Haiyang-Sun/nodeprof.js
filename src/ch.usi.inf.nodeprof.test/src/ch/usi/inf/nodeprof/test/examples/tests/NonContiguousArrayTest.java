@@ -15,6 +15,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.test.examples.tests;
 
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import org.junit.Test;
 
 import com.oracle.truffle.api.instrumentation.Instrumenter;
@@ -29,8 +30,8 @@ import ch.usi.inf.nodeprof.test.examples.NonContiguousArray;
 public class NonContiguousArrayTest extends BasicAnalysisTest {
 
     @Override
-    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter) {
-        return new NonContiguousArray(_instrumenter, null);
+    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter, TruffleInstrument.Env env) {
+        return new NonContiguousArray(_instrumenter, env);
     }
 
     @Test

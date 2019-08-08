@@ -15,6 +15,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.test.examples.tests;
 
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import org.junit.Test;
 
 import com.oracle.truffle.api.instrumentation.Instrumenter;
@@ -28,8 +29,8 @@ import ch.usi.inf.nodeprof.utils.Logger;
 public class TrivialTest extends BasicAnalysisTest {
 
     @Override
-    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter) {
-        return new TrivialAnalysis(_instrumenter, null);
+    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter, TruffleInstrument.Env env) {
+        return new TrivialAnalysis(_instrumenter, env);
     }
 
     @Override

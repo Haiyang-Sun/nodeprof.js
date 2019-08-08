@@ -18,6 +18,7 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -27,8 +28,11 @@ import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
 
 public class RootFactory extends AbstractFactory {
 
-    public RootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
+    protected final TruffleInstrument.Env env;
+
+    public RootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post, TruffleInstrument.Env env) {
         super("function", jalangiAnalysis, pre, post, 4, 3);
+        this.env = env;
     }
 
     @Override
@@ -47,7 +51,7 @@ public class RootFactory extends AbstractFactory {
 
                     setPreArguments(0, getSourceIID());
                     setPreArguments(1, getFunction(frame));
-                    setPreArguments(2, getReceiver(frame));
+                    setPreArguments(2, getReceiver(frame, env));
                     setPreArguments(3, makeArgs.executeArguments(getArguments(frame)));
 
                     directCall(preCall, true, getSourceIID());

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import org.graalvm.polyglot.Context;
 import org.junit.After;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public abstract class BasicAnalysisTest {
     protected NodeProfInstrument instrument;
     protected TestableNodeProfAnalysis analysis;
 
-    public abstract TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter);
+    public abstract TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter, TruffleInstrument.Env env);
 
     @Before
     public void init() {
@@ -60,7 +61,7 @@ public abstract class BasicAnalysisTest {
     public abstract AnalysisFilterSourceList getFilter();
 
     public void initAnalysis() {
-        this.analysis = getAnalysis(instrument.getInstrumenter());
+        this.analysis = getAnalysis(instrument.getInstrumenter(), this.instrument.getEnv());
         this.analysis.initCallbacks();
         this.analysis.enableTest();
         this.analysis.analysisReady(getFilter());

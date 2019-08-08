@@ -242,7 +242,9 @@ public class JalangiAnalysis {
             this.instrument.onCallback(
                             ProfiledTagEnum.ROOT,
                             new RootFactory(this.jsAnalysis,
-                                            callbacks.get("functionEnter"), callbacks.get("functionExit")));
+                                            callbacks.get("functionEnter"),
+                                            callbacks.get("functionExit"),
+                                            this.instrument.getEnv()));
         }
 
         if (this.callbacks.containsKey("startExpression") || this.callbacks.containsKey("endExpression")) {

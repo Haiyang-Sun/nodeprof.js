@@ -15,6 +15,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.test.examples.tests;
 
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import org.junit.After;
 import org.junit.Test;
 
@@ -34,8 +35,8 @@ public class EventLoggerTest extends BasicAnalysisTest {
     private EventLogger analysis = null;
 
     @Override
-    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter) {
-        this.analysis = new EventLogger(_instrumenter, null);
+    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter, TruffleInstrument.Env env) {
+        this.analysis = new EventLogger(_instrumenter, env);
         return this.analysis;
     }
 

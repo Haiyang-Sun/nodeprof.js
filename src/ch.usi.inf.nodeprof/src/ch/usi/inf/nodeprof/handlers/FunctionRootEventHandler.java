@@ -16,8 +16,10 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import com.oracle.truffle.api.Scope;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.nodes.function.JSBuiltinNode;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -48,9 +50,12 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
     @Override
     protected SourceSection getSourceSectionForIID() { return context.getInstrumentedNode().getRootNode().getSourceSection(); }
 
-    public Object getReceiver(VirtualFrame frame) {
-        return frame.getArguments()[0];
+    public Object getReceiver(VirtualFrame frame, TruffleInstrument.Env env) {
+        Iterable<Scope> scopes = env.findLocalScopes(context.getInstrumentedNode(), frame);
+        assert scopes.iterator().hasNext();
+        return scopes.iterator().next().getReceiver();
     }
+
 
     public boolean isRegularExpression() {
         return this.isRegExp;
