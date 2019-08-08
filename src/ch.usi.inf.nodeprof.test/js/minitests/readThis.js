@@ -4,3 +4,8 @@ function Foo(){
 }
 
 let foo = new Foo();
+
+function bar() {
+  return this;
+}
+let baz = bar();

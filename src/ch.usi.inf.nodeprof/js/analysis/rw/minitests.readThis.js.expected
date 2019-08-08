@@ -1,6 +1,12 @@
 write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:1:63:4:2) Foo function
+write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:8:1:10:2) bar function
 read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:6:15:6:18) Foo function
+functionEnter (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:1:63:4:2) Foo Foo {} []
 read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:2:16:2:20) this object
 write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:2:9:2:20) self object
 read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:3:5:3:9) self object
 write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:6:5:6:20) foo object
+read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:11:11:11:14) bar function
+functionEnter (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:8:1:10:2) bar [object global] []
+read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:9:10:9:14) this object
+write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:11:5:11:16) baz object
