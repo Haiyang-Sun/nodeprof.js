@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,15 +51,20 @@ public abstract class BaseEventHandlerNode extends Node {
 
     public BaseEventHandlerNode(EventContext context) {
         this.context = context;
-        this.sourceIID = SourceMapping.getIIDForSourceSection(context.getInstrumentedSourceSection());
+        this.sourceIID = SourceMapping.getIIDForSourceSection(getSourceSectionForIID());
     }
 
     /**
      * @return the instrumented source section
      */
-    public SourceSection getInstrumentedSourceSection() {
+    private SourceSection getInstrumentedSourceSection() {
         return this.context.getInstrumentedSourceSection();
     }
+
+    /**
+     * @return the source section to be used for reporting purposes
+     */
+    protected SourceSection getSourceSectionForIID() { return this.context.getInstrumentedSourceSection(); }
 
     /**
      * @return the instrumentation ID for the instrumented source section

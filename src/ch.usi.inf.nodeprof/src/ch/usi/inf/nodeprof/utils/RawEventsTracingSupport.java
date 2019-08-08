@@ -184,6 +184,9 @@ public class RawEventsTracingSupport {
         if (node.hasTag(StandardTags.RootTag.class)) {
             tags += "ROOT ";
         }
+        if (node.hasTag(StandardTags.RootBodyTag.class)) {
+            tags += "BODY ";
+        }
         for (Class<?> c : ALL) {
             if (node.hasTag((Class<? extends Tag>) c)) {
                 tags += c.getSimpleName() + " ";

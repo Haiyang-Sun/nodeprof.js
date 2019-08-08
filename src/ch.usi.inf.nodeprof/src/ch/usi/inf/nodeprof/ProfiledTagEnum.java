@@ -38,7 +38,7 @@ public enum ProfiledTagEnum {
     ELEMENT_READ(JSTags.ReadElementExpressionTag.class, 2),
     ELEMENT_WRITE(JSTags.WriteElementExpressionTag.class, 3),
     INVOKE(JSTags.FunctionCallExpressionTag.class, -1), // any number of inputs for arguments
-    ROOT(StandardTags.RootTag.class, 0),
+    ROOT(StandardTags.RootBodyTag.class, 0),
     BUILTIN(JSTags.BuiltinRootTag.class, 0),
     LITERAL(JSTags.LiteralExpressionTag.class, 0),
     STATEMENT(StandardTags.StatementTag.class, 0),

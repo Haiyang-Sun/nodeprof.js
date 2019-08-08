@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +18,7 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.nodes.function.JSBuiltinNode;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 import com.oracle.truffle.regex.RegexBodyNode;
@@ -42,6 +44,9 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
             builtinName = null;
         }
     }
+
+    @Override
+    protected SourceSection getSourceSectionForIID() { return context.getInstrumentedNode().getRootNode().getSourceSection(); }
 
     public Object getReceiver(VirtualFrame frame) {
         return frame.getArguments()[0];
