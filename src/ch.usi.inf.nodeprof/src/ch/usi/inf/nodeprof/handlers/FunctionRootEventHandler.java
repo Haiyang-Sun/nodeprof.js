@@ -17,11 +17,13 @@
 package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.Scope;
+import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.nodes.function.JSBuiltinNode;
+import com.oracle.truffle.js.runtime.JSFrameUtil;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 import com.oracle.truffle.regex.RegexBodyNode;
 import com.oracle.truffle.regex.RegexRootNode;
@@ -51,9 +53,21 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
     protected SourceSection getSourceSectionForIID() { return context.getInstrumentedNode().getRootNode().getSourceSection(); }
 
     public Object getReceiver(VirtualFrame frame, TruffleInstrument.Env env) {
+        // if function has a <this> slot and its value is not undefined, we have a shortcut to `this`
+        FrameSlot thisSlot = JSFrameUtil.getThisSlot(frame.getFrameDescriptor());
+        if (thisSlot != null) {
+            Object maybeThis = frame.getValue(thisSlot);
+            if (maybeThis != null && maybeThis != Undefined.instance) {
+                return maybeThis;
+            }
+        }
+
+        // otherwise, retrieve the current scope to look up this
         Iterable<Scope> scopes = env.findLocalScopes(context.getInstrumentedNode(), frame);
         assert scopes.iterator().hasNext();
-        return scopes.iterator().next().getReceiver();
+        Object receiver = scopes.iterator().next().getReceiver();
+        assert receiver != null;
+        return receiver;
     }
 
 
