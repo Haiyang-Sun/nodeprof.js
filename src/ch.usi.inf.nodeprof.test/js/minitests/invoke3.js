@@ -13,20 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-//DO NOT INSTRUMENT
-(function (sandbox) {
-    function MyAnalysis() {
-        this.startExpression = function (iid, type) {
-            console.log("expression starts:", J$.iidToLocation(iid), "type:", type);
-        };
-
-        this.endExpression = function (iid, type) {
-            console.log("expression finishes:", J$.iidToLocation(iid), "type:", type);
-        };
-        this.write = function(iid, name) {
-            console.log("write", J$.iidToLocation(iid), name);
-        };
-    }
-
-    sandbox.analysis = new MyAnalysis();
-})(J$);
+var foo = function(){};
