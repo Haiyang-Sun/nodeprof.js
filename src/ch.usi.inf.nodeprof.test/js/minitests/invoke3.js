@@ -14,3 +14,12 @@
  * limitations under the License.
  *******************************************************************************/
 var foo = function(){};
+var o = {
+  oFunc: function() {
+    function func() {};
+    var arrow = () => { escape(this); };
+    func();
+    arrow();
+  }
+};
+o.oFunc();
