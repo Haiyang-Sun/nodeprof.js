@@ -229,7 +229,7 @@ public abstract class NodeProfAnalysis {
     }
 
     // tags that require a separate factory for instrumentation
-    private static final ProfiledTagEnum[] separateFactoryTags = {ProfiledTagEnum.BUILTIN, ProfiledTagEnum.STATEMENT, ProfiledTagEnum.CF_COND};
+    private static final ProfiledTagEnum[] separateFactoryTags = {ProfiledTagEnum.BUILTIN, ProfiledTagEnum.STATEMENT, ProfiledTagEnum.EXPRESSION, ProfiledTagEnum.CF_COND};
 
     @TruffleBoundary
     private void analysisReady(AnalysisFilterBase sourceFilter, HashMap<ProfiledTagEnum, ArrayList<AnalysisFactory<BaseEventHandlerNode>>> handlerMapping) {

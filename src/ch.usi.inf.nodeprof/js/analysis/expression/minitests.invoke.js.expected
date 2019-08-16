@@ -1,0 +1,13 @@
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:1:1:19:3) type: AutonomousFunctionExpression
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:1:1:19:3) type: AutonomousFunctionExpression
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:16:1:16:19) type: AutonomousFunctionExpression
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:16:1:16:19) type: AutonomousFunctionExpression
+write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:16:1:16:19) foo
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:15) type: CallN
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:4) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:4) type: JSReadCurrentFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:5:17:7) type: JSConstantInteger
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:5:17:7) type: JSConstantInteger
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:9:17:14) type: JSConstantString
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:9:17:14) type: JSConstantString
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:15) type: CallN
