@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright 2019 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,31 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import java.util.ArrayList;
+
+import com.oracle.js.parser.ir.Expression;
+import com.oracle.js.parser.ir.ObjectNode;
+import com.oracle.js.parser.ir.PropertyNode;
+import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralExpressionTag;
+import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.builtins.JSArray;
+import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 
 /**
  * Abstract event handler for literal events
  */
 public abstract class LiteralEventHandler extends BaseSingleTagEventHandler {
     private final String literalType;
+    // get it on-demand
+    private @CompilationFinal Object literalMembers = null;
+    private @CompilationFinal Object hasGetterSetter = null;
 
     public LiteralEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.LITERAL);
@@ -40,4 +56,45 @@ public abstract class LiteralEventHandler extends BaseSingleTagEventHandler {
         return this.literalType;
     }
 
+    public Object getObjectLiteralMembers(Object literalVal) {
+        if (literalMembers != null)
+            return literalMembers;
+        CompilerDirectives.transferToInterpreterAndInvalidate();
+        if (this.literalType == LiteralExpressionTag.Type.ObjectLiteral.name()) {
+            // use Graal.js parser
+            JSContext jsContext = GlobalObjectCache.getInstance().getJSContext((DynamicObject) literalVal);
+            Expression expression = jsContext.getEvaluator().parseExpression(jsContext, context.getInstrumentedSourceSection().getCharacters().toString());
+            this.hasGetterSetter = false;
+            ArrayList<Object> keys = new ArrayList<>();
+            if (expression instanceof ObjectNode) {
+                ObjectNode objExpr = (ObjectNode) expression;
+                for (PropertyNode element : objExpr.getElements()) {
+                    String flag = "";
+                    if (element.getGetter() != null) {
+                        flag += "getter";
+                        hasGetterSetter = true;
+                    }
+                    if (element.getSetter() != null) {
+                        flag += "setter";
+                        hasGetterSetter = true;
+                    }
+                    String keyName = element.getKeyName();
+                    keys.add(flag + "-" + keyName);
+                }
+            }
+            literalMembers = JSArray.createConstant(jsContext, keys.toArray());
+            return literalMembers;
+        } else {
+            this.literalMembers = Undefined.instance;
+            this.hasGetterSetter = false;
+            return Undefined.instance;
+        }
+
+    }
+
+    public Object hasGetterSetter(Object literalVal) {
+        getObjectLiteralMembers(literalVal);
+        assert (this.hasGetterSetter != null);
+        return this.hasGetterSetter;
+    }
 }
