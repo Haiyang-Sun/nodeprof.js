@@ -23,10 +23,12 @@ import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralExpressionTag;
+import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.LiteralEventHandler;
+import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 public class LiteralFactory extends AbstractFactory {
@@ -35,14 +37,7 @@ public class LiteralFactory extends AbstractFactory {
 
     @TruffleBoundary
     public LiteralFactory(Object jalangiAnalysis, DynamicObject post) {
-        super("literal", jalangiAnalysis, null, post, -1, 4);
-
-        /*
-         * as hasGetterSetter is a not always used feature and can be computed from the returned
-         * literal object we don't pass any hasGetterOrSetter but for compatibility to Jalangi, we
-         * still keep this argument in the hook.
-         */
-        setPostArguments(2, Undefined.instance);
+        super("literal", jalangiAnalysis, null, post, -1, 5);
 
         if (!isPropertyUndefined(post, "types")) {
             Object[] literalTypes = readArray(post, "types");
@@ -71,10 +66,16 @@ public class LiteralFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null && !skip) {
+                    /**
+                     * TODO, move constant argument setting to Node constructor and see if the
+                     * performance is better e.g., getSourceIID, hasGetterSetter, literalType,
+                     * literalMembers are all constant specific to the current node
+                     **/
                     setPostArguments(0, getSourceIID());
                     setPostArguments(1, convertResult(result));
-                    // Jalangi's hasGetterSetter: undefined (see above)
+                    setPostArguments(2, hasGetterSetter(result));
                     setPostArguments(3, getLiteralType());
+                    setPostArguments(4, getObjectLiteralMembers(result));
                     directCall(postCall, false, getSourceIID());
                 }
             }

@@ -32,10 +32,14 @@
          * literal, an object literal, an array literal, a number, a string, a boolean, a regular
          * expression, null, NaN, Infinity, or undefined.
          *
-         * hasGetterSetter is always undefined, can be computed with val (kept for Jalangi compability)
          * literalType is a new argument provided by NodeProf showing the type of literal
+         *
+         * memberNames: an array of member fields' names, each name in form of [getter/setter]-name
+         *  e.g, setter-x => setter for member field x 
+         *  -y => a normal member field y
+         *  Please be noted that the name can include a '-' as well, so always use the first '-' as the delimiter for the flag
          **/
-        this.literal = function (iid, val, hasGetterSetter, literalType) {
+        this.literal = function (iid, val, hasGetterSetter, literalType, memberNames) {
             return {result: val};
         };
         // optional literal type filter: by specifying the types in an array, only given types of literals will be instrumented
