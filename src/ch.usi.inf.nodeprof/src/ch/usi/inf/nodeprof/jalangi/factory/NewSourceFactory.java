@@ -29,7 +29,6 @@ import com.oracle.truffle.js.nodes.function.FunctionBodyNode;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
-import com.oracle.truffle.js.runtime.objects.JSLazyString;
 
 public class NewSourceFactory extends AbstractFactory {
 
@@ -51,7 +50,11 @@ public class NewSourceFactory extends AbstractFactory {
                 }
 
                 Node n = context.getInstrumentedNode();
-                if (!(n instanceof FunctionBodyNode)) {
+                while (n != null && !(n instanceof FunctionBodyNode)) {
+                    n = n.getParent();
+                }
+
+                if (n == null) {
                     return;
                 }
 
@@ -66,10 +69,7 @@ public class NewSourceFactory extends AbstractFactory {
 
                 if (seenSources.add(source)) {
                     setPostArguments(0, convertResult(source.getName()));
-                    // lazy source string to avoid String allocation when callback does not use the 2nd (source) arg
-                    CharSequence chars = source.getCharacters();
-                    JSLazyString lazySource = JSLazyString.createChecked(chars, chars.subSequence(0, 0), chars.length());
-                    setPostArguments(1, lazySource);
+                    setPostArguments(1, source.getCharacters().toString());
                     directCall(postCall, false, getSourceIID());
                 }
             }
