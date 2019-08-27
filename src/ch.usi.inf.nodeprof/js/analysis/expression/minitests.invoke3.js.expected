@@ -13,8 +13,6 @@ expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:25:1:25
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:25:1:25:2) type: JSReadCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:25:1:25:8) type: Property
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:25:1:25:8) type: Property
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:19:5:19:23) type: AutonomousFunctionExpression
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:19:5:19:23) type: AutonomousFunctionExpression
 write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:19:5:19:23) func
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:17:20:40) type: LexicalThisFunctionExpression
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:17:20:40) type: LexicalThisFunctionExpression
