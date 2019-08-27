@@ -24,7 +24,7 @@ import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.object.DynamicObject;
-import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralExpressionTag;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralTag;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -60,7 +60,7 @@ public abstract class LiteralEventHandler extends BaseSingleTagEventHandler {
         if (literalMembers != null)
             return literalMembers;
         CompilerDirectives.transferToInterpreterAndInvalidate();
-        if (this.literalType == LiteralExpressionTag.Type.ObjectLiteral.name()) {
+        if (this.literalType == LiteralTag.Type.ObjectLiteral.name()) {
             // use Graal.js parser
             JSContext jsContext = GlobalObjectCache.getInstance().getJSContext((DynamicObject) literalVal);
             Expression expression = jsContext.getEvaluator().parseExpression(jsContext, context.getInstrumentedSourceSection().getCharacters().toString());

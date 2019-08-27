@@ -22,7 +22,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
-import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralExpressionTag;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralTag;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -33,7 +33,7 @@ import ch.usi.inf.nodeprof.utils.Logger;
 
 public class LiteralFactory extends AbstractFactory {
     // enabled literal types (all by default)
-    final private EnumSet<LiteralExpressionTag.Type> types = EnumSet.allOf(LiteralExpressionTag.Type.class);
+    final private EnumSet<LiteralTag.Type> types = EnumSet.allOf(LiteralTag.Type.class);
 
     @TruffleBoundary
     public LiteralFactory(Object jalangiAnalysis, DynamicObject post) {
@@ -43,10 +43,10 @@ public class LiteralFactory extends AbstractFactory {
             Object[] literalTypes = readArray(post, "types");
             if (literalTypes != null) {
                 // filter property has been set, start with empty set and add only specified types
-                types.removeAll(EnumSet.allOf(LiteralExpressionTag.Type.class));
+                types.removeAll(EnumSet.allOf(LiteralTag.Type.class));
                 for (Object elem : literalTypes) {
                     try {
-                        LiteralExpressionTag.Type enumType = LiteralExpressionTag.Type.valueOf(elem.toString());
+                        LiteralTag.Type enumType = LiteralTag.Type.valueOf(elem.toString());
                         types.add(enumType);
                     } catch (IllegalArgumentException e) {
                         Logger.warning("Ignored invalid type " + elem.toString() + " given for the literal callback");
@@ -59,7 +59,7 @@ public class LiteralFactory extends AbstractFactory {
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new LiteralEventHandler(context) {
-            private final boolean skip = !types.contains(LiteralExpressionTag.Type.valueOf(getLiteralType()));
+            private final boolean skip = !types.contains(LiteralTag.Type.valueOf(getLiteralType()));
             @Child DirectCallNode postCall = skip ? null : createPostCallNode();
 
             @Override

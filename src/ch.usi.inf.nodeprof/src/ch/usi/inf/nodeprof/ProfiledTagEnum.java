@@ -24,25 +24,25 @@ import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 public enum ProfiledTagEnum {
-    UNARY(JSTags.UnaryExpressionTag.class, -1), // have multiple case
-    BINARY(JSTags.BinaryExpressionTag.class, 2),
+    UNARY(JSTags.UnaryOperationTag.class, -1), // have multiple case
+    BINARY(JSTags.BinaryOperationTag.class, 2),
     CF_COND(JSTags.ControlFlowBranchTag.class, 0), // to be checked
     CF_BRANCH(JSTags.ControlFlowBlockTag.class, -1), // to be checked
     CF_ROOT(JSTags.ControlFlowRootTag.class, 0), // to be checked
     EVAL(JSTags.EvalCallTag.class, 2),
     DECLARE(JSTags.DeclareTag.class, 0),
-    VAR_READ(JSTags.ReadVariableExpressionTag.class, 0),
-    VAR_WRITE(JSTags.WriteVariableExpressionTag.class, 1),
-    PROPERTY_READ(JSTags.ReadPropertyExpressionTag.class, 1),
-    PROPERTY_WRITE(JSTags.WritePropertyExpressionTag.class, 2),
-    ELEMENT_READ(JSTags.ReadElementExpressionTag.class, 2),
-    ELEMENT_WRITE(JSTags.WriteElementExpressionTag.class, 3),
-    INVOKE(JSTags.FunctionCallExpressionTag.class, -1), // any number of inputs for arguments
+    VAR_READ(JSTags.ReadVariableTag.class, 0),
+    VAR_WRITE(JSTags.WriteVariableTag.class, 1),
+    PROPERTY_READ(JSTags.ReadPropertyTag.class, 1),
+    PROPERTY_WRITE(JSTags.WritePropertyTag.class, 2),
+    ELEMENT_READ(JSTags.ReadElementTag.class, 2),
+    ELEMENT_WRITE(JSTags.WriteElementTag.class, 3),
+    INVOKE(JSTags.FunctionCallTag.class, -1), // any number of inputs for arguments
     ROOT(StandardTags.RootBodyTag.class, 0),
     BUILTIN(JSTags.BuiltinRootTag.class, 0),
-    LITERAL(JSTags.LiteralExpressionTag.class, 0),
+    LITERAL(JSTags.LiteralTag.class, 0),
     STATEMENT(StandardTags.StatementTag.class, 0),
-    NEW(JSTags.ObjectAllocationExpressionTag.class, -1),
+    NEW(JSTags.ObjectAllocationTag.class, -1),
     EXPRESSION(StandardTags.ExpressionTag.class, 0);
 
     // the corresponding JSTags class
