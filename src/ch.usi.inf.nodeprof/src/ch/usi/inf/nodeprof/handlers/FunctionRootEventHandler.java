@@ -16,6 +16,8 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.Scope;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.VirtualFrame;
@@ -40,6 +42,9 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
 
     protected final String builtinName;
 
+     @CompilationFinal private FrameSlot thisSlot;
+     @CompilationFinal private boolean thisSlotInitialized = false;
+
     public FunctionRootEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.ROOT);
         if (isBuiltin) {
@@ -53,8 +58,13 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
     protected SourceSection getSourceSectionForIID() { return context.getInstrumentedNode().getRootNode().getSourceSection(); }
 
     public Object getReceiver(VirtualFrame frame, TruffleInstrument.Env env) {
+        // cache the frame slot for `this`
+        if (!thisSlotInitialized) {
+            CompilerDirectives.transferToInterpreterAndInvalidate();
+            thisSlot = JSFrameUtil.getThisSlot(frame.getFrameDescriptor());
+            thisSlotInitialized = true;
+        }
         // if function has a <this> slot and its value is not undefined, we have a shortcut to `this`
-        FrameSlot thisSlot = JSFrameUtil.getThisSlot(frame.getFrameDescriptor());
         if (thisSlot != null) {
             Object maybeThis = frame.getValue(thisSlot);
             if (maybeThis != null && maybeThis != Undefined.instance) {
