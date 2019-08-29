@@ -1,0 +1,2 @@
+forObject@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2) true { x: 'valueX', y: 'valueY' }
+forObject@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) false [ 41, 42, 43 ]

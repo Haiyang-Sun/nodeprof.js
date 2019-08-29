@@ -28,8 +28,7 @@ public class ExpressionFactory extends AbstractFactory {
 
     @TruffleBoundary
     public ExpressionFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("expression", jalangiAnalysis, pre, post, 2, 2);
-
+        super("expression", jalangiAnalysis, pre, post, 2, 3);
     }
 
     @Override
@@ -54,6 +53,7 @@ public class ExpressionFactory extends AbstractFactory {
                 if (post != null) {
                     setPostArguments(0, this.getSourceIID());
                     setPostArguments(1, this.getExpressionType());
+                    setPostArguments(2, result);
                     directCall(postCall, false, getSourceIID());
                 }
             }

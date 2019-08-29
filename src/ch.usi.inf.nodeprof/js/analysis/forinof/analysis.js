@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package ch.usi.inf.nodeprof.handlers;
-
-import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.js.nodes.instrumentation.JSTags;
-
-import ch.usi.inf.nodeprof.ProfiledTagEnum;
-
-/**
- * Abstract event handler for loop events
- */
-public abstract class LoopEventHandler extends BaseSingleTagEventHandler {
-    public LoopEventHandler(EventContext context) {
-        super(context, ProfiledTagEnum.CF_ROOT);
+//DO NOT INSTRUMENT
+(function (sandbox) {
+    function MyAnalysis() {
+        let lastExprResult;
+        this.forObject = function (iid, isForIn) {
+            console.log('forObject@', J$.iidToLocation(iid), isForIn, lastExprResult);
+        }
+        this.endExpression = function (iid, type, result) {
+            lastExprResult = result;
+        }
     }
 
-    public String getLoopType() {
-        return (String) getAttribute("type");
-    }
-
-    public boolean isForIn() {
-        return getLoopType() == JSTags.ControlFlowRootTag.Type.ForInIteration.name();
-    }
-
-    public boolean isForOf() {
-        return getLoopType() == JSTags.ControlFlowRootTag.Type.ForOfIteration.name();
-    }
-}
+    sandbox.analysis = new MyAnalysis();
+})(J$);

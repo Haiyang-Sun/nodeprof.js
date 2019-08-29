@@ -23,34 +23,23 @@ import com.oracle.truffle.api.object.DynamicObject;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.LoopEventHandler;
 
-public class LoopFactory extends AbstractFactory {
-    public LoopFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("loop", jalangiAnalysis, pre, post, 2, 2);
+public class ForObjectFactory extends AbstractFactory {
+    public ForObjectFactory(Object jalangiAnalysis, DynamicObject pre) {
+        super("forObject", jalangiAnalysis, pre, null, 2, -1);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new LoopEventHandler(context) {
             @Child DirectCallNode preCall = createPreCallNode();
-            @Child DirectCallNode postCall = createPostCallNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
-                if (pre != null) {
-                    setPreArguments(0, getSourceIID());
-                    setPreArguments(1, getLoopType());
-                    directCall(preCall, true, getSourceIID());
-                }
-            }
-
-            @Override
-            public void executePost(VirtualFrame frame, Object result,
+            public void executePre(VirtualFrame frame,
                             Object[] inputs) {
-                if (post != null) {
-
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, getLoopType());
-                    directCall(postCall, false, getSourceIID());
+                if (pre != null && (isForIn() || isForOf())) {
+                    setPreArguments(0, getSourceIID());
+                    setPreArguments(1, isForIn());
+                    directCall(preCall, true, getSourceIID());
                 }
             }
         };

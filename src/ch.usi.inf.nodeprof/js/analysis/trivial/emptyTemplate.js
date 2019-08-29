@@ -125,11 +125,12 @@
          * The callbacks are called before and after an expression
          * @param iid {integer} source code location id 
          * @param type {string} type of the expression, TODO: use some standard type names, e.g., ESTree
+         * @param result {} the execution result of the expression
          **/
         this.startExpression = function (iid, type) {
         };
 
-        this.endExpression = function (iid, type ) {
+        this.endExpression = function (iid, type, result) {
         };
 
         /**
@@ -164,10 +165,17 @@
             this.declare = function (iid, name, type) {
             };
 
+            /**
+             *  forin or forof support
+             *  the object being iterated can be known by checking the last expression's result (via endExpression)
+             **/
+            this.forObject = function (iid, isForIn) {
+            }
+
         }
 
         if(false) {
-            //not supported yet
+            // replaced with forObject including support for forin and forof
             this.forinObject = function (iid, val) {
             };
 
