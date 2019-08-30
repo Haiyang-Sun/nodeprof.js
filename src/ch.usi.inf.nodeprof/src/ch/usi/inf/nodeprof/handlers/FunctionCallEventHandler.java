@@ -15,6 +15,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import ch.usi.inf.nodeprof.utils.Logger;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
@@ -46,10 +47,9 @@ public abstract class FunctionCallEventHandler extends BaseSingleTagEventHandler
         } else {
             result = assertGetInput(1, inputs, "func");
         }
-        assert JSFunction.isJSFunction(result);
-        // TODO, in some cases in module.js we got null, to be fixed
-        if (result == null) {
-            result = Undefined.instance;
+        if (!JSFunction.isJSFunction(result)) {
+            Logger.error(getSourceIID(), "Function lookup failed: " + result.toString());
+            return Undefined.instance;
         }
         return result;
     }
