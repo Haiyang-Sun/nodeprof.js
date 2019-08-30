@@ -17,6 +17,7 @@ package ch.usi.inf.nodeprof.handlers;
 
 import java.util.ArrayList;
 
+import com.oracle.js.parser.ParserException;
 import com.oracle.js.parser.ir.Expression;
 import com.oracle.js.parser.ir.ObjectNode;
 import com.oracle.js.parser.ir.PropertyNode;
@@ -31,6 +32,7 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
+import ch.usi.inf.nodeprof.utils.Logger;
 
 /**
  * Abstract event handler for literal events
@@ -62,27 +64,34 @@ public abstract class LiteralEventHandler extends BaseSingleTagEventHandler {
         CompilerDirectives.transferToInterpreterAndInvalidate();
         if (this.literalType == LiteralTag.Type.ObjectLiteral.name()) {
             // use Graal.js parser
-            JSContext jsContext = GlobalObjectCache.getInstance().getJSContext((DynamicObject) literalVal);
-            Expression expression = jsContext.getEvaluator().parseExpression(jsContext, context.getInstrumentedSourceSection().getCharacters().toString());
-            this.hasGetterSetter = false;
-            ArrayList<Object> keys = new ArrayList<>();
-            if (expression instanceof ObjectNode) {
-                ObjectNode objExpr = (ObjectNode) expression;
-                for (PropertyNode element : objExpr.getElements()) {
-                    String flag = "";
-                    if (element.getGetter() != null) {
-                        flag += "getter";
-                        hasGetterSetter = true;
+            try {
+                JSContext jsContext = GlobalObjectCache.getInstance().getJSContext((DynamicObject) literalVal);
+                Expression expression = jsContext.getEvaluator().parseExpression(jsContext, context.getInstrumentedSourceSection().getCharacters().toString());
+                this.hasGetterSetter = false;
+                ArrayList<Object> keys = new ArrayList<>();
+                if (expression instanceof ObjectNode) {
+                    ObjectNode objExpr = (ObjectNode) expression;
+                    for (PropertyNode element : objExpr.getElements()) {
+                        String flag = "";
+                        if (element.getGetter() != null) {
+                            flag += "getter";
+                            hasGetterSetter = true;
+                        }
+                        if (element.getSetter() != null) {
+                            flag += "setter";
+                            hasGetterSetter = true;
+                        }
+                        String keyName = element.getKeyName();
+                        keys.add(flag + "-" + keyName);
                     }
-                    if (element.getSetter() != null) {
-                        flag += "setter";
-                        hasGetterSetter = true;
-                    }
-                    String keyName = element.getKeyName();
-                    keys.add(flag + "-" + keyName);
                 }
+                literalMembers = JSArray.createConstant(jsContext, keys.toArray());
+            } catch (ParserException e) {
+                // if the source section is wrong, the parser will fail
+                Logger.warning(getSourceIID(), "Cannot parse object literal " + context.getInstrumentedSourceSection().getCharacters().toString());
+                literalMembers = Undefined.instance;
+                hasGetterSetter = false;
             }
-            literalMembers = JSArray.createConstant(jsContext, keys.toArray());
             return literalMembers;
         } else {
             this.literalMembers = Undefined.instance;
