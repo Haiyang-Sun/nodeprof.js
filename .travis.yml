@@ -41,6 +41,8 @@ script:
   - mx --dy nodeprof,/compiler --force-bash-launchers=true --disable-polyglot build
   - cd -
   - mx test-all
+  - mx --dy /compiler build
+  - mx --dy /compiler test-npm
 
 deploy:
   provider: releases
