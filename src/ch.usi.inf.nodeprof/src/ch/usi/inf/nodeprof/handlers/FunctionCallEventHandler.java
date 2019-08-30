@@ -47,10 +47,10 @@ public abstract class FunctionCallEventHandler extends BaseSingleTagEventHandler
         } else {
             result = assertGetInput(1, inputs, "func");
         }
-        if (!JSFunction.isJSFunction(result)) {
-            Logger.error(getSourceIID(), "Function lookup failed: " + result.toString());
-            return Undefined.instance;
-        }
+        // it's possible the user invoke an non-function object raising a runtime exception
+        // In nodeprof, we allow the function object to be passed to the dynamic analysis as it is
+        // i.e., result might not be a JS function object
+        assert (result != null);
         return result;
     }
 
