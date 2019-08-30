@@ -18,8 +18,10 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.Scope;
 import com.oracle.truffle.api.frame.FrameSlot;
+import com.oracle.truffle.api.frame.MaterializedFrame;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument;
@@ -73,13 +75,17 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
         }
 
         // otherwise, retrieve the current scope to look up this
+        return getReceiverFromScope(frame.materialize(), env);
+    }
+
+    @TruffleBoundary
+    private Object getReceiverFromScope(MaterializedFrame frame, TruffleInstrument.Env env) {
         Iterable<Scope> scopes = env.findLocalScopes(context.getInstrumentedNode(), frame);
         assert scopes.iterator().hasNext();
         Object receiver = scopes.iterator().next().getReceiver();
         assert receiver != null;
         return receiver;
     }
-
 
     public boolean isRegularExpression() {
         return this.isRegExp;
