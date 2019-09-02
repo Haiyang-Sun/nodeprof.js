@@ -33,10 +33,10 @@ public abstract class LoopEventHandler extends BaseSingleTagEventHandler {
     }
 
     public boolean isForIn() {
-        return getLoopType() == JSTags.ControlFlowRootTag.Type.ForInIteration.name();
+        return getLoopType().equals(JSTags.ControlFlowRootTag.Type.ForInIteration.name());
     }
 
     public boolean isForOf() {
-        return getLoopType() == JSTags.ControlFlowRootTag.Type.ForOfIteration.name();
+        return getLoopType().equals(JSTags.ControlFlowRootTag.Type.ForOfIteration.name());
     }
 }
