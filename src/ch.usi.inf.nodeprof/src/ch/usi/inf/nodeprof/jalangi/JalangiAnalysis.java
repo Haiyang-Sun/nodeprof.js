@@ -33,6 +33,7 @@ import static ch.usi.inf.nodeprof.ProfiledTagEnum.UNARY;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.EXPRESSION;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_READ;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_WRITE;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.CF_ROOT;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,6 +56,7 @@ import ch.usi.inf.nodeprof.jalangi.factory.DeclareFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.EvalFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.EvalFunctionFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ExpressionFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.ForObjectFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.GetElementFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.GetFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.InvokeFactory;
@@ -135,8 +137,10 @@ public class JalangiAnalysis {
             put("evalFunctionPre", EnumSet.of(BUILTIN));
             put("evalFunctionPost", EnumSet.of(BUILTIN));
 
-                            put("startExpression", EnumSet.of(EXPRESSION));
-                            put("endExpression", EnumSet.of(EXPRESSION));
+            put("forObject", EnumSet.of(CF_ROOT));
+
+            put("startExpression", EnumSet.of(EXPRESSION));
+            put("endExpression", EnumSet.of(EXPRESSION));
         }
     });
 
@@ -280,6 +284,12 @@ public class JalangiAnalysis {
             this.instrument.onCallback(
                             ProfiledTagEnum.BUILTIN,
                             new EvalFunctionFactory(this.jsAnalysis, callbacks.get("evalFunctionPre"), callbacks.get("evalFunctionPost")));
+        }
+
+        if (this.callbacks.containsKey("forObject")) {
+            this.instrument.onCallback(
+                            ProfiledTagEnum.CF_ROOT,
+                            new ForObjectFactory(this.jsAnalysis, callbacks.get("forObject")));
         }
 
         /**
