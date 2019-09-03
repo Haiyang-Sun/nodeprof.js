@@ -121,6 +121,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
             }
         }
         if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
+            e.printStackTrace();
             Thread.dumpStack();
             System.exit(-1);
         }

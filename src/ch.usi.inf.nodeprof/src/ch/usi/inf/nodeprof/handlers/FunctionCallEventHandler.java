@@ -15,6 +15,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import ch.usi.inf.nodeprof.utils.Logger;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
@@ -46,11 +47,10 @@ public abstract class FunctionCallEventHandler extends BaseSingleTagEventHandler
         } else {
             result = assertGetInput(1, inputs, "func");
         }
-        assert JSFunction.isJSFunction(result);
-        // TODO, in some cases in module.js we got null, to be fixed
-        if (result == null) {
-            result = Undefined.instance;
-        }
+        // it's possible the user invoke an non-function object raising a runtime exception
+        // In nodeprof, we allow the function object to be passed to the dynamic analysis as it is
+        // i.e., result might not be a JS function object
+        assert (result != null);
         return result;
     }
 

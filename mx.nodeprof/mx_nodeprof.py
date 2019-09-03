@@ -7,6 +7,7 @@ from mx_unittest import unittest
 import mx_unittest
 from mx import BinarySuite, VC
 from contextlib import contextmanager
+from mx_graal_nodejs import npm
 
 import sys
 _suite = mx.suite('nodeprof')
@@ -37,7 +38,7 @@ def runJNode(args):
 
 def _runJalangi(args, svm=False, debug=False, outFile=None, trace=False):
     from mx_graal_nodejs import run_nodejs
-    jalangiArgs = ['--vm.ea', '--experimental-options', '--nodeprof', '--nodeprof.Analysis=NodeProfJalangi']
+    jalangiArgs = ['--vm.ea', '--experimental-options', '--engine.InstrumentExceptionsAreThrown=true', '--nodeprof', '--nodeprof.Analysis=NodeProfJalangi']
     if debug:
         jalangiArgs += ["--nodeprof.Debug"];
     if trace:
@@ -217,6 +218,31 @@ def unitTests(args):
     unittest(commonArgs)
     print("JUnit Test Finishes")
 
+class TestDownload:
+    npmDir = join(_suite.dir, 'test')
+    def __init__(self, name, url, pathPrefix):
+        self.name = name
+        self.url = url
+        self.downloadRoot = join(self.npmDir, name)
+        self.testRoot = join(self.npmDir, name, pathPrefix)
+        if os.path.exists(join(self.npmDir, name, pathPrefix)):
+            mx.log('Found %s, skipping download.' % self.testRoot)
+        else:
+            self.downloadSource()
+            mx.log('Running NPM install for %s in %s' % (self.name, self.testRoot))
+            npm(['install'], cwd=self.testRoot)
+    def downloadSource(self):
+        download = join(self.npmDir, self.name + '.zip')
+        mx.download(download, [self.url])
+        with zipfile.ZipFile(download) as zf:
+            zf.extractall(self.downloadRoot)
+    def run(self, args, testPath):
+        runJalangi(args + ['--analysis', 'src/ch.usi.inf.nodeprof/js/analysis/trivial/emptyTemplate.js', join(self.testRoot, testPath)])
+
+def testNpm(args):
+    lodash = TestDownload('lodash', 'https://github.com/lodash/lodash/archive/4.17.10.zip', 'lodash-4.17.10')
+    lodash.run(args, join('test', 'test.js'))
+
 def test(args):
     unitTests(args)
     testJalangi(args +["--all"]);
@@ -252,6 +278,7 @@ mx.update_commands(_suite, {
     'test-all': [test, ''],
     'test-unit': [unitTests, ''],
     'test-specific': [testJalangi, ''],
+    'test-npm': [testNpm, ''],
     'jalangi': [runJalangi, ''],
     'jnode': [runJNode, ''],
 })
