@@ -4,6 +4,7 @@ node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: Module / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: updateChildren / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: tryModuleLoad / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: findLongestRegisteredExtension / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: stripBOM / (*internal/modules/cjs/helpers.js) / 4
 node-module: functionEnter: stripShebang / (*internal/modules/cjs/helpers.js) / 4
 node-module: functionEnter: makeRequireFunction / (*internal/modules/cjs/helpers.js) / 4
@@ -14,6 +15,7 @@ node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: Module / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: updateChildren / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: tryModuleLoad / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: findLongestRegisteredExtension / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: stripBOM / (*internal/modules/cjs/helpers.js) / 4
 node-module: functionEnter: stripShebang / (*internal/modules/cjs/helpers.js) / 4
 node-module: functionEnter: makeRequireFunction / (*internal/modules/cjs/helpers.js) / 4
