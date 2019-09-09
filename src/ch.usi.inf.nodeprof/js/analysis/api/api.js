@@ -31,7 +31,8 @@
       var locObj = J$.iidToSourceObject(iid);
       console.log('num props:', Object.getOwnPropertyNames(locObj).length);
       console.log('name:', locObj.name);
-      console.log('range:', locObj.range);
+      // do not log the range directly, it includes the Node.js module wrapper function as a prefix
+      console.log('src length from range:', locObj.range[1] - locObj.range[0]);
       console.log('loc.start:', locObj.loc.start);
       console.log('loc.end:', locObj.loc.end);
     };
