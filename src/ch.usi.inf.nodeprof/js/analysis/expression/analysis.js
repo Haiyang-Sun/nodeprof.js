@@ -16,11 +16,17 @@
 //DO NOT INSTRUMENT
 (function (sandbox) {
     function MyAnalysis() {
+        function skipModule(iid) {
+            var locObj = J$.iidToSourceObject(iid);
+            return (locObj.loc.start.line === 1 && locObj.loc.start.column === 1);
+        }
         this.startExpression = function (iid, type) {
+            if (skipModule(iid)) return;
             console.log("expression starts:", J$.iidToLocation(iid), "type:", type);
         };
 
         this.endExpression = function (iid, type) {
+            if (skipModule(iid)) return;
             console.log("expression finishes:", J$.iidToLocation(iid), "type:", type);
         };
         this.write = function(iid, name) {

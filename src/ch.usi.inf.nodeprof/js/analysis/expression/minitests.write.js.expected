@@ -1,23 +1,21 @@
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:1:1:6:3) type: AutonomousFunctionExpression
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:1:1:6:3) type: AutonomousFunctionExpression
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:1:71:1:72) type: JSConstantInteger
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:1:71:1:72) type: JSConstantInteger
-write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:1:67:1:72) a
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:2:9:2:14) type: JSAdd
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:2:9:2:10) type: JSConstantInteger
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:2:9:2:10) type: JSConstantInteger
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:2:13:2:14) type: JSReadCurrentFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:2:13:2:14) type: JSReadCurrentFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:2:9:2:14) type: JSAdd
-write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:2:5:2:14) b
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:3:9:3:10) type: JSConstantInteger
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:3:9:3:10) type: JSConstantInteger
-write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:3:5:3:10) c
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:4:1:4:10) type: JSWriteCurrentFrameSlot
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:4:5:4:10) type: JSWriteCurrentFrameSlot
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:4:9:4:10) type: JSReadCurrentFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:4:9:4:10) type: JSReadCurrentFrameSlot
-write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:4:5:4:10) b
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:4:5:4:10) type: JSWriteCurrentFrameSlot
-write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:4:1:4:10) a
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:4:1:4:10) type: JSWriteCurrentFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:9:16:10) type: JSConstantInteger
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:9:16:10) type: JSConstantInteger
+write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:5:16:10) a
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSAdd
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:10) type: JSConstantInteger
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:10) type: JSConstantInteger
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:13:17:14) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:13:17:14) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSAdd
+write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:5:17:14) b
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:18:9:18:10) type: JSConstantInteger
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:18:9:18:10) type: JSConstantInteger
+write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:18:5:18:10) c
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:1:19:10) type: JSWriteCurrentFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:5:19:10) type: JSWriteCurrentFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:9:19:10) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:9:19:10) type: JSReadCurrentFrameSlot
+write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:5:19:10) b
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:5:19:10) type: JSWriteCurrentFrameSlot
+write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:1:19:10) a
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:1:19:10) type: JSWriteCurrentFrameSlot
