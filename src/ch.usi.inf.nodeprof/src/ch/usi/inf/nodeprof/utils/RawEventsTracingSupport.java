@@ -16,6 +16,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.utils;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
@@ -47,7 +48,7 @@ import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
 
 public class RawEventsTracingSupport {
 
-    public static final Class<?>[] ALL = JSTags.ALL;
+    private static final Class<?>[] ALL = ProfiledTagEnum.getTags();
 
     // TODO maybe there's a nicer way to avoid enabling an instrument twice...
     private static boolean enabled = false;

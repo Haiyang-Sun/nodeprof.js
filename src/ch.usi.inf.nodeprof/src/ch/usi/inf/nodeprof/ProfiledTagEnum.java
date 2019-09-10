@@ -70,6 +70,9 @@ public enum ProfiledTagEnum {
         this.expectedNumInputs = expectedNumInputs;
     }
 
+    /**
+     * Gets the Graal.js tag for this NodeProf tag.
+     */
     public Class<? extends Tag> getTag() {
         return this.clazz;
     }
@@ -93,6 +96,10 @@ public enum ProfiledTagEnum {
         }
     }
 
+
+    /**
+     * Returns an array that contains all Graal.js tags used by NodeProf
+     */
     public static Class<?>[] getTags() {
         Class<?>[] res = new Class<?>[ProfiledTagEnum.values().length];
         for (int i = 0; i < ProfiledTagEnum.values().length; i++) {
