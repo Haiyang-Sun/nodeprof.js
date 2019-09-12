@@ -59,7 +59,9 @@ public class NodeProfJalangi extends NodeProfAnalysis {
     @Override
     @TruffleBoundary
     public Object onLoad() throws Exception {
-        Source src = Source.newBuilder(JavaScriptLanguage.ID, "__jalangiAdapter = adapterVar", "nodeprof").build();
+        // Get the global object via an indirect eval that works in strict mode
+        // and define __jalangiAdapter on it
+        Source src = Source.newBuilder(JavaScriptLanguage.ID, "(1,eval)('this').__jalangiAdapter = adapterVar", "nodeprof").build();
         CallTarget bootstrap = this.getEnv().parse(src, "adapterVar");
         bootstrap.call(new JalangiAdapter(this));
         return null;
