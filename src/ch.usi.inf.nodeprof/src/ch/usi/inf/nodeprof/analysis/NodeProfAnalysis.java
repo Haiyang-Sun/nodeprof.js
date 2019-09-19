@@ -233,7 +233,7 @@ public abstract class NodeProfAnalysis {
                     ProfiledTagEnum.BUILTIN,
                     ProfiledTagEnum.STATEMENT,
                     ProfiledTagEnum.EXPRESSION,
-                    ProfiledTagEnum.CF_COND,
+                    ProfiledTagEnum.CF_BRANCH,
                     ProfiledTagEnum.ROOT
     };
 

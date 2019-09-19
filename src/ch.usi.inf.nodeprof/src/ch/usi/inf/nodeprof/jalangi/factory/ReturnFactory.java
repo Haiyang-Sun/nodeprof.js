@@ -19,38 +19,36 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
-import ch.usi.inf.nodeprof.handlers.BranchEventHandler;
+import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
 
-@SuppressWarnings({"unchecked"})
-public class BranchFactory extends AbstractFactory {
-    public BranchFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("branch", jalangiAnalysis, pre, post, 1, 1);
+public class ReturnFactory extends AbstractFactory {
+    public ReturnFactory(Object jalangiAnalysis, DynamicObject pre) {
+        super("_return", jalangiAnalysis, pre, null, 2, -1);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
-        return new BranchEventHandler(context) {
+        return new CFBranchEventHandler(context) {
             @Child DirectCallNode preCall = createPreCallNode();
-            @Child DirectCallNode postCall = createPostCallNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
-                if (pre != null) {
+            public void executePre(VirtualFrame frame,
+                            Object[] inputs) {
+                if (pre != null && isReturnNode()) {
                     setPreArguments(0, getSourceIID());
+                    if (inputs == null || inputs.length == 0) {
+                        // empty return statement (i.e., 'return;')
+                        setPreArguments(1, Undefined.instance);
+                    } else {
+                        setPreArguments(1, inputs[0]);
+                    }
                     directCall(preCall, true, getSourceIID());
                 }
             }
 
-            @Override
-            public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
-                if (post != null) {
-                    setPostArguments(0, getSourceIID());
-                    directCall(postCall, false, getSourceIID());
-                }
-            }
         };
     }
 

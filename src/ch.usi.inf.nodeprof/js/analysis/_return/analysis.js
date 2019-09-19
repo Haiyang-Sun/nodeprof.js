@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,28 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package ch.usi.inf.nodeprof.handlers;
-
-import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.js.nodes.instrumentation.JSTags;
-
-import ch.usi.inf.nodeprof.ProfiledTagEnum;
-
-/**
- * Abstract event handler for conditional events
- */
-public abstract class ConditionalEventHandler extends BaseSingleTagEventHandler {
-    private final boolean isConditional;
-
-    public ConditionalEventHandler(EventContext context) {
-        super(context, ProfiledTagEnum.CF_BRANCH);
-        boolean typeIsCond = false;
-        typeIsCond = JSTags.ControlFlowBranchTag.Type.Condition.name().equals(getAttributeNoReport("type"));
-        this.isConditional = typeIsCond;
+//DO NOT INSTRUMENT
+(function (sandbox) {
+    function MyAnalysis() {
+        this._return = function(iid, val) {
+            console.log('return', J$.iidToLocation(iid), 'val returns', val);
+        }
     }
 
-    public boolean isConditional() {
-        return this.isConditional;
-    }
-
-}
+    sandbox.analysis = new MyAnalysis();
+})(J$);

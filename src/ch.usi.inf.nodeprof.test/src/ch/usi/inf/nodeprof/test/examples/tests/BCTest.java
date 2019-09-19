@@ -40,8 +40,8 @@ public class BCTest extends BasicAnalysisTest {
         AnalysisEventsVerifier verifier = new AnalysisEventsVerifier(this.analysis.getAnalysisEvents()) {
             @Override
             public void verify() {
-                this.dequeueAndVerifyEvent("BC", 1, ProfiledTagEnum.CF_COND, true);
-                this.dequeueAndVerifyEvent("BC", 1, ProfiledTagEnum.CF_COND, false);
+                this.dequeueAndVerifyEvent("BC", 1, ProfiledTagEnum.CF_BRANCH, true);
+                this.dequeueAndVerifyEvent("BC", 1, ProfiledTagEnum.CF_BRANCH, false);
             }
         };
         verifier.verify();

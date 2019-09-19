@@ -106,7 +106,7 @@ public class InputChecker {
                     return false;
                 }
                 break;
-            case CF_COND:
+            case CF_BRANCH:
                 /**
                  * no inputs needed
                  */
