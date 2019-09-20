@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package ch.usi.inf.nodeprof.handlers;
-
-import com.oracle.truffle.api.instrumentation.EventContext;
-
-import ch.usi.inf.nodeprof.ProfiledTagEnum;
-
-/**
- * Abstract event handler for loop events
- */
-public abstract class BranchEventHandler extends BaseSingleTagEventHandler {
-
-    public BranchEventHandler(EventContext context) {
-        super(context, ProfiledTagEnum.CF_BRANCH);
-    }
-
+function fib(n){
+    if (n < 2)
+        return n;
+    return fib(n-1)+fib(n-2);
 }
+
+fib(1);

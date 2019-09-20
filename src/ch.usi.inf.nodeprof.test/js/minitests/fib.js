@@ -13,28 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package ch.usi.inf.nodeprof.handlers;
-
-import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.js.nodes.instrumentation.JSTags;
-
-import ch.usi.inf.nodeprof.ProfiledTagEnum;
-
-/**
- * Abstract event handler for conditional events
- */
-public abstract class ConditionalEventHandler extends BaseSingleTagEventHandler {
-    private final boolean isConditional;
-
-    public ConditionalEventHandler(EventContext context) {
-        super(context, ProfiledTagEnum.CF_BRANCH);
-        boolean typeIsCond = false;
-        typeIsCond = JSTags.ControlFlowBranchTag.Type.Condition.name().equals(getAttributeNoReport("type"));
-        this.isConditional = typeIsCond;
-    }
-
-    public boolean isConditional() {
-        return this.isConditional;
-    }
-
+function fib(n){
+    if (n < 2)
+        return n;
+    return fib(n-1)+fib(n-2);
 }
+
+fib(10);

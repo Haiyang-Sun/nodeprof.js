@@ -52,7 +52,7 @@ public class BranchCoverage extends TestableNodeProfAnalysis {
 
     @Override
     public void initCallbacks() {
-        this.onCallback(ProfiledTagEnum.CF_COND, new AnalysisFactory<BaseEventHandlerNode>() {
+        this.onCallback(ProfiledTagEnum.CF_BRANCH, new AnalysisFactory<BaseEventHandlerNode>() {
             @Override
             public BaseEventHandlerNode create(EventContext context) {
                 return new ConditionalEventHandler(context) {
@@ -63,10 +63,10 @@ public class BranchCoverage extends TestableNodeProfAnalysis {
                     @Override
                     public void executePost(VirtualFrame frame, Object result, Object[] inputs) {
                         if (JSRuntime.toBoolean(result)) {
-                            addDebugEvent("BC", getSourceIID(), ProfiledTagEnum.CF_COND, true);
+                            addDebugEvent("BC", getSourceIID(), ProfiledTagEnum.CF_BRANCH, true);
                             ((SimpleCounterReport) (trueCounter.execute(getSourceIID()))).incre();
                         } else {
-                            addDebugEvent("BC", getSourceIID(), ProfiledTagEnum.CF_COND, false);
+                            addDebugEvent("BC", getSourceIID(), ProfiledTagEnum.CF_BRANCH, false);
                             ((SimpleCounterReport) (falseCounter.execute(getSourceIID()))).incre();
                         }
                     }

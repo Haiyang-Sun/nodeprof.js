@@ -172,15 +172,20 @@
             this.forObject = function (iid, isForIn) {
             }
 
+            /**
+             * This callback is called before a value is returned from a function using the <tt>return</tt> keyword.
+             *
+             * @param {number} iid - Static unique instruction identifier of this callback
+             * @param {*} val - Value to be returned
+             */
+            this._return = function (iid, val) {
+            };
+
         }
 
         if(false) {
             // replaced with forObject including support for forin and forof
             this.forinObject = function (iid, val) {
-            };
-
-            //not supported yet
-            this._return = function (iid, val) {
             };
 
             //not supported yet

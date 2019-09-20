@@ -16,24 +16,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.BINARY;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.BUILTIN;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.CF_COND;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.ELEMENT_READ;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.ELEMENT_WRITE;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.EVAL;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.INVOKE;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.DECLARE;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.LITERAL;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.NEW;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.PROPERTY_READ;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.PROPERTY_WRITE;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.ROOT;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.UNARY;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.EXPRESSION;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_READ;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_WRITE;
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.CF_ROOT;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +32,7 @@ import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.jalangi.factory.BinaryFactory;
-import ch.usi.inf.nodeprof.jalangi.factory.BranchFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.ReturnFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BuiltinFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ConditionalFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.DeclareFactory;
@@ -129,7 +112,7 @@ public class JalangiAnalysis {
             put("binary", EnumSet.of(BINARY));
 
             // conditions
-            put("conditional", EnumSet.of(CF_COND));
+            put("conditional", EnumSet.of(CF_BRANCH));
 
             // eval-like
             put("evalPre", EnumSet.of(EVAL));
@@ -138,6 +121,8 @@ public class JalangiAnalysis {
             put("evalFunctionPost", EnumSet.of(BUILTIN));
 
             put("forObject", EnumSet.of(CF_ROOT));
+
+            put("_return", EnumSet.of(CF_BRANCH));
 
             put("startExpression", EnumSet.of(EXPRESSION));
             put("endExpression", EnumSet.of(EXPRESSION));
@@ -149,7 +134,7 @@ public class JalangiAnalysis {
                                     "instrumentCodePre", "instrumentCode", // TODO will those be
                                                                            // supported at all?
                                     "onReady", // TODO should this be ignored instead
-                                    "_return", "runInstrumentedFunctionBody", "scriptEnter", "scriptExit", "_throw", "_with")));
+                                    "runInstrumentedFunctionBody", "scriptEnter", "scriptExit", "_throw", "_with")));
 
     public static final Set<String> ignoredCallbacks = Collections.unmodifiableSet(
                     // endExecution is a high-level event handled by the jalangi.js script
@@ -235,7 +220,7 @@ public class JalangiAnalysis {
         }
 
         if (this.callbacks.containsKey("conditional")) {
-            this.instrument.onCallback(ProfiledTagEnum.CF_COND, new ConditionalFactory(
+            this.instrument.onCallback(ProfiledTagEnum.CF_BRANCH, new ConditionalFactory(
                             this.jsAnalysis, callbacks.get("conditional"), false));
             this.instrument.onCallback(
                             ProfiledTagEnum.BINARY,
@@ -304,14 +289,12 @@ public class JalangiAnalysis {
         }
 
         /**
-         * TODO
-         *
-         * Branch not tested
+         * _return callback
          */
-        if (this.callbacks.containsKey("branchEnter") || this.callbacks.containsKey("branchExit")) {
+        if (this.callbacks.containsKey("_return")) {
             this.instrument.onCallback(
                             ProfiledTagEnum.CF_BRANCH,
-                            new BranchFactory(this.jsAnalysis, callbacks.get("branchEnter"), callbacks.get("branchExit")));
+                            new ReturnFactory(this.jsAnalysis, callbacks.get("_return")));
         }
     }
 

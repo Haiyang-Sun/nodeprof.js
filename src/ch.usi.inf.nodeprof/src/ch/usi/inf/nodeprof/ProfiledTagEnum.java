@@ -26,8 +26,8 @@ import ch.usi.inf.nodeprof.utils.Logger;
 public enum ProfiledTagEnum {
     UNARY(JSTags.UnaryOperationTag.class, -1), // have multiple case
     BINARY(JSTags.BinaryOperationTag.class, 2),
-    CF_COND(JSTags.ControlFlowBranchTag.class, 0), // to be checked
-    CF_BRANCH(JSTags.ControlFlowBlockTag.class, -1), // to be checked
+    CF_BRANCH(JSTags.ControlFlowBranchTag.class, -1), // to be checked
+    CF_BLOCK(JSTags.ControlFlowBlockTag.class, -1), // to be checked
     CF_ROOT(JSTags.ControlFlowRootTag.class, 0), // to be checked
     EVAL(JSTags.EvalCallTag.class, 2),
     DECLARE(JSTags.DeclareTag.class, 0),
@@ -95,7 +95,6 @@ public enum ProfiledTagEnum {
             }
         }
     }
-
 
     /**
      * Returns an array that contains all Graal.js tags used by NodeProf

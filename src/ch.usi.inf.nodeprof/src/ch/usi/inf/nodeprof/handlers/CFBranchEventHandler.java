@@ -20,21 +20,16 @@ import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 
-/**
- * Abstract event handler for conditional events
- */
-public abstract class ConditionalEventHandler extends BaseSingleTagEventHandler {
-    private final boolean isConditional;
+public abstract class CFBranchEventHandler extends BaseSingleTagEventHandler {
 
-    public ConditionalEventHandler(EventContext context) {
+    private final String type;
+
+    public CFBranchEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.CF_BRANCH);
-        boolean typeIsCond = false;
-        typeIsCond = JSTags.ControlFlowBranchTag.Type.Condition.name().equals(getAttributeNoReport("type"));
-        this.isConditional = typeIsCond;
+        this.type = (String) getAttribute("type");
     }
 
-    public boolean isConditional() {
-        return this.isConditional;
+    public boolean isReturnNode() {
+        return this.type.equals(JSTags.ControlFlowBranchTag.Type.Return.name());
     }
-
 }
