@@ -1,2 +1,23 @@
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:1:66:4:2) obj
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:17:6:20) obj
 forObject@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2) true { x: 'valueX', y: 'valueY' }
+iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2)
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2) key
+iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2)
+iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2)
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2) key
+iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2)
+forObjectPost@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2) true
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:9:5:9:21) arr
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:17:11:20) arr
 forObject@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) false [ 41, 42, 43 ]
+iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) val
+iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
+iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) val
+iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
+iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) val
+iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
+forObjectPost@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) false

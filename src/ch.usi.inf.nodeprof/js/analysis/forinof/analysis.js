@@ -21,6 +21,21 @@
         this.forObject = function (iid, isForIn) {
             console.log('forObject@', J$.iidToLocation(iid), isForIn, lastExprResult);
         }
+        this.forObjectPost = function (iid, isForIn) {
+            console.log('forObjectPost@', J$.iidToLocation(iid), isForIn);
+        }
+        this.cfBlockEnter = function(iid) {
+            console.log('iterationEnter@', J$.iidToLocation(iid));
+        }
+        this.cfBlockExit = function(iid) {
+            console.log('iterationExit@', J$.iidToLocation(iid));
+        }
+        this.read = function(iid, name, value) {
+            console.log('read@', J$.iidToLocation(iid), name);
+        }
+        this.write = function(iid, name, value) {
+            console.log('write@', J$.iidToLocation(iid), name);
+        }
         this.endExpression = function (iid, type, result) {
             lastExprResult = result;
         }

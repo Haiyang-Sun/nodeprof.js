@@ -171,6 +171,17 @@
              **/
             this.forObject = function (iid, isForIn) {
             }
+            this.forObjectPost = function (iid, isForIn) {
+            }
+
+            /**
+             * This callback is called before a value is returned from a function using the <tt>return</tt> keyword.
+             *
+             * @param {number} iid - Static unique instruction identifier of this callback
+             * @param {*} val - Value to be returned
+             */
+            this._return = function (iid, val) {
+            };
 
             /**
              * This callback is called before a value is returned from a function using the <tt>return</tt> keyword.
