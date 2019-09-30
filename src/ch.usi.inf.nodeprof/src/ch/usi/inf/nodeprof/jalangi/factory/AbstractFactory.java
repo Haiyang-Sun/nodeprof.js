@@ -15,6 +15,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
+import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.interop.InteropLibrary;
@@ -24,9 +25,12 @@ import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.JSCancelledExecutionException;
+import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
+import com.oracle.truffle.js.runtime.builtins.JSUserObject;
+import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Null;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -188,7 +192,19 @@ public abstract class AbstractFactory implements
     }
 
     @TruffleBoundary
-    protected static Object parseErrorObject(Throwable exception) {
+    private static Object parseErrorObject(Throwable exception) {
         return exception instanceof GraalJSException ? ((GraalJSException) exception).getErrorObject() : exception.getMessage();
+    }
+
+    @TruffleBoundary
+    protected static Object createWrappedException(Throwable exception) {
+        JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
+        DynamicObject wrapped = JSUserObject.create(ctx);
+        // TODO we could create and freeze an empty singleton object when no-exception (null)
+        if (exception != null) {
+            Object errObj = parseErrorObject(exception);
+            JSObject.set(wrapped, "exception", errObj == null ? "Unknown Exception" : errObj);
+        }
+        return wrapped;
     }
 }

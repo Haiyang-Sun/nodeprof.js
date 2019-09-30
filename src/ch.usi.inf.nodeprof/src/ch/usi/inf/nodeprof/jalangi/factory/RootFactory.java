@@ -67,7 +67,7 @@ public class RootFactory extends AbstractFactory {
                 if (!this.isBuiltin && post != null) {
                     setPostArguments(0, this.getSourceIID());
                     setPostArguments(1, convertResult(result));
-                    setPostArguments(2, Undefined.instance);
+                    setPostArguments(2, createWrappedException(null));
                     directCall(postCall, false, getSourceIID());
                 }
             }
@@ -77,11 +77,9 @@ public class RootFactory extends AbstractFactory {
                 if (isRegularExpression())
                     return;
                 if (!this.isBuiltin && post != null) {
-                    Object exceptionValue = parseErrorObject(exception);
                     setPostArguments(0, getSourceIID());
                     setPostArguments(1, Undefined.instance);
-                    setPostArguments(2, exceptionValue == null ? "Unknown Exception" : exceptionValue);
-
+                    setPostArguments(2, createWrappedException(exception));
                     directCall(postCall, false, getSourceIID());
                 }
             }

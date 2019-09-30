@@ -64,7 +64,7 @@ public class BuiltinFactory extends AbstractFactory {
                     setPostArguments(2, getReceiver(frame));
                     setPostArguments(3, makeArgs.executeArguments(getArguments(frame)));
                     setPostArguments(4, convertResult(result));
-                    setPostArguments(5, Undefined.instance);
+                    setPostArguments(5, createWrappedException(null));
                     directCall(postCall, false, getSourceIID());
                 }
             }
@@ -72,13 +72,12 @@ public class BuiltinFactory extends AbstractFactory {
             @Override
             public void executeExceptional(VirtualFrame frame, Throwable exception) {
                 if (isTarget && post != null) {
-                    Object exceptionValue = parseErrorObject(exception);
                     setPostArguments(0, this.getBuiltinName());
                     setPostArguments(1, getFunction(frame));
                     setPostArguments(2, getReceiver(frame));
                     setPostArguments(3, makeArgs.executeArguments(getArguments(frame)));
                     setPostArguments(4, Undefined.instance);
-                    setPostArguments(5, exceptionValue == null ? "Unknown Exception" : exceptionValue);
+                    setPostArguments(5, createWrappedException(exception));
                     directCall(postCall, false, getSourceIID());
                 }
             }

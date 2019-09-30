@@ -55,7 +55,7 @@ public class EvalFunctionFactory extends AbstractFactory {
                 if (isTarget && post != null) {
                     setPostArguments(0, makeArgs.executeArguments(getArguments(frame)));
                     setPostArguments(1, convertResult(result));
-                    setPostArguments(2, Undefined.instance);
+                    setPostArguments(2, createWrappedException(null));
                     directCall(postCall, false, getSourceIID());
                 }
             }
@@ -63,10 +63,9 @@ public class EvalFunctionFactory extends AbstractFactory {
             @Override
             public void executeExceptional(VirtualFrame frame, Throwable exception) {
                 if (isTarget && post != null) {
-                    Object exceptionValue = parseErrorObject(exception);
                     setPostArguments(0, makeArgs.executeArguments(getArguments(frame)));
                     setPostArguments(1, Undefined.instance);
-                    setPostArguments(2, exceptionValue == null ? "Unknown Exception" : exceptionValue);
+                    setPostArguments(2, createWrappedException(exception));
                     directCall(postCall, false, getSourceIID());
                 }
             }
