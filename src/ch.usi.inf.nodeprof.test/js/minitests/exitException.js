@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +23,10 @@ function bar(){
   throw new Error("this is an error");
 };
 
+function baz(){
+  throw undefined;
+};
+
 try {
   foo();
 }catch(e){
@@ -30,6 +35,12 @@ try {
 
 try {
   bar();
+}catch(e){
+  console.log("exception: "+e);
+}
+
+try {
+  baz();
 }catch(e){
   console.log("exception: "+e);
 }
