@@ -9,6 +9,6 @@
   "author": "Oracle Labs",
   "license": "UPL-1.0",
   "dependencies": {
-    "uri-js": "2.1.1"
+    "uri-js": "4.2.2"
   }
 }
