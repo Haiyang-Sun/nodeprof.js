@@ -15,12 +15,25 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import ch.usi.inf.nodeprof.utils.NodeProfUtil;
+import ch.usi.inf.nodeprof.utils.SourceMapping;
 import com.oracle.truffle.api.instrumentation.EventContext;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import com.oracle.truffle.js.nodes.JavaScriptNode;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 
 public abstract class CFBlockEventHandler extends BaseSingleTagEventHandler {
+    private final int parentIID;
+
     public CFBlockEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.CF_BLOCK);
+        JavaScriptNode parent = (JavaScriptNode) NodeProfUtil.getParentSkipWrappers(context.getInstrumentedNode());
+        assert parent.hasTag(JSTags.ControlFlowRootTag.class);
+        this.parentIID = SourceMapping.getIIDForSourceSection(parent.getSourceSection());
+    }
+
+    public int getParentIID() {
+        return parentIID;
     }
 }

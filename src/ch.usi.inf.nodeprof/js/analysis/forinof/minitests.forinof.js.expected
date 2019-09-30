@@ -1,23 +1,39 @@
-write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:1:66:4:2) obj
-read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:17:6:20) obj
-forObject@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2) true { x: 'valueX', y: 'valueY' }
-iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2)
-write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2) key
-iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2)
-iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2)
-write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2) key
-iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2)
-forObjectPost@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:6:1:7:2) true
-write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:9:5:9:21) arr
-read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:17:11:20) arr
-forObject@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) false [ 41, 42, 43 ]
-iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
-write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) val
-iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
-iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
-write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) val
-iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
-iterationEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
-write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) val
-iterationExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2)
-forObjectPost@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:11:1:12:2) false
+cfRootEnter@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2) ForInIteration
+iteration obj: { x: 'valueX', y: 'valueY' }
+cfRoot ForInIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2)
+  \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2)
+cfRoot ForInIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2)
+  \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2)
+cfRootExit@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2) ForInIteration
+cfRootEnter@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2) ForOfIteration
+iteration obj: [ 41, 42, 43 ]
+cfRoot ForOfIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2)
+  \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2)
+cfRoot ForOfIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2)
+  \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2)
+cfRoot ForOfIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2)
+  \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2)
+cfRootExit@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2) ForOfIteration
+functionEnter: [Symbol.iterator] / (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:35:3:48:4) / 4
+cfRootEnter@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:53:1:54:2) ForOfIteration
+iteration obj: <iter w/ next()>
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:39:13:39:26) moreToIterate
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:40:32:40:45) moreToIterate
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:40:53:40:58) itemA
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:40:17:40:86) ret
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:41:11:41:26) moreToIterate
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:41:11:41:26) moreToIterate
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:42:18:42:21) ret
+cfRoot ForOfIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:53:1:54:2)
+  \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:53:1:54:2)
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:39:13:39:26) moreToIterate
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:40:32:40:45) moreToIterate
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:40:61:40:65) this
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:40:17:40:86) ret
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:41:11:41:26) moreToIterate
+write@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:41:11:41:26) moreToIterate
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:42:18:42:21) ret
+cfRoot ForOfIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:53:1:54:2)
+  \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:53:1:54:2)
+read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:39:13:39:26) moreToIterate
+cfRootExit@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:53:1:54:2) ForOfIteration

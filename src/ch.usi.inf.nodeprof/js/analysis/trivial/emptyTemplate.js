@@ -166,15 +166,6 @@
             };
 
             /**
-             *  forin or forof support
-             *  the object being iterated can be known by checking the last expression's result (via endExpression)
-             **/
-            this.forObject = function (iid, isForIn) {
-            }
-            this.forObjectPost = function (iid, isForIn) {
-            }
-
-            /**
              * This callback is called before a value is returned from a function using the <tt>return</tt> keyword.
              *
              * @param {number} iid - Static unique instruction identifier of this callback
@@ -201,13 +192,18 @@
             this.awaitPost = function (iid, result, exceptionVal) {
             }
 
+            // TODO incubation stage
+            this.cfBlockEnter = function(iid, iidParent) {
+            };
+            this.cfBlockExit = function(iid, iidParent) {
+            };
+            this.cfRootEnter = function (iid, type) {
+            };
+            this.cfRootExit = function (iid, type) {
+            };
         }
 
         if(false) {
-            // replaced with forObject including support for forin and forof
-            this.forinObject = function (iid, val) {
-            };
-
             //not supported yet
             this._throw = function (iid, val) {
             };

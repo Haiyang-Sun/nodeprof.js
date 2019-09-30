@@ -42,12 +42,11 @@ import ch.usi.inf.nodeprof.jalangi.factory.DeclareFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.EvalFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.EvalFunctionFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ExpressionFactory;
-import ch.usi.inf.nodeprof.jalangi.factory.ForObjectFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.GetElementFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.GetFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.InvokeFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.LiteralFactory;
-import ch.usi.inf.nodeprof.jalangi.factory.LoopFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.CFRootFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutElementFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ReadFactory;
@@ -125,19 +124,16 @@ public class JalangiAnalysis {
 
             put("asyncFunctionEnter", EnumSet.of(CF_ROOT));
             put("asyncFunctionExit", EnumSet.of(CF_ROOT));
+            put("awaitPre", EnumSet.of(CF_BRANCH));
+            put("awaitPost", EnumSet.of(CF_BRANCH));
 
-            put("forObject", EnumSet.of(CF_ROOT));
-            put("forObjectPost", EnumSet.of(CF_ROOT));
-
+            put("cfRootEnter", EnumSet.of(CF_ROOT));
+            put("cfRootExit", EnumSet.of(CF_ROOT));
             put("cfBlockEnter", EnumSet.of(CF_BLOCK));
             put("cfBlockExit", EnumSet.of(CF_BLOCK));
 
             put("_return", EnumSet.of(CF_BRANCH));
 
-            put("_return", EnumSet.of(CF_BRANCH));
-
-            put("awaitPre", EnumSet.of(CF_BRANCH));
-            put("awaitPost", EnumSet.of(CF_BRANCH));
 
             put("startExpression", EnumSet.of(EXPRESSION));
             put("endExpression", EnumSet.of(EXPRESSION));
@@ -287,12 +283,6 @@ public class JalangiAnalysis {
                             new EvalFunctionFactory(this.jsAnalysis, callbacks.get("evalFunctionPre"), callbacks.get("evalFunctionPost")));
         }
 
-        if (this.callbacks.containsKey("forObject") || this.callbacks.containsKey("forObjectPost")) {
-            this.instrument.onCallback(
-                            ProfiledTagEnum.CF_ROOT,
-                            new ForObjectFactory(this.jsAnalysis, callbacks.get("forObject"), callbacks.get("forObjectPost")));
-        }
-
         /**
          * async function
          */
@@ -311,17 +301,14 @@ public class JalangiAnalysis {
         }
 
         /**
-         * Loop not tested
+         * Control flow roots (if, loops, etc.) and their related control flow blocks
          */
-        if (this.callbacks.containsKey("loopEnter") || this.callbacks.containsKey("loopExit")) {
+        if (this.callbacks.containsKey("cfRootEnter") || this.callbacks.containsKey("cfRootExit")) {
             this.instrument.onCallback(
                             ProfiledTagEnum.CF_ROOT,
-                            new LoopFactory(this.jsAnalysis, callbacks.get("loopEnter"), callbacks.get("loopExit")));
+                            new CFRootFactory(this.jsAnalysis, callbacks.get("cfRootEnter"), callbacks.get("cfRootExit")));
         }
 
-        /**
-         * cfBlockEnter, cfBlockExit
-         */
         if (this.callbacks.containsKey("cfBlockEnter") || this.callbacks.containsKey("cfBlockExit")) {
             this.instrument.onCallback(
                             ProfiledTagEnum.CF_BLOCK,

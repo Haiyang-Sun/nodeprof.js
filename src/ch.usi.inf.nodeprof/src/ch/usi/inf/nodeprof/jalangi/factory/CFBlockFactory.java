@@ -25,7 +25,7 @@ import ch.usi.inf.nodeprof.handlers.CFBlockEventHandler;
 
 public class CFBlockFactory extends AbstractFactory {
     public CFBlockFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("cfblock", jalangiAnalysis, pre, post, 1, 1);
+        super("cfblock", jalangiAnalysis, pre, post, 2, 2);
     }
 
     @Override
@@ -38,8 +38,7 @@ public class CFBlockFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
                     setPreArguments(0, getSourceIID());
-                    // TODO
-                    // add information about the type of the block (if, iteration, switch)
+                    setPreArguments(1, getParentIID());
                     directCall(preCall, true, getSourceIID());
                 }
             }
@@ -49,8 +48,7 @@ public class CFBlockFactory extends AbstractFactory {
                             Object[] inputs) {
                 if (post != null) {
                     setPostArguments(0, getSourceIID());
-                    // TODO
-                    // add information about the type of the block (if, iteration, switch)
+                    setPostArguments(1, getParentIID());
                     directCall(postCall, false, getSourceIID());
                 }
             }

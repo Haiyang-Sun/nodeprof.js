@@ -61,8 +61,14 @@ J$={};
     sandbox.disableAnalysis = function() {
       return sandbox.adapter.instrumentationSwitch(false);
     }
-  }catch (e){
+  } catch (e){
     console.log("cannot load nodeprof jalangi adapter");
+  }
+
+  sandbox.cf = {
+    FOR_IN: "ForInIteration",
+    FOR_OF: "ForOfIteration",
+    IF: "Conditional"
   }
 
   sandbox.analyses=[];
