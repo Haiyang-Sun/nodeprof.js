@@ -10,6 +10,6 @@
   "license": "UPL-1.0",
   "dependencies": {
     "mock2easy": "0.0.24",
-    "request": "2.2.9"
+    "request": "2.88.0"
   }
 }
