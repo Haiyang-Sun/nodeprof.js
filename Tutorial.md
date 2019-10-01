@@ -125,3 +125,6 @@ The `source` object passed to the instrumentation predicate has the following pr
     internal: true || false
 }
 ```
+
+### Run ES6 modules
+Use the flag ```--experimental-modules``` [detail](https://github.com/Haiyang-Sun/nodeprof.js/issues/50).
