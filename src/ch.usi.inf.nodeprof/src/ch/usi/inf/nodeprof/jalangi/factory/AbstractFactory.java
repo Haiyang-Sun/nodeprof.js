@@ -198,13 +198,18 @@ public abstract class AbstractFactory implements
 
     @TruffleBoundary
     protected static Object createWrappedException(Throwable exception) {
-        JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
-        DynamicObject wrapped = JSUserObject.create(ctx);
-        // TODO we could create and freeze an empty singleton object when no-exception (null)
-        if (exception != null) {
-            Object errObj = parseErrorObject(exception);
-            JSObject.set(wrapped, "exception", errObj == null ? "Unknown Exception" : errObj);
+        if (exception == null) {
+            return GlobalObjectCache.getInstance().getEmptyWrappedException();
+        } else {
+            JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
+            DynamicObject wrapped = JSUserObject.create(ctx);
+            // TODO we could create and freeze an empty singleton object when no-exception (null)
+            if (exception != null) {
+                Object errObj = parseErrorObject(exception);
+                JSObject.set(wrapped, "exception", errObj == null ? "Unknown Exception" : errObj);
+            }
+            return wrapped;
         }
-        return wrapped;
+
     }
 }

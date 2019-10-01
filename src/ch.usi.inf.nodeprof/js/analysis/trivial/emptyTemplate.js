@@ -181,6 +181,15 @@
             this._return = function (iid, val) {
             };
 
+            this.asyncFunctionEnter = function (iid) {
+            }
+            this.asyncFunctionExit = function (iid, result, exceptionVal) {
+            }
+            this.awaitPre = function (iid, valAwaited) {
+            }
+            this.awaitPost = function (iid, result, exceptionVal) {
+            }
+
         }
 
         if(false) {

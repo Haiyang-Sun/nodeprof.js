@@ -13,27 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package ch.usi.inf.nodeprof.handlers;
-
-import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.js.nodes.instrumentation.JSTags;
-
-import ch.usi.inf.nodeprof.ProfiledTagEnum;
-
-public abstract class CFBranchEventHandler extends BaseSingleTagEventHandler {
-
-    private final String type;
-
-    public CFBranchEventHandler(EventContext context) {
-        super(context, ProfiledTagEnum.CF_BRANCH);
-        this.type = (String) getAttribute("type");
-    }
-
-    public boolean isReturnNode() {
-        return this.type.equals(JSTags.ControlFlowBranchTag.Type.Return.name());
-    }
-
-    public boolean isAwaitNode() {
-        return this.type.equals(JSTags.ControlFlowBranchTag.Type.Await.name());
-    }
+async function foo() {
+    return 42;
 }
+
+(async()=>{let writeVal = await foo(); return await 43 + await foo();})()
+
+console.log('#####');

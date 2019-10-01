@@ -18,9 +18,9 @@ package ch.usi.inf.nodeprof.analysis;
 
 import com.oracle.truffle.api.instrumentation.SourceSectionFilter;
 import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.js.lang.JavaScriptLanguage;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
-import com.oracle.truffle.js.lang.JavaScriptLanguage;
 
 /**
  * Base for NodeProf's analysis filters

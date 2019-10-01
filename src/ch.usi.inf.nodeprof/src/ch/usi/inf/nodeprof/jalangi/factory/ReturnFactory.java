@@ -48,7 +48,6 @@ public class ReturnFactory extends AbstractFactory {
                     directCall(preCall, true, getSourceIID());
                 }
             }
-
         };
     }
 

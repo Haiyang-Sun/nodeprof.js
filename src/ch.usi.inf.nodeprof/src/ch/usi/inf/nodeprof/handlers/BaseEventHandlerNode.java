@@ -64,7 +64,9 @@ public abstract class BaseEventHandlerNode extends Node {
     /**
      * @return the source section to be used for reporting purposes
      */
-    protected SourceSection getSourceSectionForIID() { return this.context.getInstrumentedSourceSection(); }
+    protected SourceSection getSourceSectionForIID() {
+        return this.context.getInstrumentedSourceSection();
+    }
 
     /**
      * @return the instrumentation ID for the instrumented source section

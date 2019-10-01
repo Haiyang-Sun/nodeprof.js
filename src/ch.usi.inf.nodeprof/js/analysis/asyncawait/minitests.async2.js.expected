@@ -1,0 +1,17 @@
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:1:1:30:4)
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:1:1:30:4)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:1:2:30:2)
+write (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:16:1:18:2) bar async function bar() {
+    throw 1;
+}
+async enter (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:17:5:17:13)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:16:1:18:2)
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:16:1:18:2)
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:17:5:17:13) undefined { exception: 1 }
+async exit (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:17:5:17:13) Promise { <rejected> 1 } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:22:9:22:20) Promise { <rejected> 1 }
+#####
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:1:2:30:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:22:9:22:20) Promise { <rejected> 1 }
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:22:9:22:20) undefined { exception: 1 }
+await exception 1

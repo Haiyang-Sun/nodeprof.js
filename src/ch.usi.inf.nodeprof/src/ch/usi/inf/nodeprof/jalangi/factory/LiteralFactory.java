@@ -23,12 +23,9 @@ import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralTag;
-import com.oracle.truffle.js.runtime.builtins.JSArray;
-import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.LiteralEventHandler;
-import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 public class LiteralFactory extends AbstractFactory {
