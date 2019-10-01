@@ -81,10 +81,9 @@ public class NonContiguousArray extends TestableNodeProfAnalysis {
 
                         Object convertedIndex = toArrayIndex.execute(getProperty(inputs));
 
-                        if (convertedIndex instanceof Long && ((Long) convertedIndex).intValue() >= 0) {
-                            int idx = ((Long) convertedIndex).intValue();
-
-                            int curSize = getArraySize.executeSize(getReceiver(inputs));
+                        if (convertedIndex instanceof Long && ((Long) convertedIndex) >= 0) {
+                            long idx = (long) convertedIndex;
+                            long curSize = getArraySize.executeSize(getReceiver(inputs));
 
                             addDebugEvent("EW_ARRAY_INT", getSourceIID(), ProfiledTagEnum.ELEMENT_WRITE, idx, curSize);
 

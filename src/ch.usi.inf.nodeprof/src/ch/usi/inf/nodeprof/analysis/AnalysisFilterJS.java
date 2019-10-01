@@ -22,12 +22,10 @@ import java.util.HashSet;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.ArityException;
-import com.oracle.truffle.api.interop.ForeignAccess;
-import com.oracle.truffle.api.interop.Message;
+import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.js.runtime.JSRuntime;
@@ -40,7 +38,6 @@ import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
 
 public class AnalysisFilterJS extends AnalysisFilterBase {
-    private final Node call;
     private final TruffleObject jsPredicateFunc;
     private final HashMap<Source, EnumSet<ProfiledTagEnum>> includedSources;
     private final HashSet<Source> excludedSources;
@@ -48,7 +45,6 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
     private static final EnumSet<ProfiledTagEnum> allTags = EnumSet.allOf(ProfiledTagEnum.class);
 
     public AnalysisFilterJS(TruffleObject jsPredicateFunc) {
-        this.call = Message.EXECUTE.createNode();
         this.jsPredicateFunc = jsPredicateFunc;
         this.includedSources = new HashMap<>();
         this.excludedSources = new HashSet<>();
@@ -57,10 +53,12 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
     @Override
     @TruffleBoundary
     public boolean test(final Source source) {
-        if (isForeignSource(source) || excludedSources.contains(source))
+        if (isForeignSource(source) || excludedSources.contains(source)) {
             return false;
-        if (includedSources.containsKey(source))
+        }
+        if (includedSources.containsKey(source)) {
             return true;
+        }
 
         boolean include = true;
 
@@ -80,8 +78,9 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
 
         // we need to bail out during builtin calls inside the JS predicate
         if (include && isRecursive) {
-            if (!(name.equals("<builtin>") || name.equals("<internal>")))
+            if (!(name.equals("<builtin>") || name.equals("<internal>"))) {
                 Logger.error("JS Analysis filter bailout due to recursive call while testing: " + name);
+            }
             return false;
         }
 
@@ -93,7 +92,7 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
             isRecursive = true;
 
             try {
-                Object ret = ForeignAccess.sendExecute(call, jsPredicateFunc, SourceMapping.getJSObjectForSource(source));
+                Object ret = InteropLibrary.getFactory().getUncached().execute(jsPredicateFunc, SourceMapping.getJSObjectForSource(source));
                 if (JSArray.isJSArray(ret)) {
                     include = JSAbstractArray.arrayGetLength((DynamicObject) ret) > 0;
                     includeTags = mapToTags(JSAbstractArray.toArray((DynamicObject) ret));
@@ -109,8 +108,9 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
             isRecursive = false;
 
             String tagStr = "";
-            if (includeTags != allTags)
+            if (includeTags != allTags) {
                 tagStr = " " + includeTags.toString();
+            }
             Logger.debug("JS Analysis filter: " + name + " -> " + (include ? "included" : "excluded") + tagStr);
 
         }
@@ -125,14 +125,15 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
     }
 
     @TruffleBoundary
-    private EnumSet<ProfiledTagEnum> mapToTags(Object[] callbacks) {
+    private static EnumSet<ProfiledTagEnum> mapToTags(Object[] callbacks) {
         EnumSet<ProfiledTagEnum> set = EnumSet.noneOf(ProfiledTagEnum.class);
         for (Object cb : callbacks) {
             EnumSet<ProfiledTagEnum> tags = JalangiAnalysis.callbackMap.get(cb.toString());
-            if (tags == null)
+            if (tags == null) {
                 Logger.error("JS Analysis filter predicate returned non-Jalangi callback: " + cb);
-            else
+            } else {
                 set.addAll(tags);
+            }
         }
         return set;
     }

@@ -33,7 +33,6 @@ import com.oracle.js.parser.Source;
 
 import ch.usi.inf.nodeprof.jalangi.JalangiAnalysis;
 
-
 public class JalangiTest {
 
     @Test

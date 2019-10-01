@@ -32,10 +32,10 @@ public class InvokeFactory extends AbstractFactory {
         super("invokeFun", jalangiAnalysis, pre, post, 8, 9);
         this.tag = tag;
         // TODO
-        setPreArguments(6, 0);// functionIid
-        setPreArguments(7, 0);// functionSid
-        setPostArguments(7, 0);// functionIid
-        setPostArguments(8, 0);// functionSid
+        setPreArguments(6, 0); // functionIid
+        setPreArguments(7, 0); // functionSid
+        setPostArguments(7, 0); // functionIid
+        setPostArguments(8, 0); // functionSid
     }
 
     @Override

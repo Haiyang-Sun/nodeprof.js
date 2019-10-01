@@ -328,10 +328,11 @@ public class JalangiAnalysis {
      * register hooks
      *
      * @param name of the hook
+     * @throws UnsupportedTypeException
      * @callback function to be called for the specified hook
      */
     @TruffleBoundary
-    public void registerCallback(Object name, Object callback) {
+    public void registerCallback(Object name, Object callback) throws UnsupportedTypeException {
         if (callback instanceof DynamicObject) {
             if (GlobalConfiguration.DEBUG) {
                 Logger.debug("Jalangi analysis registering callback: " + name);
@@ -342,7 +343,7 @@ public class JalangiAnalysis {
             GlobalObjectCache.getInstance().addDynamicObject((DynamicObject) callback);
             this.callbacks.put(name.toString(), (DynamicObject) callback);
         } else {
-            throw UnsupportedTypeException.raise(new Object[]{callback});
+            throw UnsupportedTypeException.create(new Object[]{callback});
         }
     }
 }

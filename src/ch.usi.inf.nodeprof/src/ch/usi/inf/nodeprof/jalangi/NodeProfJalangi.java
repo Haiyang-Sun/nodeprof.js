@@ -25,12 +25,11 @@ import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
-import com.oracle.truffle.api.interop.ForeignAccess;
-import com.oracle.truffle.api.interop.Message;
+import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
-import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.js.lang.JavaScriptLanguage;
@@ -93,7 +92,7 @@ public class NodeProfJalangi extends NodeProfAnalysis {
      * @param callback experimental extra feature for specialization, e.g., "this.putFieldPre.arr"
      */
     @TruffleBoundary
-    public void registerCallback(Object analysis, Object name, Object callback) {
+    public void registerCallback(Object analysis, Object name, Object callback) throws UnsupportedTypeException {
         if (!jalangiAnalyses.containsKey(analysis)) {
             jalangiAnalyses.put(analysis, new JalangiAnalysis(this, analysis));
         }
@@ -111,22 +110,21 @@ public class NodeProfJalangi extends NodeProfAnalysis {
         analysisReady();
     }
 
-    Node read = Message.READ.createNode();
-
     @TruffleBoundary
-    private Object getProperty(TruffleObject cb, String prop) {
+    private static Object getProperty(TruffleObject cb, String prop) {
         Object result = null;
         try {
-            result = ForeignAccess.sendRead(this.read, cb, prop);
+            result = InteropLibrary.getFactory().getUncached().readMember(cb, prop);
         } catch (UnknownIdentifierException | UnsupportedMessageException e) {
             // undefined property is expected
         }
-        if (Undefined.instance == result || Null.instance == result)
+        if (Undefined.instance == result || Null.instance == result) {
             result = null;
+        }
         return result;
     }
 
-    private AnalysisFilterBase parseFilterConfig(TruffleObject configObj) {
+    private static AnalysisFilterBase parseFilterConfig(TruffleObject configObj) {
         AnalysisFilterBase result;
 
         if (JSFunction.isJSFunction(configObj)) {

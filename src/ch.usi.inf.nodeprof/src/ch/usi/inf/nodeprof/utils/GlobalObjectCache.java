@@ -30,10 +30,10 @@ import com.oracle.truffle.js.runtime.objects.JSObject;
  *
  */
 public class GlobalObjectCache extends Node {
-    private @CompilationFinal DynamicObject global = null;
-    private @CompilationFinal JSContext jscontext = null;
-    private @CompilationFinal DynamicObject arrayConstructor = null;
-    private @CompilationFinal DynamicObject emptyWrappedException = null;
+    @CompilationFinal private DynamicObject global = null;
+    @CompilationFinal private JSContext jscontext = null;
+    @CompilationFinal private DynamicObject arrayConstructor = null;
+    @CompilationFinal private DynamicObject emptyWrappedException = null;
 
     private static GlobalObjectCache cache = new GlobalObjectCache();
 
@@ -51,8 +51,9 @@ public class GlobalObjectCache extends Node {
     }
 
     public DynamicObject getArrayConstructor(DynamicObject option) {
-        if (jscontext == null)
+        if (jscontext == null) {
             addDynamicObject(option);
+        }
         return arrayConstructor;
     }
 

@@ -46,7 +46,7 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
  *
  * @See InputChecker
  */
-public class EventLogger extends TestableNodeProfAnalysis {
+public final class EventLogger extends TestableNodeProfAnalysis {
 
     public EventLogger(Instrumenter instrumenter, Env env) {
         super("EventLogger", instrumenter, env);
@@ -62,8 +62,9 @@ public class EventLogger extends TestableNodeProfAnalysis {
     @Override
     public void initCallbacks() {
         for (ProfiledTagEnum tag : ProfiledTagEnum.values()) {
-            if (tag == ProfiledTagEnum.EXPRESSION)
+            if (tag == ProfiledTagEnum.EXPRESSION) {
                 continue;
+            }
             this.onCallback(tag, new AnalysisFactory<BaseEventHandlerNode>() {
                 public BaseEventHandlerNode create(EventContext context) {
                     return new BaseSingleTagEventHandler(context, tag) {
@@ -112,12 +113,12 @@ public class EventLogger extends TestableNodeProfAnalysis {
     }
 
     class EventReport extends Report {
-        public EventReport(int iid) {
+        EventReport(int iid) {
             super(iid);
         }
 
         @TruffleBoundary
-        public void addError(ProfiledTagEnum tag, Class<? extends Node> instrumentedNode, Object inputs[]) {
+        public void addError(ProfiledTagEnum tag, Class<? extends Node> instrumentedNode, Object[] inputs) {
             if (!mapping.containsKey(tag)) {
                 mapping.put(tag, new HashSet<EventLogger.EventReport.InputTypes>());
             }
@@ -129,7 +130,7 @@ public class EventLogger extends TestableNodeProfAnalysis {
             private final Class<?>[] types;
             private final String sample;
 
-            public InputTypes(Class<? extends Node> instrumentedNode, Object[] inputs) {
+            InputTypes(Class<? extends Node> instrumentedNode, Object[] inputs) {
                 this.nodeClass = instrumentedNode;
                 if (inputs == null) {
                     types = null;
@@ -156,8 +157,9 @@ public class EventLogger extends TestableNodeProfAnalysis {
             public String toString() {
                 StringBuilder sb = new StringBuilder();
                 sb.append("node:").append(nodeClass.getSimpleName()).append(",");
-                if (types == null)
+                if (types == null) {
                     return sb.toString();
+                }
 
                 for (int i = 0; i < types.length; i++) {
                     Class<?> type = types[i];
@@ -167,8 +169,9 @@ public class EventLogger extends TestableNodeProfAnalysis {
                     } else {
                         sb.append("null");
                     }
-                    if (i != types.length - 1)
+                    if (i != types.length - 1) {
                         sb.append(",");
+                    }
                 }
                 sb.append(", sample:").append(this.sample);
                 return sb.toString();
@@ -190,8 +193,9 @@ public class EventLogger extends TestableNodeProfAnalysis {
 
             @Override
             public int hashCode() {
-                if (types == null)
+                if (types == null) {
                     return 0;
+                }
                 int result = nodeClass.hashCode();
                 for (Class<?> c : types) {
                     if (c == null) {

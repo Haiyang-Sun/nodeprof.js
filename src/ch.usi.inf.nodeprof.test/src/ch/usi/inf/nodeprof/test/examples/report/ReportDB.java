@@ -20,7 +20,7 @@ import java.util.HashMap;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 
 public class ReportDB {
-    public static interface ReportFactory {
+    public interface ReportFactory {
         Report create(int iid);
     }
 

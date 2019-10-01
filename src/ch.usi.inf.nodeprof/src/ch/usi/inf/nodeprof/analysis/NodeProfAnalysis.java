@@ -140,11 +140,7 @@ public abstract class NodeProfAnalysis {
                 analysis.initCallbacks();
                 analysis.analysisReady();
             }
-            if (analysis != null) {
-                addAnalysis(analysis);
-            } else {
-                Logger.warning("failed in loading analysis " + analysisClass);
-            }
+            addAnalysis(analysis);
         }
     }
 
@@ -165,12 +161,12 @@ public abstract class NodeProfAnalysis {
     public abstract void onClear();
 
     /**
-     * Result dump
+     * Result dump.
      */
     public abstract void printResult();
 
     /**
-     * Callback at the end of the execution for the analysis
+     * Callback at the end of the execution for the analysis.
      *
      * first print the result and then clean the states
      */
@@ -211,7 +207,7 @@ public abstract class NodeProfAnalysis {
     }
 
     /**
-     * enable all the callbacks not yet enabled using the default analysis filter
+     * enable all the callbacks not yet enabled using the default analysis filter.
      */
     @TruffleBoundary
     public void analysisReady() {

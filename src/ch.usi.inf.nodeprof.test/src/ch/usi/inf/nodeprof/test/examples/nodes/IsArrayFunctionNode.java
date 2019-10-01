@@ -38,7 +38,7 @@ public abstract class IsArrayFunctionNode extends Node {
      */
     public abstract String executeIsArrayFunction(Object receiver, Object function);
 
-    protected String _check(Object receiver, DynamicObject function) {
+    protected String check(Object receiver, DynamicObject function) {
         if (!JSArray.isJSArray(receiver)) {
             return null;
         }
@@ -66,12 +66,12 @@ public abstract class IsArrayFunctionNode extends Node {
     @Specialization(guards = "cacheFunction == function")
     protected String executeIsFunction(Object receiver, DynamicObject function,
                     @Cached(value = "function") DynamicObject cacheFunction,
-                    @Cached(value = "_check(receiver, cacheFunction)") String result) {
+                    @Cached(value = "check(receiver, cacheFunction)") String result) {
         return result;
     }
 
     @Specialization
     protected String executeObject(Object receiver, DynamicObject input) {
-        return _check(receiver, input);
+        return check(receiver, input);
     }
 }

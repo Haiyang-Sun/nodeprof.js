@@ -19,7 +19,6 @@ import com.oracle.truffle.js.runtime.builtins.JSFunction;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
-import ch.usi.inf.nodeprof.handlers.VarEventHandler;
 
 public class InputChecker {
     public static boolean checkInput(ProfiledTagEnum tag, BaseEventHandlerNode node, Object[] inputs) {
@@ -31,8 +30,9 @@ public class InputChecker {
                  *
                  * left op right
                  */
-                if (inputs == null)
+                if (inputs == null) {
                     return false;
+                }
                 if (inputs.length != 2) {
                     return false;
                 }
@@ -43,8 +43,9 @@ public class InputChecker {
                  *
                  * unaryop oprand
                  */
-                if (inputs == null)
+                if (inputs == null) {
                     return false;
+                }
                 boolean isDelete = node.getAttribute("operator").equals("delete");
                 if (!isDelete) {
                     return inputs.length == 1;
@@ -57,8 +58,9 @@ public class InputChecker {
                  *
                  * receiver[offset]
                  */
-                if (inputs == null)
+                if (inputs == null) {
                     return false;
+                }
                 if (inputs.length != 2) {
                     return false;
                 }
@@ -69,8 +71,9 @@ public class InputChecker {
                  *
                  * receiver[offset] = value
                  */
-                if (inputs == null)
+                if (inputs == null) {
                     return false;
+                }
                 if (inputs.length != 3) {
                     return false;
                 }
@@ -81,8 +84,9 @@ public class InputChecker {
                  *
                  * receiver.property
                  */
-                if (inputs == null)
+                if (inputs == null) {
                     return false;
+                }
 
                 if (node.getAttribute("key") == null) {
                     return false;
@@ -100,8 +104,9 @@ public class InputChecker {
                 /**
                  * 0 - receiver, 1 - value read
                  */
-                if (inputs == null)
+                if (inputs == null) {
                     return false;
+                }
                 if (inputs.length != 2) {
                     return false;
                 }
@@ -127,8 +132,9 @@ public class InputChecker {
                  *
                  * a = Expr.
                  */
-                if (inputs == null)
+                if (inputs == null) {
                     return false;
+                }
                 if (inputs.length != 1) {
                     return false;
                 }
@@ -140,10 +146,12 @@ public class InputChecker {
                  * receiver.function(arguments) / [undefined.]function(arguments)
                  *
                  */
-                if (inputs == null)
+                if (inputs == null) {
                     return false;
-                if (inputs.length < 1)
+                }
+                if (inputs.length < 1) {
                     return false;
+                }
                 if ((Boolean) node.getAttribute("isNew")) {
                     if (!JSFunction.isJSFunction(inputs[0])) {
                         return false;

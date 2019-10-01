@@ -28,8 +28,8 @@ import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 public class ProfilerExecutionEventNode extends ExecutionEventNode {
-    final protected EventContext context;
-    final ProfiledTagEnum cb;
+    protected final EventContext context;
+    protected final ProfiledTagEnum cb;
     @Child BaseEventHandlerNode child;
     int hasOnEnter = 0;
 
@@ -42,7 +42,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
      * After disabled, this class acts as an empty ExecutionEventNode which can be fully optimized
      * out by the compiler
      */
-    private @CompilationFinal static boolean profilerEnabled = true;
+    @CompilationFinal private static boolean profilerEnabled = true;
 
     public static boolean getEnabled() {
         return profilerEnabled;
@@ -71,8 +71,9 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
     @Override
     protected void onInputValue(VirtualFrame frame, EventContext inputContext,
                     int inputIndex, Object inputValue) {
-        if (!profilerEnabled)
+        if (!profilerEnabled) {
             return;
+        }
         if (child.expectedNumInputs() < 0 || inputIndex < child.expectedNumInputs()) {
             // save input only necessary
             saveInputValue(frame, inputIndex, inputValue);
@@ -85,8 +86,9 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     @Override
     protected void onEnter(VirtualFrame frame) {
-        if (!profilerEnabled)
+        if (!profilerEnabled) {
             return;
+        }
         hasOnEnter++;
         this.child.enter(frame);
         if (this.child.isLastIndex(getInputCount(), -1)) {
@@ -97,8 +99,9 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     @Override
     protected void onReturnValue(VirtualFrame frame, Object result) {
-        if (!profilerEnabled)
+        if (!profilerEnabled) {
             return;
+        }
         if (hasOnEnter > 0) {
             hasOnEnter--;
             this.cb.postHitCount++;
@@ -129,8 +132,9 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     @Override
     protected void onReturnExceptional(VirtualFrame frame, Throwable exception) {
-        if (!profilerEnabled)
+        if (!profilerEnabled) {
             return;
+        }
         if (hasOnEnter > 0) {
             hasOnEnter--;
             this.cb.exceptionHitCount++;

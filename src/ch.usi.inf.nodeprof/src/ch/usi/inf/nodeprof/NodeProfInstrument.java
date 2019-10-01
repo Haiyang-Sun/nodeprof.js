@@ -59,20 +59,20 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
     }
 
     @Override
-    protected void onCreate(final Env _env) {
-        this.env = _env;
-        GlobalConfiguration.setup(_env);
+    protected void onCreate(final Env env) {
+        this.env = env;
+        GlobalConfiguration.setup(env);
         Logger.debug("NodeProf has been enabled");
-        instrumenter = _env.getInstrumenter();
-        _env.registerService(this);
+        instrumenter = env.getInstrumenter();
+        env.registerService(this);
         /**
          * enable analyses based on
          */
-        _env.getInstrumenter().attachContextsListener(this, true);
+        env.getInstrumenter().attachContextsListener(this, true);
     }
 
     @Override
-    protected void onDispose(final Env _env) {
+    protected void onDispose(final Env env) {
         cleanAnalysis();
         /**
          * Dump execution counters for every tag

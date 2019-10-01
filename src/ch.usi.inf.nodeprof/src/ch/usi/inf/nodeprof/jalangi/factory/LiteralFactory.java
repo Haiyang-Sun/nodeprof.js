@@ -30,7 +30,7 @@ import ch.usi.inf.nodeprof.utils.Logger;
 
 public class LiteralFactory extends AbstractFactory {
     // enabled literal types (all by default)
-    final private EnumSet<LiteralTag.Type> types = EnumSet.allOf(LiteralTag.Type.class);
+    private final EnumSet<LiteralTag.Type> types = EnumSet.allOf(LiteralTag.Type.class);
 
     @TruffleBoundary
     public LiteralFactory(Object jalangiAnalysis, DynamicObject post) {

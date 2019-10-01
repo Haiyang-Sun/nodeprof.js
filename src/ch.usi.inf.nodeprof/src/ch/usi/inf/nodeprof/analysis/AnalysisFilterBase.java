@@ -30,8 +30,8 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
 public abstract class AnalysisFilterBase implements SourceSectionFilter.SourcePredicate {
 
     /**
-     * Implementation returns true if the instrumentation tag should be added to source,
-     * false if the tag should be filtered.
+     * Implementation returns true if the instrumentation tag should be added to source, false if
+     * the tag should be filtered.
      *
      * @param source the Source object to filter
      * @param tag the type of tag to filter within source

@@ -37,6 +37,7 @@ before_script:
 script:
   - mx sforceimports
   - mx build
+  - mx checkstyle --primary
   - cd ../graal/vm
   - mx --dy nodeprof,/compiler --force-bash-launchers=true --disable-polyglot build
   - cd -

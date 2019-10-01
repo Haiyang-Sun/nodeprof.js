@@ -44,8 +44,9 @@ public class RootFactory extends AbstractFactory {
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
-                if (isRegularExpression())
+                if (isRegularExpression()) {
                     return;
+                }
 
                 if (!this.isBuiltin && pre != null) {
 
@@ -61,8 +62,9 @@ public class RootFactory extends AbstractFactory {
             @Override
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
-                if (isRegularExpression())
+                if (isRegularExpression()) {
                     return;
+                }
 
                 if (!this.isBuiltin && post != null) {
                     setPostArguments(0, this.getSourceIID());
@@ -74,8 +76,9 @@ public class RootFactory extends AbstractFactory {
 
             @Override
             public void executeExceptional(VirtualFrame frame, Throwable exception) {
-                if (isRegularExpression())
+                if (isRegularExpression()) {
                     return;
+                }
                 if (!this.isBuiltin && post != null) {
                     setPostArguments(0, getSourceIID());
                     setPostArguments(1, Undefined.instance);

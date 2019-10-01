@@ -15,10 +15,10 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.test.examples.tests;
 
-import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import org.junit.Test;
 
 import com.oracle.truffle.api.instrumentation.Instrumenter;
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
@@ -30,8 +30,8 @@ import ch.usi.inf.nodeprof.test.examples.BranchCoverage;
 public class BCTest extends BasicAnalysisTest {
 
     @Override
-    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter, TruffleInstrument.Env env) {
-        return new BranchCoverage(_instrumenter, env);
+    public TestableNodeProfAnalysis getAnalysis(Instrumenter instrumenter, TruffleInstrument.Env env) {
+        return new BranchCoverage(instrumenter, env);
     }
 
     @Test

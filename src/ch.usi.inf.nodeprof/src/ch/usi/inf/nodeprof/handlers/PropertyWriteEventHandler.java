@@ -24,7 +24,7 @@ import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
  * Abstract event handler for property write events, e.g., a.p = 1
  */
 public abstract class PropertyWriteEventHandler extends BaseSingleTagEventHandler {
-    final private String property;
+    private final String property;
 
     public PropertyWriteEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.PROPERTY_WRITE);

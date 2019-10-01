@@ -20,9 +20,7 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
-import com.oracle.truffle.api.interop.ForeignAccess;
-import com.oracle.truffle.api.interop.Message;
-import com.oracle.truffle.api.interop.TruffleObject;
+import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -43,11 +41,6 @@ public abstract class BaseEventHandlerNode extends Node {
      * the unique instrumentation ID for the instrumented source section
      */
     protected final int sourceIID;
-
-    /**
-     * used to read the attribute of the tags
-     */
-    @Child protected Node read = Message.READ.createNode();
 
     public BaseEventHandlerNode(EventContext context) {
         this.context = context;
@@ -96,7 +89,7 @@ public abstract class BaseEventHandlerNode extends Node {
 
     }
 
-    public void executeExceptional(VirtualFrame frame, Throwable exception) {
+    public void executeExceptional(@SuppressWarnings("unused") VirtualFrame frame, @SuppressWarnings("unused") Throwable exception) {
 
     }
 
@@ -110,8 +103,7 @@ public abstract class BaseEventHandlerNode extends Node {
     public Object getAttribute(String key) {
         Object result = null;
         try {
-            result = ForeignAccess.sendRead(read, (TruffleObject) ((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(),
-                            key);
+            result = InteropLibrary.getFactory().getUncached().readMember(((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(), key);
         } catch (Exception e) {
             reportAttributeMissingError(key, e);
         }
@@ -128,8 +120,7 @@ public abstract class BaseEventHandlerNode extends Node {
     public Object getAttributeNoReport(String key) {
         Object result = null;
         try {
-            result = ForeignAccess.sendRead(read, (TruffleObject) ((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(),
-                            key);
+            result = InteropLibrary.getFactory().getUncached().readMember(((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(), key);
         } catch (Exception e) {
             return null;
         }
@@ -189,6 +180,7 @@ public abstract class BaseEventHandlerNode extends Node {
 
     public abstract int expectedNumInputs();
 
+    @SuppressWarnings("unused")
     public Object onUnwind(VirtualFrame frame, Object info) {
         return null;
     }

@@ -26,9 +26,7 @@ import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.api.instrumentation.SourceSectionFilter;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
-import com.oracle.truffle.api.interop.ForeignAccess;
-import com.oracle.truffle.api.interop.Message;
-import com.oracle.truffle.api.interop.TruffleObject;
+import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.object.DynamicObject;
@@ -136,9 +134,9 @@ public class RawEventsTracingSupport {
                         log(format);
                     }
 
-                    private String getAttributeFrom(EventContext cx, String name) {
+                    private Object getAttributeFrom(EventContext cx, String name) {
                         try {
-                            return (String) ForeignAccess.sendRead(Message.READ.createNode(), (TruffleObject) ((InstrumentableNode) cx.getInstrumentedNode()).getNodeObject(), name);
+                            return InteropLibrary.getFactory().getUncached().readMember(((InstrumentableNode) cx.getInstrumentedNode()).getNodeObject(), name);
                         } catch (UnknownIdentifierException | UnsupportedMessageException e) {
                             throw new RuntimeException(e);
                         }
@@ -148,7 +146,7 @@ public class RawEventsTracingSupport {
                         String extra = "";
                         JavaScriptNode n = (JavaScriptNode) cx.getInstrumentedNode();
                         if (n.hasTag(BuiltinRootTag.class)) {
-                            String tagAttribute = getAttributeFrom(cx, "name");
+                            String tagAttribute = getAttributeFrom(cx, "name").toString();
                             extra += tagAttribute;
                         }
                         if (n.hasTag(ReadPropertyTag.class)) {
