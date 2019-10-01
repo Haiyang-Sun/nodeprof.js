@@ -15,7 +15,6 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
-import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.EventContext;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;

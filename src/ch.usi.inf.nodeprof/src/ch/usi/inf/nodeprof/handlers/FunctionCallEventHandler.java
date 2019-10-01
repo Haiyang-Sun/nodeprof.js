@@ -15,7 +15,6 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
-import ch.usi.inf.nodeprof.utils.Logger;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;

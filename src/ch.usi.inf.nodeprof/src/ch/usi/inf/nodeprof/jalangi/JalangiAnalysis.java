@@ -31,6 +31,8 @@ import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import ch.usi.inf.nodeprof.jalangi.factory.AsyncRootFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.AwaitFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BinaryFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ReturnFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BuiltinFactory;
@@ -120,9 +122,15 @@ public class JalangiAnalysis {
             put("evalFunctionPre", EnumSet.of(BUILTIN));
             put("evalFunctionPost", EnumSet.of(BUILTIN));
 
+            put("asyncFunctionEnter", EnumSet.of(CF_ROOT));
+            put("asyncFunctionExit", EnumSet.of(CF_ROOT));
+
             put("forObject", EnumSet.of(CF_ROOT));
 
             put("_return", EnumSet.of(CF_BRANCH));
+
+            put("awaitPre", EnumSet.of(CF_BRANCH));
+            put("awaitPost", EnumSet.of(CF_BRANCH));
 
             put("startExpression", EnumSet.of(EXPRESSION));
             put("endExpression", EnumSet.of(EXPRESSION));
@@ -278,6 +286,23 @@ public class JalangiAnalysis {
         }
 
         /**
+         * async function
+         */
+        if (this.callbacks.containsKey("asyncFunctionEnter") || this.callbacks.containsKey("asyncFunctionExit")) {
+            this.instrument.onCallback(
+                            ProfiledTagEnum.CF_ROOT,
+                            new AsyncRootFactory(this.jsAnalysis, callbacks.get("asyncFunctionEnter"), callbacks.get("asyncFunctionExit")));
+        }
+        /**
+         * await callback
+         */
+        if (this.callbacks.containsKey("awaitPre") || this.callbacks.containsKey("awaitPost")) {
+            this.instrument.onCallback(
+                            ProfiledTagEnum.CF_BRANCH,
+                            new AwaitFactory(this.jsAnalysis, callbacks.get("awaitPre"), callbacks.get("awaitPost")));
+        }
+
+        /**
          * TODO
          *
          * Loop not tested
@@ -296,6 +321,7 @@ public class JalangiAnalysis {
                             ProfiledTagEnum.CF_BRANCH,
                             new ReturnFactory(this.jsAnalysis, callbacks.get("_return")));
         }
+
     }
 
     /**

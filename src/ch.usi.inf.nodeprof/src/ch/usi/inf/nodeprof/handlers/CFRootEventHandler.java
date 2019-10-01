@@ -20,20 +20,16 @@ import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 
-public abstract class CFBranchEventHandler extends BaseSingleTagEventHandler {
+public abstract class CFRootEventHandler extends BaseSingleTagEventHandler {
 
     private final String type;
 
-    public CFBranchEventHandler(EventContext context) {
-        super(context, ProfiledTagEnum.CF_BRANCH);
+    public CFRootEventHandler(EventContext context) {
+        super(context, ProfiledTagEnum.CF_ROOT);
         this.type = (String) getAttribute("type");
     }
 
-    public boolean isReturnNode() {
-        return this.type.equals(JSTags.ControlFlowBranchTag.Type.Return.name());
-    }
-
-    public boolean isAwaitNode() {
-        return this.type.equals(JSTags.ControlFlowBranchTag.Type.Await.name());
+    public boolean isAsyncRoot() {
+        return this.type.equals(JSTags.ControlFlowRootTag.Type.AsyncFunction.name());
     }
 }

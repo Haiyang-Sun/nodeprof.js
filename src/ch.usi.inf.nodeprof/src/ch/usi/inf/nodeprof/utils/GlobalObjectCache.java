@@ -20,6 +20,7 @@ import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.builtins.JSUserObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 
 /**
@@ -32,6 +33,7 @@ public class GlobalObjectCache extends Node {
     private @CompilationFinal DynamicObject global = null;
     private @CompilationFinal JSContext jscontext = null;
     private @CompilationFinal DynamicObject arrayConstructor = null;
+    private @CompilationFinal DynamicObject emptyWrappedException = null;
 
     private static GlobalObjectCache cache = new GlobalObjectCache();
 
@@ -94,5 +96,17 @@ public class GlobalObjectCache extends Node {
         if (someObj instanceof DynamicObject) {
             addDynamicObject((DynamicObject) someObj);
         }
+    }
+
+    /**
+     * @return Singleton object for empty wrapped exception
+     */
+    public Object getEmptyWrappedException() {
+        if (this.emptyWrappedException == null) {
+            assert (jscontext != null);
+            CompilerDirectives.transferToInterpreterAndInvalidate();
+            this.emptyWrappedException = JSUserObject.create(jscontext);
+        }
+        return this.emptyWrappedException;
     }
 }
