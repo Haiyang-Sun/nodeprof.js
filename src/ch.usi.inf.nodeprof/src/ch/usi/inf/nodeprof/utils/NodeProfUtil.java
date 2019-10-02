@@ -18,6 +18,7 @@ package ch.usi.inf.nodeprof.utils;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.js.nodes.access.GlobalScopeVarWrapperNode;
+import com.oracle.truffle.js.nodes.control.GeneratorWrapperNode;
 import com.oracle.truffle.js.nodes.instrumentation.JSInputGeneratingNodeWrapper;
 import com.oracle.truffle.js.nodes.instrumentation.JSTaggedExecutionNode;
 
@@ -32,7 +33,8 @@ public class NodeProfUtil {
     }
 
     public static boolean isWrapperNode(Node n) {
-        return n instanceof JSInputGeneratingNodeWrapper || n instanceof InstrumentableNode.WrapperNode ||
-                n instanceof GlobalScopeVarWrapperNode || n instanceof JSTaggedExecutionNode;
+        return n instanceof InstrumentableNode.WrapperNode || n instanceof JSInputGeneratingNodeWrapper ||
+                n instanceof GlobalScopeVarWrapperNode || n instanceof JSTaggedExecutionNode ||
+                n instanceof GeneratorWrapperNode;
     }
 }
