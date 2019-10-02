@@ -1,12 +1,12 @@
 cfRootEnter@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2) ForInIteration
-iteration obj: { x: 'valueX', y: 'valueY' }
+iteration obj: {"result":{"x":"valueX","y":"valueY"},"loc":"(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:17:22:20)"} 
 cfRoot ForInIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2)
   \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2)
 cfRoot ForInIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2)
   \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2)
 cfRootExit@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:22:1:23:2) ForInIteration
 cfRootEnter@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2) ForOfIteration
-iteration obj: [ 41, 42, 43 ]
+iteration obj: {"result":[41,42,43],"loc":"(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:17:27:20)"} 
 cfRoot ForOfIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2)
   \-cfBlock @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2)
 cfRoot ForOfIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2)
@@ -16,7 +16,7 @@ cfRoot ForOfIteration @ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27
 cfRootExit@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:27:1:28:2) ForOfIteration
 functionEnter: [Symbol.iterator] / (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:35:3:48:4) / 4
 cfRootEnter@(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:53:1:54:2) ForOfIteration
-iteration obj: <iter w/ next()>
+iteration obj: {"result":{"itemB":"bar"},"loc":"(src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:53:11:53:12)"} <iter w/ next()>
 read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:39:13:39:26) moreToIterate
 read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:40:32:40:45) moreToIterate
 read@ (src/ch.usi.inf.nodeprof.test/js/minitests/forinof.js:40:53:40:58) itemA
