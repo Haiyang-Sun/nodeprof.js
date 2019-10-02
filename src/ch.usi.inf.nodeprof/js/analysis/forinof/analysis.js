@@ -19,7 +19,10 @@
     const assert = require('assert');
     function MyAnalysis() {
 
-        // last expression before for-in/for-of is the iteration object
+        // last expression in the current frame before for-in/for-of is the iteration object
+        let lastExprCurFrame = [];
+
+        // last expression executed anywhere
         let lastExprResult;
 
         // control flow tracking
@@ -57,8 +60,9 @@
             }
             logLoc('cfRootEnter', iid, type);
             if (type === J$.cf.FOR_OF || type === J$.cf.FOR_IN) {
-                const o = lastExprResult;
-                console.log('iteration obj:', nextFuncs.has(o.next) ? '<iter w/ next()>' : o);
+                assert(lastExprCurFrame.length > 0);
+                const targetObjectExpression = lastExprCurFrame[lastExprCurFrame.length-1];
+                console.log('iteration obj:', JSON.stringify(targetObjectExpression), nextFuncs.has(lastExprResult.result.next) ? '<iter w/ next()>' : '');
             }
             cfRoots.set(iid, type);
         }
@@ -86,6 +90,7 @@
             }
         }
         this.functionEnter = function (iid, f, dis, args) {
+            lastExprCurFrame.push(null);
             if (iteratorFuncs.has(f)) {
                 console.log("functionEnter: %s / %s / %d", f.name, J$.iidToLocation(iid), arguments.length);
                 iteratorIIDs.add(iid);
@@ -95,6 +100,7 @@
             }
         }
         this.functionExit = function (iid, returnVal) {
+            lastExprCurFrame.pop();
             if (iteratorIIDs.has(iid)) {
                 nextFuncs.add(returnVal.next);
             }
@@ -106,7 +112,7 @@
             }
         }
         this.endExpression = function (iid, type, result) {
-            lastExprResult = result;
+            lastExprResult = lastExprCurFrame[lastExprCurFrame.length-1] = {result, loc: J$.iidToLocation(iid)};
         }
     }
 
