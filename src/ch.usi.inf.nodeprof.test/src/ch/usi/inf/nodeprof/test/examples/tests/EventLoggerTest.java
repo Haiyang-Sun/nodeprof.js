@@ -15,11 +15,11 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.test.examples.tests;
 
-import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import org.junit.After;
 import org.junit.Test;
 
 import com.oracle.truffle.api.instrumentation.Instrumenter;
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
@@ -35,8 +35,8 @@ public class EventLoggerTest extends BasicAnalysisTest {
     private EventLogger analysis = null;
 
     @Override
-    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter, TruffleInstrument.Env env) {
-        this.analysis = new EventLogger(_instrumenter, env);
+    public TestableNodeProfAnalysis getAnalysis(Instrumenter instrumenter, TruffleInstrument.Env env) {
+        this.analysis = new EventLogger(instrumenter, env);
         return this.analysis;
     }
 

@@ -58,8 +58,9 @@ public class TypedArray extends TestableNodeProfAnalysis {
 
     @TruffleBoundary
     public int getAllocation(Object array) {
-        if (!allocationTrack.containsKey(array))
+        if (!allocationTrack.containsKey(array)) {
             return -1;
+        }
         return allocationTrack.get(array);
     }
 
@@ -95,7 +96,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
         public boolean isLiteral = false;
         public boolean isTyped = true;
 
-        public TypedArrayReport(int iid) {
+        TypedArrayReport(int iid) {
             super(iid);
         }
 
@@ -226,7 +227,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
                                     Object[] inputs) {
                         Object convertedIndex = toArrayIndex.execute(getProperty(inputs));
 
-                        if (convertedIndex instanceof Long && ((Long) convertedIndex).intValue() >= 0) {
+                        if (convertedIndex instanceof Long && ((Long) convertedIndex) >= 0) {
                             int iid = getAllocation(getReceiver(inputs));
                             if (iid <= 0) {
                                 /**
@@ -235,7 +236,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
                                  */
                                 return;
                             }
-                            addDebugEvent("TA_EW_INT", iid, ProfiledTagEnum.ELEMENT_WRITE, ((Long) convertedIndex).intValue());
+                            addDebugEvent("TA_EW_INT", iid, ProfiledTagEnum.ELEMENT_WRITE, convertedIndex);
                             TypedArrayReport report = (TypedArrayReport) getReportNode.execute(iid);
                             report.creationOnly = false;
                             report.readOnly = false;

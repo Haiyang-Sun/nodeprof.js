@@ -53,19 +53,21 @@ public abstract class AbstractFactory implements
 
     protected static boolean readBoolean(DynamicObject cb, String name) {
         Object ret = readCBProperty(cb, name);
-        if (ret == null)
+        if (ret == null) {
             return false;
-        else
+        } else {
             return ret instanceof Boolean && (Boolean) ret; // unchecked
+        }
     }
 
     @TruffleBoundary
     protected static String readString(DynamicObject cb, String name) {
         Object ret = readCBProperty(cb, name);
-        if (ret == null)
+        if (ret == null) {
             return null;
-        else
+        } else {
             return ret.toString();
+        }
     }
 
     @TruffleBoundary
@@ -80,15 +82,17 @@ public abstract class AbstractFactory implements
     @TruffleBoundary
     protected static boolean isPropertyUndefined(DynamicObject cb, String name) {
         Object ret = readCBProperty(cb, name);
-        if (ret == null)
+        if (ret == null) {
             return true;
-        else
+        } else {
             return ret == Undefined.instance;
+        }
     }
 
     protected static Object readCBProperty(DynamicObject cb, String name) {
-        if (cb == null)
+        if (cb == null) {
             return null;
+        }
         try {
             Object val = InteropLibrary.getFactory().getUncached(cb).readMember(cb, name);
             return val == null ? null : val;
@@ -155,8 +159,9 @@ public abstract class AbstractFactory implements
      * @return the converted Object
      */
     public Object convertResult(Object result) {
-        if (result == null)
+        if (result == null) {
             return Null.instance;
+        }
         return result;
     }
 
@@ -173,8 +178,9 @@ public abstract class AbstractFactory implements
      * @param iid source section id
      */
     protected void directCall(DirectCallNode callNode, boolean isPre, int iid) {
-        if (nestedControl)
+        if (nestedControl) {
             return;
+        }
         nestedControl = true;
         try {
             callNode.call(isPre ? preArguments : postArguments);

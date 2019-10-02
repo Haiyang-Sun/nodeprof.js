@@ -58,7 +58,7 @@ public class GlobalConfiguration {
      * trace all runtime events as produced by Graal.js
      */
     @CompilationFinal public static boolean DEBUG_TRACING;
-    
+
     /**
      * use absolute instead of relative path in logs
      */

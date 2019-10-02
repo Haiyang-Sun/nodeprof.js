@@ -29,8 +29,8 @@ public class GetElementFactory extends AbstractFactory {
                     DynamicObject post) {
         super("getField", jalangiAnalysis, pre, post, 6, 7);
         // TODO
-        setPreArguments(3, true);// isComputed
-        setPostArguments(4, true);// isComputed
+        setPreArguments(3, true); // isComputed
+        setPostArguments(4, true); // isComputed
     }
 
     @Override

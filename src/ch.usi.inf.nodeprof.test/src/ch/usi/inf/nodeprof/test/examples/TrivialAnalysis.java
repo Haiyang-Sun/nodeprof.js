@@ -140,8 +140,9 @@ public class TrivialAnalysis extends TestableNodeProfAnalysis {
 
     @Override
     public void printResult() {
-        if (GlobalConfiguration.DEBUG)
+        if (GlobalConfiguration.DEBUG) {
             Logger.debug("Trivial analysis finishes.");
+        }
     }
 
 }

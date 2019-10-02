@@ -33,17 +33,17 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
 /**
  * Customized SourcePredicate
  */
-public class AnalysisFilterSourceList extends AnalysisFilterBase {
+public final class AnalysisFilterSourceList extends AnalysisFilterBase {
     private static final List<String> NO_EXCLUDES = Collections.emptyList();
 
-    public static enum ScopeEnum {
+    public enum ScopeEnum {
         app,
         allExceptInternal,
         all,
         builtin
     }
 
-    public static final AnalysisFilterSourceList getFilter(ScopeEnum scope) {
+    public static AnalysisFilterSourceList getFilter(ScopeEnum scope) {
         switch (scope) {
             case all:
                 return addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, false));
@@ -94,8 +94,9 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
     }
 
     private static HashSet<String> parseExcludeConfig() {
-        if (GlobalConfiguration.EXCL == null)
+        if (GlobalConfiguration.EXCL == null) {
             return new HashSet<>();
+        }
         return new HashSet<>(Arrays.asList(GlobalConfiguration.EXCL.split(",")));
     }
 
@@ -151,8 +152,9 @@ public class AnalysisFilterSourceList extends AnalysisFilterBase {
     @TruffleBoundary
     public boolean test(final Source source) {
         // don't try to instrument other languages
-        if (isForeignSource(source))
+        if (isForeignSource(source)) {
             return false;
+        }
 
         // if it's an exclusion filter, we include the source by default
         boolean res = filterExcludes;

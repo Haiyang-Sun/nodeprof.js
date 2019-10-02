@@ -44,8 +44,8 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
 
     protected final String builtinName;
 
-     @CompilationFinal private FrameSlot thisSlot;
-     @CompilationFinal private boolean thisSlotInitialized = false;
+    @CompilationFinal private FrameSlot thisSlot;
+    @CompilationFinal private boolean thisSlotInitialized = false;
 
     public FunctionRootEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.ROOT);
@@ -57,7 +57,9 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
     }
 
     @Override
-    protected SourceSection getSourceSectionForIID() { return context.getInstrumentedNode().getRootNode().getSourceSection(); }
+    protected SourceSection getSourceSectionForIID() {
+        return context.getInstrumentedNode().getRootNode().getSourceSection();
+    }
 
     public Object getReceiver(VirtualFrame frame, TruffleInstrument.Env env) {
         // cache the frame slot for `this`
@@ -66,7 +68,8 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
             thisSlot = JSFrameUtil.getThisSlot(frame.getFrameDescriptor());
             thisSlotInitialized = true;
         }
-        // if function has a <this> slot and its value is not undefined, we have a shortcut to `this`
+        // if function has a <this> slot and its value is not undefined, we have a shortcut to
+        // `this`
         if (thisSlot != null) {
             Object maybeThis = frame.getValue(thisSlot);
             if (maybeThis != null && maybeThis != Undefined.instance) {

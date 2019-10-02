@@ -29,8 +29,8 @@ public class PutFieldFactory extends AbstractFactory {
                     DynamicObject post) {
         super("putField", jalangiAnalysis, pre, post, 6, 6);
         // TODO
-        setPreArguments(4, true);// isComputed
-        setPostArguments(4, true);// isComputed
+        setPreArguments(4, true); // isComputed
+        setPostArguments(4, true); // isComputed
     }
 
     @Override

@@ -40,8 +40,8 @@ import ch.usi.inf.nodeprof.utils.Logger;
 public abstract class LiteralEventHandler extends BaseSingleTagEventHandler {
     private final String literalType;
     // get it on-demand
-    private @CompilationFinal Object literalMembers = null;
-    private @CompilationFinal Object hasGetterSetter = null;
+    @CompilationFinal private Object literalMembers = null;
+    @CompilationFinal private Object hasGetterSetter = null;
 
     public LiteralEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.LITERAL);
@@ -59,8 +59,9 @@ public abstract class LiteralEventHandler extends BaseSingleTagEventHandler {
     }
 
     public Object getObjectLiteralMembers(Object literalVal) {
-        if (literalMembers != null)
+        if (literalMembers != null) {
             return literalMembers;
+        }
         CompilerDirectives.transferToInterpreterAndInvalidate();
         if (this.literalType == LiteralTag.Type.ObjectLiteral.name()) {
             // use Graal.js parser

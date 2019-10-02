@@ -32,7 +32,7 @@ public class ReadFactory extends AbstractFactory {
                     boolean isProperty) {
         super("read", jalangiAnalysis, null, post, -1, 5);
         this.isProperty = isProperty;
-        setPostArguments(4, true);// TODO, isScriptLocal
+        setPostArguments(4, true); // TODO, isScriptLocal
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ReadFactory extends AbstractFactory {
                         setPostArguments(0, getSourceIID());
                         setPostArguments(1, getName());
                         setPostArguments(2, convertResult(result));
-                        setPostArguments(3, false);// isGlobal
+                        setPostArguments(3, false); // isGlobal
                         directCall(postCall, false, getSourceIID());
                     }
                 }
@@ -74,7 +74,7 @@ public class ReadFactory extends AbstractFactory {
                         setPostArguments(0, getSourceIID());
                         setPostArguments(1, getProperty());
                         setPostArguments(2, convertResult(result));
-                        setPostArguments(3, true);// isGlobal
+                        setPostArguments(3, true); // isGlobal
                         directCall(postCall, false, getSourceIID());
                     }
                 }

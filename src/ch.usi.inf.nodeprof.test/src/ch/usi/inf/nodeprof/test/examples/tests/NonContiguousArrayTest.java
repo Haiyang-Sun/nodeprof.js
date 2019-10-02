@@ -15,10 +15,10 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.test.examples.tests;
 
-import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import org.junit.Test;
 
 import com.oracle.truffle.api.instrumentation.Instrumenter;
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
@@ -30,8 +30,8 @@ import ch.usi.inf.nodeprof.test.examples.NonContiguousArray;
 public class NonContiguousArrayTest extends BasicAnalysisTest {
 
     @Override
-    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter, TruffleInstrument.Env env) {
-        return new NonContiguousArray(_instrumenter, env);
+    public TestableNodeProfAnalysis getAnalysis(Instrumenter instrumenter, TruffleInstrument.Env env) {
+        return new NonContiguousArray(instrumenter, env);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class NonContiguousArrayTest extends BasicAnalysisTest {
         AnalysisEventsVerifier verifier = new AnalysisEventsVerifier(this.analysis.getAnalysisEvents()) {
             @Override
             public void verify() {
-                dequeueAndVerifyEvent("EW_ARRAY_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 1, 0);
+                dequeueAndVerifyEvent("EW_ARRAY_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 1L, 0L);
                 dequeueAndVerifyEvent("REPORT", 1, ProfiledTagEnum.ELEMENT_WRITE);
                 finish();
             }
@@ -54,10 +54,10 @@ public class NonContiguousArrayTest extends BasicAnalysisTest {
         AnalysisEventsVerifier verifier = new AnalysisEventsVerifier(this.analysis.getAnalysisEvents()) {
             @Override
             public void verify() {
-                dequeueAndVerifyEvent("EW_ARRAY_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 1, 3);
-                dequeueAndVerifyEvent("EW_ARRAY_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 5, 3);
+                dequeueAndVerifyEvent("EW_ARRAY_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 1L, 3L);
+                dequeueAndVerifyEvent("EW_ARRAY_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 5L, 3L);
                 dequeueAndVerifyEvent("REPORT", 1, ProfiledTagEnum.ELEMENT_WRITE);
-                dequeueAndVerifyEvent("EW_ARRAY_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 6, 6);
+                dequeueAndVerifyEvent("EW_ARRAY_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 6L, 6L);
                 finish();
             }
         };

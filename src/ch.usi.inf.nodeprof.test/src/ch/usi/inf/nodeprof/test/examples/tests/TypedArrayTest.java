@@ -15,10 +15,10 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.test.examples.tests;
 
-import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import org.junit.Test;
 
 import com.oracle.truffle.api.instrumentation.Instrumenter;
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
@@ -31,8 +31,8 @@ import ch.usi.inf.nodeprof.utils.Logger;
 public class TypedArrayTest extends BasicAnalysisTest {
 
     @Override
-    public TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter, TruffleInstrument.Env env) {
-        return new TypedArray(_instrumenter, env);
+    public TestableNodeProfAnalysis getAnalysis(Instrumenter instrumenter, TruffleInstrument.Env env) {
+        return new TypedArray(instrumenter, env);
     }
 
     @Test
@@ -43,8 +43,8 @@ public class TypedArrayTest extends BasicAnalysisTest {
             @Override
             public void verify() {
                 dequeueAndVerifyEvent("TA_ARRAY_ALLOC", 1, ProfiledTagEnum.NEW);
-                dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 0);
-                dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 1);
+                dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 0L);
+                dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 1L);
                 dequeueAndVerifyEvent("TA_UNTYPED", 1, ProfiledTagEnum.ELEMENT_WRITE);
                 finish();
             }
@@ -61,8 +61,8 @@ public class TypedArrayTest extends BasicAnalysisTest {
             @Override
             public void verify() {
                 dequeueAndVerifyEvent("TA_ARRAY_ALLOC", 1, ProfiledTagEnum.INVOKE);
-                dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 0);
-                dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 1);
+                dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 0L);
+                dequeueAndVerifyEvent("TA_EW_INT", 1, ProfiledTagEnum.ELEMENT_WRITE, 1L);
                 dequeueAndVerifyEvent("TA_UNTYPED", 1, ProfiledTagEnum.ELEMENT_WRITE);
                 finish();
             }

@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import org.graalvm.polyglot.Context;
 import org.junit.After;
 import org.junit.Before;
@@ -32,6 +31,7 @@ import org.junit.Test;
 
 import com.oracle.js.parser.Source;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
+import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import com.oracle.truffle.js.lang.JavaScriptLanguage;
 
 import ch.usi.inf.nodeprof.NodeProfInstrument;
@@ -46,7 +46,7 @@ public abstract class BasicAnalysisTest {
     protected NodeProfInstrument instrument;
     protected TestableNodeProfAnalysis analysis;
 
-    public abstract TestableNodeProfAnalysis getAnalysis(Instrumenter _instrumenter, TruffleInstrument.Env env);
+    public abstract TestableNodeProfAnalysis getAnalysis(Instrumenter instrumenter, TruffleInstrument.Env env);
 
     @Before
     public void init() {
@@ -87,9 +87,8 @@ public abstract class BasicAnalysisTest {
      * excluded if the test case uses some Node.js feature which is not availabe in js shell
      */
     List<String> excludeMiniTests = Arrays.asList(
-            "element2.js",
-            "require.js"
-    );
+                    "element2.js",
+                    "require.js");
 
     @Test
     public void testMicroTestcases() {

@@ -16,8 +16,7 @@
 package ch.usi.inf.nodeprof.test.examples.nodes;
 
 import com.oracle.truffle.api.dsl.Specialization;
-import com.oracle.truffle.api.interop.ForeignAccess;
-import com.oracle.truffle.api.interop.Message;
+import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
@@ -28,35 +27,32 @@ import ch.usi.inf.nodeprof.utils.Logger;
  * Get the array size from an array object
  */
 public abstract class GetArraySizeNode extends Node {
-    @Child Node getSize;
 
     public GetArraySizeNode() {
-        this.getSize = Message.GET_SIZE.createNode();
     }
 
-    public abstract int executeSize(Object o);
+    public abstract long executeSize(Object o);
 
-    private int getSize(DynamicObject arr) {
+    private static long getSize(DynamicObject arr) {
         /**
          * TODO, maybe JSArray.arrayGetLength(thisObj) is faster
          */
-        Object ret = -1;
         try {
-            ret = ForeignAccess.sendGetSize(this.getSize, arr);
+            return InteropLibrary.getFactory().getUncached().getArraySize(arr);
         } catch (UnsupportedMessageException e) {
             Logger.error("ArrayGetSize failed");
             e.printStackTrace();
         }
-        return (int) ret;
+        return -1;
     }
 
     @Specialization
-    int doCache(DynamicObject obj) {
+    long doCache(DynamicObject obj) {
         return getSize(obj);
     }
 
     @Specialization
-    int doObject(Object obj) {
+    long doObject(Object obj) {
         assert !(obj instanceof DynamicObject);
         return -1;
     }

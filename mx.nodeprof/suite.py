@@ -42,7 +42,7 @@ suite = {
       "annotationProcessors" : ["truffle:TRUFFLE_DSL_PROCESSOR"],
       "javaCompliance" : "1.8",
       "workingSets" : "Truffle,JavaScript",
-      "checkstyle" : "com.oracle.truffle.js",
+      "checkstyle" : "ch.usi.inf.nodeprof",
     },
     "ch.usi.inf.nodeprof.test" : {
       "subDir" : "src",
@@ -54,6 +54,8 @@ suite = {
       "annotationProcessors" : ["truffle:TRUFFLE_DSL_PROCESSOR"],
       "javaCompliance" : "1.8",
       "workingSets" : "Truffle,JavaScript,Test",
+      "testProject": True,
+      "checkstyle" : "ch.usi.inf.nodeprof",
     },
   },
 
@@ -70,18 +72,18 @@ suite = {
         "artifactId" : "nodeprof",
       }
     },
-    "NODEPROF-TEST" : {
+    "NODEPROF_TEST" : {
       "path" : "build/nodeprof-test.jar",
       "sourcesPath" : "build/nodeprof-test.src.zip",
       "dependencies" : ["ch.usi.inf.nodeprof.test"],
       "distDependencies" : [
-        "ch.usi.inf.nodeprof",
+        "NODEPROF",
         "graal-js:GRAALJS"
       ],
       "description" : "NodeProf Tests",
       "maven" : {
         "artifactId" : "nodeprof-test",
-      }
+      },
     },
     "NODEPROF_GRAALVM_SUPPORT" : {
       "native" : True,

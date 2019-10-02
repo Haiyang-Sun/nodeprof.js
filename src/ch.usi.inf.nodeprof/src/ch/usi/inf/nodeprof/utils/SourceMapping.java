@@ -33,9 +33,9 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 
 public abstract class SourceMapping {
     private static int iidGen = 0;
-    private static @CompilationFinal HashMap<Integer, String> iidMap;
-    private static @CompilationFinal HashMap<SourceSection, Integer> sourceSet;
-    private static @CompilationFinal HashMap<Integer, SourceSection> idToSource;
+    @CompilationFinal private static HashMap<Integer, String> iidMap;
+    @CompilationFinal private static HashMap<SourceSection, Integer> sourceSet;
+    @CompilationFinal private static HashMap<Integer, SourceSection> idToSource;
 
     @TruffleBoundary
     private static void init() {
@@ -86,14 +86,15 @@ public abstract class SourceMapping {
 
     @TruffleBoundary
     public static DynamicObject getJSObjectForSourceSection(SourceSection section) {
-        if (section == null)
+        if (section == null) {
             return Undefined.instance;
+        }
 
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
         Source source = section.getSource();
         DynamicObject o = getJSObjectForSource(source);
 
-        DynamicObject range = JSArray.createConstant(ctx, new Object[]{ section.getCharIndex(), section.getCharEndIndex()});
+        DynamicObject range = JSArray.createConstant(ctx, new Object[]{section.getCharIndex(), section.getCharEndIndex()});
         JSObject.set(o, "range", range);
 
         DynamicObject loc = JSUserObject.create(ctx);
@@ -111,8 +112,9 @@ public abstract class SourceMapping {
 
     @TruffleBoundary
     public static DynamicObject getJSObjectForSource(Source source) {
-        if (source == null)
+        if (source == null) {
             return Undefined.instance;
+        }
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
         DynamicObject o = JSUserObject.create(ctx);
         JSObject.set(o, "name", shortPath(source.getName()));
@@ -145,10 +147,7 @@ public abstract class SourceMapping {
 
     private static StringBuilder makeSectionString(SourceSection sourceSection) {
         StringBuilder b = new StringBuilder();
-        b.append(sourceSection.getStartLine()).append(":")
-                .append(sourceSection.getStartColumn())
-                .append(":").append(sourceSection.getEndLine())
-                .append(":").append(sourceSection.getEndColumn() + 1);
+        b.append(sourceSection.getStartLine()).append(":").append(sourceSection.getStartColumn()).append(":").append(sourceSection.getEndLine()).append(":").append(sourceSection.getEndColumn() + 1);
         return b;
     }
 

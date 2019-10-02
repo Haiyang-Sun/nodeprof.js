@@ -33,9 +33,9 @@ public class Logger {
     private static PrintStream out = System.out;
     private static PrintStream err = System.err;
 
-    public static void init(PrintStream _out, PrintStream _err) {
-        out = _out;
-        err = _err;
+    public static void init(PrintStream out, PrintStream err) {
+        out = out;
+        err = err;
     }
 
     @TruffleBoundary
