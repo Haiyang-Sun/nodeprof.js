@@ -15,28 +15,25 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import ch.usi.inf.nodeprof.utils.NodeProfUtil;
+import ch.usi.inf.nodeprof.utils.SourceMapping;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import com.oracle.truffle.js.nodes.JavaScriptNode;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 
-/**
- * Abstract event handler for loop events
- */
-public abstract class LoopEventHandler extends BaseSingleTagEventHandler {
-    public LoopEventHandler(EventContext context) {
-        super(context, ProfiledTagEnum.CF_ROOT);
+public abstract class CFBlockEventHandler extends BaseSingleTagEventHandler {
+    private final int parentIID;
+
+    public CFBlockEventHandler(EventContext context) {
+        super(context, ProfiledTagEnum.CF_BLOCK);
+        JavaScriptNode parent = (JavaScriptNode) NodeProfUtil.getParentSkipWrappers(context.getInstrumentedNode());
+        assert parent.hasTag(JSTags.ControlFlowRootTag.class);
+        this.parentIID = SourceMapping.getIIDForSourceSection(parent.getSourceSection());
     }
 
-    public String getLoopType() {
-        return (String) getAttribute("type");
-    }
-
-    public boolean isForIn() {
-        return getLoopType().equals(JSTags.ControlFlowRootTag.Type.ForInIteration.name());
-    }
-
-    public boolean isForOf() {
-        return getLoopType().equals(JSTags.ControlFlowRootTag.Type.ForOfIteration.name());
+    public int getParentIID() {
+        return parentIID;
     }
 }

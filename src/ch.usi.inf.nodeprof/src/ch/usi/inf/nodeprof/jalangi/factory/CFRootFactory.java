@@ -21,16 +21,16 @@ import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
-import ch.usi.inf.nodeprof.handlers.LoopEventHandler;
+import ch.usi.inf.nodeprof.handlers.CFRootEventHandler;
 
-public class LoopFactory extends AbstractFactory {
-    public LoopFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("loop", jalangiAnalysis, pre, post, 2, 2);
+public class CFRootFactory extends AbstractFactory {
+    public CFRootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
+        super("cfroot", jalangiAnalysis, pre, post, 2, 2);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
-        return new LoopEventHandler(context) {
+        return new CFRootEventHandler(context) {
             @Child DirectCallNode preCall = createPreCallNode();
             @Child DirectCallNode postCall = createPostCallNode();
 
@@ -38,7 +38,7 @@ public class LoopFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (pre != null) {
                     setPreArguments(0, getSourceIID());
-                    setPreArguments(1, getLoopType());
+                    setPreArguments(1, getCFRootType());
                     directCall(preCall, true, getSourceIID());
                 }
             }
@@ -47,9 +47,8 @@ public class LoopFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) {
                 if (post != null) {
-
                     setPostArguments(0, getSourceIID());
-                    setPostArguments(1, getLoopType());
+                    setPostArguments(1, getCFRootType());
                     directCall(postCall, false, getSourceIID());
                 }
             }
