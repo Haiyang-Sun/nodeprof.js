@@ -24,7 +24,7 @@ For any questions or suggestions, please get in touch with the authors:
          * [Selective instrumentation](#selective-instrumentation)
 
 ## Overview
-In a nutshell [NodeProf](https://github.com/Haiyang-Sun/nodeprof.js) is an instrumentation and profiling framework for JavaScript, running on [GraalVM](https://www.graalvm.org/). NodeProf implements the [Jalangi](https://github.com/Samsung/jalangi2) API and enables the execution of Jalangi-style dynamic analyses on top of GraalVM. There are two ways to run NodeProf: (1) directly run it with a pre-built JAR file and the latest GraalVM; (2) build NodeProf and GraalVM from source using [mx](https://github.com/graalvm/mx), which is a command-line based tool for development management. Throughout this document, we provide instructions on how to run the JavaScript analysis of your choice using a pre-built GraalVM. However, same command-line options can be used to run the analysis using `mx jalangi` (run `mx jalangi --help` for details). 
+In a nutshell [NodeProf](https://github.com/Haiyang-Sun/nodeprof.js) is an instrumentation and profiling framework for JavaScript, running on [GraalVM](https://www.graalvm.org/). NodeProf implements the [Jalangi](https://github.com/Samsung/jalangi2) API and enables the execution of Jalangi-style dynamic analyses on top of GraalVM. There are two ways to run NodeProf: (1) directly run it with a pre-built JAR file and the latest GraalVM; (2) build NodeProf and GraalVM from source using [mx](https://github.com/graalvm/mx), which is a command-line based tool for development management. Throughout this document, we provide instructions on how to run the JavaScript analysis of your choice using a pre-built GraalVM. However, same command-line options can be used to run the analysis using `mx jalangi` (run `mx jalangi --help` for details).
 
 ## Installation
 
@@ -44,14 +44,14 @@ You can directly run NodeProf with a pre-built JAR file and the latest GraalVM.
 6. Copy the `nodeprof.js/src/ch.usi.inf.nodeprof/js/jalangi.js` file to the `NODEPROF_HOME` folder.
 7. You can now run an analysis using the following command:
     ```
-    $GRAAL_HOME/bin/node --jvm --jvm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js [--analysis analysisFile]* test-file
+    $GRAAL_HOME/bin/node --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js [--analysis analysisFile]* test-file
     ```
 
 Congratulations, you're all set to run NodeProf. You can now try to implement [your first analysis](#implementing-a-nodeprof-analysis).
 
 ### Advanced installation - Building NodeProf and GraalVM from source (Linux and MacOS)
 If you plan to customise NodeProf or the GraalVM, this is the option you need.
-1. Ensure that you have JDK >= 8 installed and set in your **JAVA_HOME**. 
+1. Ensure that you have JDK >= 8 installed and set in your **JAVA_HOME**.
     You can find a GraalVM compatible JDK [here](http://www.oracle.com/technetwork/oracle-labs/program-languages/downloads/index.html).
 2. Get the  **mx**  build tool and put it in your  **PATH**:
 	```
@@ -90,7 +90,7 @@ let lastCallsite = undefined;
 
 function addCallee(callsite, callee) {
   callsite = callsite === undefined ? "GraalVM" : callsite;
-  cg.has(callsite) ? cg.get(callsite).add(callee) : cg.set(callsite, new Set([callee])); 
+  cg.has(callsite) ? cg.get(callsite).add(callee) : cg.set(callsite, new Set([callee]));
 }
 
 this.invokeFunPre = function(iid, f, base, args, isConstructor, isMethod) {
@@ -106,7 +106,7 @@ this.functionEnter = function (iid, func, receiver, args) {
   iidToLocation.set(iid, J$.iidToLocation(iid));
   addCallEdge(lastCallsite, iid);
 };
-    
+
 this.endExecution = function() {
   //Output dynamic call graph in Dot format
   console.log("digraph {");
@@ -125,7 +125,7 @@ We will now run the dynamic call graph analysis on the `nodeprof.js/panathon18/t
 
 If you followed the [basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos) instructions, you can run the dynamic call graph analysis with the following command:
 ```
-$GRAAL_HOME/bin/node --jvm --jvm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis <path_to>/dynCallGraph.js <path_to>/callMeMaybe.js
+$GRAAL_HOME/bin/node --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis <path_to>/dynCallGraph.js <path_to>/callMeMaybe.js
 ```
 If you followed the [advanced installation](#advanced-installation---building-nodeprof-and-graalvm-from-source-linux-only) instructions, you can run the dynamic call graph analysis with the following command:
 ```
@@ -168,11 +168,7 @@ An empty analysis template with all the available callbacks can be found here: `
 
 ###  Selective instrumentation
 
-One way to optimize analysis performance is to narrow the analysis scope by selective instrumentation. Selective instrumentation can be applied in different granularities. We have prepared different examples for you to familiarize yourself with selective instrumentation in NodeProf. To setup the benchmarks, you can run:
-```
-cd panathon18/scripts
-./install-dependencies.sh
-```
+One way to optimize analysis performance is to narrow the analysis scope by selective instrumentation. Selective instrumentation can be applied in different granularities.
 
 #### Coarse-grained selective instrumentation
 
@@ -182,7 +178,7 @@ NodeProf allows to set a coarse-grained instrumentation scope for your analysis 
 
 [basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos):
 ```
-$GRAAL_HOME/bin/node --nodeprof.Scope=[app|module|all] --jvm --jvm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js
+$GRAAL_HOME/bin/node --nodeprof.Scope=[app|module|all] --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js
 ```
 
 [advanced installation](#advanced-installation---building-nodeprof-and-graalvm-from-source-linux-only):
@@ -195,39 +191,54 @@ mx jalangi --scope=[app|module|all]
 * `all`: instruments all the code including internal library, node modules and application code.
 
 ###### Example 1
-In this example we run [TypedArray.js](https://github.com/Berkeley-Correctness-Group/JITProf/blob/master/src/js/analyses/jitprof/TypedArray.js) analysis that tracks non-numeric stores into numeric arrays on the [mock2easy](https://www.npmjs.com/package/mock2easy) NPM. This analysis needs to be chained with [Utils.js](https://github.com/Berkeley-Correctness-Group/JITProf/blob/master/src/js/analyses/jitprof/utils/Utils.js). First, we set `--scope=module` to instrument both application and module code.
+In this example we run our dynamic call graph analysis on an example application using [franc](https://github.com/wooorm/franc).
+You can install this NPM and its dependency using:
 
 ```
-$GRAAL_HOME/bin/node --nodeprof.Scope=module --jvm --jvm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis Utils.js --analysis TypedArray.js panathon18/tests/npms/mock2easy/app.js
+cd panathon18/scripts
+./install-dependencies.sh
 ```
 
-Now, set `--scope` to `app` and see the difference.
-When you set `--scope` to `all`, you also get results for internal libraries, while `app` scope does not report any results.
+First, we use `--scope=module` to instrument both application and module code.
+
+```
+$GRAAL_HOME/bin/node --nodeprof.Scope=module --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis panathon18/sample-analyses/dynCallGraph.js panathon18/tests/franc/app.js
+```
+
+Now, set `--scope` to `app` to see the difference. When you set `--scope` to `all`, you also get results for Node.js-internal libraries.
 
 ##### File-based exclusion
 
-NodeProf also has the following file-based filtering options that make selective instrumentation slightly more flexible:
- * Add `// DO NOT INSTRUMENT` to the beginning of the source code file
- * Specify an exclusion list of keywords to avoid instrumenting any source code file whose full path contains one of these keywords:
- 
+NodeProf supports the following file-based filtering methods to make selective instrumentation more flexible:
+ * Adding `// DO NOT INSTRUMENT` to the beginning of a source code file
+ * Specifying a comma-separated list of keywords to avoid instrumenting any source code file which path contains any of these keywords.
+
 [basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos):
 ```
-$GRAAL_HOME/bin/node --nodeprof.ExcludeSource=keyword1,keyword2 --jvm --jvm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js
-``` 
+$GRAAL_HOME/bin/node --nodeprof.ExcludeSource=keyword1,keyword2 --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js
+```
 
 [advanced installation](#advanced-installation---building-nodeprof-and-graalvm-from-source-linux-only):
 ```
 mx jalangi --excl keyword1,keyword2
 ```
+
 ###### Example 2
-Exclude all modules from `express` npm and run [TypedArray.js](https://github.com/Berkeley-Correctness-Group/JITProf/blob/master/src/js/analyses/jitprof/TypedArray.js) analysis:
+In this example we run JITProf's typed array analysis ([TypedArray.js](https://github.com/Berkeley-Correctness-Group/JITProf/blob/master/src/js/analyses/jitprof/TypedArray.js)), which tracks the types of values being stored into arrays, on our previous example. This analysis needs to be chained with [Utils.js](https://github.com/Berkeley-Correctness-Group/JITProf/blob/master/src/js/analyses/jitprof/utils/Utils.js). First, we set `--scope=module` to instrument both application and module code:
 
 [basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos):
 ```
-$GRAAL_HOME/bin/node --nodeprof.ExcludeSource=express --nodeprof.Scope=module --jvm --jvm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis Utils.js --analysis TypedArray.js panathon18/tests/npms/mock2easy/app.js
+$GRAAL_HOME/bin/node --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof --nodeprof.Scope=module $NODEPROF_HOME/jalangi.js --analysis Utils.js --analysis TypedArray.js panathon18/tests/franc/app.js
 ```
 
-You should no longer see the results for any of the files under `node_modules/express` dircetory.
+Exclude all soprces from the `trigram-utils` module and run again:
+
+[basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos):
+```
+$GRAAL_HOME/bin/node --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof --nodeprof.ExcludeSource=express --nodeprof.Scope=module $NODEPROF_HOME/jalangi.js --analysis Utils.js --analysis TypedArray.js panathon18/tests/franc/app.js
+```
+
+You will no longer see any result from `trigram-utils`.
 
 #### Fine-grained instrumentation
 While the coarse-grained selective instrumentation is handy for testing and debugging, a more fine-grained instrumentation that can be integrated to analyses is needed for complex performance optimizations. For instance, it would be useful to enable certain callbacks in an analysis as long as a given predicate holds. Furthermore, it would be useful to instrument selected lines in source code or AST nodes on-the-fly. The good news is that we already have a callback function that allows instrumenting selected analysis callbacks. But, the more exciting news is that we would like you to implement the source-line/AST node instrumentation as part of this hackathon.
@@ -236,30 +247,11 @@ While the coarse-grained selective instrumentation is handy for testing and debu
 ##### Source code filtering using JavaScript API
 Instrumentation can be controlled in different ways from within JavaScript code. This is described in the [NodeProf tutorial](../../Tutorial.md#source-filters-and-selective-instrumentation-in-nodeprof).
 
-Note that some filters extend the global options provided by `--scope` and `--excl`, while others replace them. 
-You can use `mx jalangi --debug ...` to see information related to the source filter being applied. 
-
-###### Example 3
- 
-Run [TraceAll.js](https://github.com/Samsung/jalangi2/blob/master/src/js/sample_analyses/pldi16/TraceAll.js) Jalangi analysis to log analysis callbacks that get executed while running mock2easy and use the [TraceAllFilter.js
-](sample-analyses/TraceAllFilter.js) predicate to only log the literals in sanitizing and encoding/decoding routines. To apply this filter you need to change
-```
-sandbox.analysis = new MyAnalysis();
-``` 
-in [TraceAll.js](https://github.com/Samsung/jalangi2/blob/master/src/js/sample_analyses/pldi16/TraceAll.js) to
-```
-sandbox.addAnalysis(new MyAnalysis(), require(<path-to>/TraceAllFilter.js>));
-```
-
-Next, chain and run [TraceAll.js](https://github.com/Samsung/jalangi2/blob/master/src/js/sample_analyses/pldi16/TraceAll.js) with [SMemory.js](https://github.com/Samsung/jalangi2/blob/master/src/js/runtime/SMemory.js) analysis:
-```
-$GRAAL_HOME/bin/node  --jvm --jvm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis SMemory.js --analysis TraceAll.js panathon18/tests/npms/mock2easy/app.js
-
-``` 
+Note that some filters extend the global options provided by `--scope` and `--excl`, while others replace them.
+You can use `mx jalangi --debug ...` to see information related to the source filter being applied.
 
 ##### Extending source code filters
 To modify, extend or create your own source code filter in (the Java side of) NodeProf, refer to the code of the list-based and predicate-based filters that are already available:
 
 * [AnalysisFilterSourceList.java](../../src/ch.usi.inf.nodeprof/src/ch/usi/inf/nodeprof/analysis/AnalysisFilterSourceList.java)
 * [AnalysisFilterJS.java](../../src/ch.usi.inf.nodeprof/src/ch/usi/inf/nodeprof/analysis/AnalysisFilterJS.java)
-
