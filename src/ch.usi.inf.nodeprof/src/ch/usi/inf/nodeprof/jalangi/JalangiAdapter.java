@@ -15,6 +15,8 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
+import ch.usi.inf.nodeprof.NodeProfCLI;
+import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.interop.ArityException;
 import com.oracle.truffle.api.interop.InteropLibrary;
@@ -23,13 +25,19 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
+import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRuntime;
+import com.oracle.truffle.js.runtime.builtins.JSUserObject;
+import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.analysis.ProfilerExecutionEventNode;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
+import org.graalvm.options.OptionDescriptor;
+import org.graalvm.options.OptionValues;
 
 /**
  * Java class exposed to the Jalangi framework
@@ -153,6 +161,15 @@ public class JalangiAdapter implements TruffleObject {
                 }
             }
             return ProfilerExecutionEventNode.getEnabled();
+        } else if (identifier.equals("getConfig")) {
+            JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
+            DynamicObject obj = JSUserObject.create(ctx);
+            OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
+            for (OptionDescriptor o: NodeProfCLI.ods) {
+                String shortKey = o.getName().replace("nodeprof.", "");
+                JSObject.set(obj, shortKey, opts.get(o.getKey()));
+            }
+            return obj;
         } else {
             // unknown API
             Logger.warning("Unsupported NodeProf-Jalangi operation " + identifier);

@@ -65,6 +65,12 @@ J$={};
     console.log("cannot load nodeprof jalangi adapter");
   }
 
+  // Print NodeProf config when config says we are in debug mode
+  const nodeprofConfig = sandbox.adapter.getConfig();
+  if (nodeprofConfig.Debug) {
+    console.log('[jalangi.js] NodeProf config:', nodeprofConfig);
+  }
+
   sandbox.analyses=[];
   sandbox.enabledCBs = [];
   if(process.env.ENABLED_JALANGI_CBS && process.env.ENABLED_JALANGI_CBS.length > 0){
