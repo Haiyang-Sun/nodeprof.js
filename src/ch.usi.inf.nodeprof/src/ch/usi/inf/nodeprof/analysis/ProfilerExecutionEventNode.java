@@ -26,6 +26,7 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
+import com.oracle.truffle.api.nodes.ControlFlowException;
 
 public class ProfilerExecutionEventNode extends ExecutionEventNode {
     protected final EventContext context;
@@ -135,10 +136,16 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
         if (!profilerEnabled) {
             return;
         }
+
         if (hasOnEnter > 0) {
             hasOnEnter--;
             this.cb.exceptionHitCount++;
-            this.child.executeExceptional(frame, exception);
+            if (exception instanceof ControlFlowException) {
+                Object[] inputs = child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null;
+                this.child.executeExceptionalCtrlFlow(frame, exception, inputs);
+            } else {
+                this.child.executeExceptional(frame, exception);
+            }
         }
     }
 

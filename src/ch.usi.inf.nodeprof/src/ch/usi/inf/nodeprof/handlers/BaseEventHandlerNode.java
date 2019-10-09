@@ -94,6 +94,13 @@ public abstract class BaseEventHandlerNode extends Node {
     }
 
     /**
+     * Control flow exception that may be treated like executePost, thus includes inputs[]
+     */
+    public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
+        executeExceptional(frame, exception);
+    }
+
+    /**
      *
      * get the node-specific attribute, in case of missing such attributes report an error
      *
