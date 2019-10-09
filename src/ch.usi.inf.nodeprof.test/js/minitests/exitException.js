@@ -44,3 +44,15 @@ try {
 }catch(e){
   console.log("exception: "+e);
 }
+
+(function() {
+ try {
+   throw Error("with finally");
+   return 'nope';
+ } catch(e) {
+   return 42;
+ } finally {
+   return 43;
+ }
+ return 'nope';
+})();
