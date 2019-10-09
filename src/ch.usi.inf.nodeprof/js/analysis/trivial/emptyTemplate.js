@@ -175,6 +175,14 @@
             /**
              * This callback is called before a value is returned from a function using the <tt>return</tt> keyword.
              *
+             * This does NOT mean the function is being exited. Functions can return 0, 1, or more times.
+             * For example:
+             * - <tt>void</tt> functions return 0 times
+             * - functions that use the <tt>return</tt> keyword regularly return 1 time
+             * - functions that return in both parts of a try/finally block can return 2 times
+             *
+             * To see when a function ACTUALLY exits, see the <tt>functionExit</tt> callback.
+             *
              * @param {number} iid - Static unique instruction identifier of this callback
              * @param {*} val - Value to be returned
              */
