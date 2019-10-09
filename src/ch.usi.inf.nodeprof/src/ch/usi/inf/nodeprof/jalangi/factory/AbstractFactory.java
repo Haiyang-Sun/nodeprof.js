@@ -21,6 +21,7 @@ import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
+import com.oracle.truffle.api.nodes.ControlFlowException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.GraalJSException;
@@ -124,6 +125,7 @@ public abstract class AbstractFactory implements
     }
 
     protected void setPreArguments(int index, Object value) {
+        assert value != null;
         if (this.pre != null) {
             assert this.preArguments.length > index + 2;
             this.preArguments[index + 2] = value;
@@ -131,6 +133,7 @@ public abstract class AbstractFactory implements
     }
 
     protected void setPostArguments(int index, Object value) {
+        assert value != null;
         if (this.post != null) {
             assert this.postArguments.length > index + 2;
             this.postArguments[index + 2] = value;
