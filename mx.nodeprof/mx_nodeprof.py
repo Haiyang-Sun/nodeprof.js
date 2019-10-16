@@ -60,7 +60,7 @@ def _runJalangi(args, svm=False, debug=False, outFile=None, trace=False):
         ret = mx.run(cmdArgs, nonZeroIsFatal=True, out=out);
         return ret;
 
-def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
+def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[], keepRunning=True):
     analysisOpt = [];
     if os.path.exists (join(analysisHome, "config")):
         config = open (join(analysisHome, "config"));
@@ -132,7 +132,7 @@ def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[]):
                             print("Fail @"+analysis);
                             from subprocess import call
                             call(["diff", fn, outFile])
-                            if not force:
+                            if not (force or keepRunning):
                                 sys.exit(1);
 
 def testJalangi(args):
@@ -147,6 +147,7 @@ def testJalangi(args):
     all = False;
     analyses = [];
     force = False;
+    keepRunning = False;
     testsuites = [];
     for arg in args:
         if arg == "--all":
@@ -155,6 +156,8 @@ def testJalangi(args):
         elif arg == "--force":
             force = True;
             continue;
+        elif arg == "--keep-running":
+            keepRunning = True;
         elif os.path.exists (join(analysisdir, arg)) :
             analyses += [arg];
             print ("Adding analysis "+arg)
@@ -166,10 +169,10 @@ def testJalangi(args):
 
     if all:
         for analysis in sorted(os.listdir(analysisdir)):
-            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites);
+            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites, keepRunning);
     elif analyses:
         for analysis in analyses:
-            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites);
+            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites, keepRunning);
     else:
         print ("Usage: mx test-specific [analysis-names...] [--all]")
 
@@ -183,6 +186,7 @@ def runJalangi(args, excl="", outFile=None, tracable=True):
     parser.add_argument("--analysis", "--nodeprof.Analysis", help="Jalangi analysis", action="append", default=[])
     # options
     parser.add_argument("--debug", "--nodeprof.Debug", help="enable NodeProf debug logging", action="store_true")
+    parser.add_argument("--debugger", action="store_true")
     parser.add_argument("--excl", "--nodeprof.ExcludeSource", help="exclude sources", default="")
     parser.add_argument("--scope", "--nodeprof.Scope", help="instrumentation scope", choices=["app", "module", "all"], default="module")
     # mx-only options
@@ -207,7 +211,7 @@ def runJalangi(args, excl="", outFile=None, tracable=True):
     # exclude analyses by default
     excl = ','.join([i for i in parsed.excl.split(',') if i != ''] + [os.path.abspath(i) for i in parsed.analysis])
 
-    jalangiArgs = ["--nodeprof.Scope="+parsed.scope] + (["--nodeprof.ExcludeSource="+excl] if len(excl) else []) + jalangiArgs + jalangiAnalysisArg
+    jalangiArgs = (["--vm.Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"] if parsed.debugger else []) + ["--nodeprof.Scope="+parsed.scope] + (["--nodeprof.ExcludeSource="+excl] if len(excl) else []) + jalangiArgs + jalangiAnalysisArg
     _runJalangi(jalangiArgs, outFile=outFile, svm=parsed.svm, debug=parsed.debug, trace=(tracable and parsed.trace));
 
 def unitTests(args):
