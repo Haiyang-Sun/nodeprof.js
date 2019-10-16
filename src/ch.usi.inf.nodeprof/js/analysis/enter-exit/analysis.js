@@ -31,7 +31,7 @@
       if(!('exception' in wrappedExceptionVal)) {
         console.log("functionExit: %s / %d", J$.iidToLocation(iid), arguments.length);
       }else {
-        console.log('functionExit with exception "%s(%s)": %s / %d', wrappedExceptionVal.exception, typeof(wrappedExceptionVal.exception),  J$.iidToLocation(iid), arguments.length);
+        console.log('functionExit with exception "%s(%s)": %s, %s / %d', wrappedExceptionVal.exception, typeof(wrappedExceptionVal.exception), wrappedExceptionVal.exception instanceof Error, J$.iidToLocation(iid), arguments.length);
       }
     };
 

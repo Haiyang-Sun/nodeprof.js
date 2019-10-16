@@ -1,9 +1,7 @@
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:1:1:24:4)
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:1:1:24:4)
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:1:2:24:2)
-write (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:16:1:18:2) foo async function foo() {
-    return 42;
-}
+write (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:16:1:18:2) foo [AsyncFunction: foo]
 async enter (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:11:20:71)
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:2:20:71)
 async enter (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:17:5:17:15)

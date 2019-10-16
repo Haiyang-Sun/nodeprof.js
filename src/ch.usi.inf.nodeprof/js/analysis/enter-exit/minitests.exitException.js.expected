@@ -4,11 +4,21 @@ builtinEnter: Object.create / 4
 builtinExit: Object.create / 6
 functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:1:48:4) / 3
 functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:18:1:20:2) / 4
-functionExit with exception "this is an exception(string)": (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:18:1:20:2) / 3
+functionExit with exception "this is an exception(string)": false, (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:18:1:20:2) / 3
 exception: this is an exception
-functionExit with exception "Error: this is an error(object)": (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:22:1:24:2) / 3
+functionExit with exception "Error: this is an error
+    at bar (/home/haiyang/Work/github/nodeprof/priv/nodeprof.js/src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:23:9)
+    at Object.<anonymous> (/home/haiyang/Work/github/nodeprof/priv/nodeprof.js/src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:37:3)
+    at Module._compile (internal/modules/cjs/loader.js:936:30)
+    at Object.<anonymous> (internal/modules/cjs/loader.js:947:10)
+    at Module.load (internal/modules/cjs/loader.js:790:32)
+    at Function._load (internal/modules/cjs/loader.js:703:12)
+    at Function.runMain (internal/modules/cjs/loader.js:999:10)
+    at Object.<anonymous> (/home/haiyang/Work/github/nodeprof/priv/nodeprof.js/src/ch.usi.inf.nodeprof/js/jalangi.js:257:19)
+    at Module._compile (internal/modules/cjs/loader.js:936:30)
+    at Object.<anonymous> (internal/modules/cjs/loader.js:947:10)(object)": true, (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:22:1:24:2) / 3
 exception: Error: this is an error
-functionExit with exception "undefined(undefined)": (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:26:1:28:2) / 3
+functionExit with exception "undefined(undefined)": false, (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:26:1:28:2) / 3
 exception: undefined
 functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:2:48:2) / 3
 [ 'Object.create', 'foo' ]
