@@ -65,7 +65,7 @@ suite = {
       "sourcesPath" : "build/nodeprof.src.zip",
       "dependencies" : ["ch.usi.inf.nodeprof"],
       "distDependencies" : [
-        "graal-js:GRAALJS"
+        "graal-nodejs:TRUFFLENODE"
       ],
       "description" : "NodeProf for Graal Node.js",
       "maven" : {
