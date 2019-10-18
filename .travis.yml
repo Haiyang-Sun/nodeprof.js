@@ -12,7 +12,12 @@ before_install:
       echo "Building a tag."
     else
       if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+        echo "Building a pull request."
         TRAVIS_COMMIT_RANGE="$TRAVIS_BRANCH"
+      fi
+      if [ -z "$TRAVIS_COMMIT_RANGE" ]; then
+        echo "Building a new branch."
+        TRAVIS_COMMIT_RANGE="HEAD~..HEAD"
       fi
       (git diff --name-only $TRAVIS_COMMIT_RANGE || echo "") | grep -qvE '(\.md$)' || {
         echo "Only docs were updated, stopping build process."
