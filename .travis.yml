@@ -38,9 +38,9 @@ script:
   - mx sforceimports
   - mx build
   - mx checkstyle --primary
-  - cd ../graal/vm
-  - mx --dy nodeprof,/compiler --force-bash-launchers=true --disable-polyglot build
-  - cd -
+    #  - cd ../graal/vm
+    #  - mx --dy nodeprof,/compiler --force-bash-launchers=true --disable-polyglot build
+    #  - cd -
   - mx test-all
   - mx --dy /compiler --jdk jvmci build
   - env JAVA_HOME=$(pwd)/../graal/compiler/mxbuild/linux-amd64/graaljdks/jdk1.8-cmp mx --dy /compiler test-npm
