@@ -22,28 +22,29 @@ before_install:
         exit
       }
     fi
-  - wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-19.2-b01/openjdk-8u212-jvmci-19.2-b01-linux-amd64.tar.gz
+  - wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-19.3-b03/openjdk-8u222-jvmci-19.3-b03-linux-amd64.tar.gz
   - mkdir openjdk1.8.0-jvmci
   - tar --strip 1 -C openjdk1.8.0-jvmci -xvf openjdk-*.tar.gz
   - git clone https://github.com/graalvm/mx.git
 
 before_script:
   - export JAVA_HOME=$TRAVIS_BUILD_DIR/openjdk1.8.0-jvmci
-  - export PATH=$PATH:$TRAVIS_BUILD_DIR/mx
+  - export PATH=$TRAVIS_BUILD_DIR/mx:$JAVA_HOME/bin:$PATH
   - sudo ln -s $(which ccache) /usr/lib/ccache/clang
   - sudo ln -s $(which ccache) /usr/lib/ccache/clang++
   - export CFLAGS="-Wno-unknown-warning-option"
 
 script:
   - mx sforceimports
-  - mx build
+  - mx sversions
   - mx checkstyle --primary
-  - cd ../graal/vm
-  - mx --dy nodeprof,/compiler --force-bash-launchers=true --disable-polyglot build
-  - cd -
+  - mx --dy /compiler --jdk jvmci build --dependencies=GRAAL_MANAGEMENT
+  - mx --dy /compiler --jdk jvmci build
+    #  - cd ../graal/vm
+    #  - mx --dy nodeprof,/compiler --force-bash-launchers=true --disable-polyglot build
+    #  - cd -
   - mx test-all
-  - mx --dy /compiler build
-  - mx --dy /compiler test-npm
+  - env JAVA_HOME=$(pwd)/../graal/compiler/mxbuild/linux-amd64/graaljdks/jdk1.8-cmp mx --dy /compiler test-npm
 
 deploy:
   provider: releases

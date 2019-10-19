@@ -20,6 +20,12 @@
 
     var allFuncs = new Set();
     const funcNameFilter = new Set(['foo', 'Object.create']);
+    function formatException(e) {
+      if (e instanceof Error) {
+        return `${e.name}: ${e.message}`;
+      }
+      return e;
+    }
 
     this.functionEnter = function (iid, f, dis, args) {
       if (funcNameFilter.has(f.name))
@@ -30,8 +36,8 @@
     this.functionExit = function (iid, returnVal, wrappedExceptionVal) {
       if(!('exception' in wrappedExceptionVal)) {
         console.log("functionExit: %s / %d", J$.iidToLocation(iid), arguments.length);
-      }else {
-        console.log('functionExit with exception "%s(%s)": %s / %d', wrappedExceptionVal.exception, typeof(wrappedExceptionVal.exception),  J$.iidToLocation(iid), arguments.length);
+      } else {
+        console.log('functionExit with exception "%s": %s / %d', formatException(wrappedExceptionVal.exception), J$.iidToLocation(iid), arguments.length);
       }
     };
 

@@ -6,7 +6,7 @@ suite = {
     "suites" : [
       {
         "name" : "graal-nodejs",
-        "version" : "6f5372a759e7b1783bf8f56b8eaa49400ad11534",
+        "version" : "404ab0287da9a2c2b682058dfe0980a54bd94339",
         "subdir" : True,
         "urls" : [
           {"url" : "https://github.com/graalvm/graaljs.git", "kind" : "git"},
@@ -65,7 +65,7 @@ suite = {
       "sourcesPath" : "build/nodeprof.src.zip",
       "dependencies" : ["ch.usi.inf.nodeprof"],
       "distDependencies" : [
-        "graal-js:GRAALJS"
+        "graal-nodejs:TRUFFLENODE"
       ],
       "description" : "NodeProf for Graal Node.js",
       "maven" : {

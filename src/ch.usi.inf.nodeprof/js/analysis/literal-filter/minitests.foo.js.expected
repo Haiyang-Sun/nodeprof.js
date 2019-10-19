@@ -1,8 +1,2 @@
-(src/ch.usi.inf.nodeprof.test/js/minitests/foo.js:1:1:6:3) FunctionLiteral function (exports, require, module, __filename, __dirname) {function foo(a){
-}
-
-foo(1);
-
-}
-(src/ch.usi.inf.nodeprof.test/js/minitests/foo.js:1:62:2:2) FunctionLiteral function foo(a){
-}
+(src/ch.usi.inf.nodeprof.test/js/minitests/foo.js:1:1:6:3) FunctionLiteral [Function]
+(src/ch.usi.inf.nodeprof.test/js/minitests/foo.js:1:62:2:2) FunctionLiteral [Function: foo]
