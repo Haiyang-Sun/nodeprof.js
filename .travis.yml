@@ -37,13 +37,13 @@ script:
   - mx sforceimports
   - mx sversions
   - mx checkstyle --primary
-  - mx --dy /compiler --jdk jvmci build --dependencies=GRAAL_MANAGEMENT
-  - mx --dy /compiler --jdk jvmci build
+  - mx build
     #  - cd ../graal/vm
     #  - mx --dy nodeprof,/compiler --force-bash-launchers=true --disable-polyglot build
     #  - cd -
   - mx test-all
-  - env JAVA_HOME=$(pwd)/../graal/compiler/mxbuild/linux-amd64/graaljdks/jdk1.8-cmp mx --dy /compiler test-npm
+  - mx --dy /compiler build
+  - mx --dy /compiler test-npm
 
 deploy:
   provider: releases
