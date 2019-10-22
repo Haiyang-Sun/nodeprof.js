@@ -12,7 +12,6 @@ functionExit with exception "undefined": (src/ch.usi.inf.nodeprof.test/js/minite
 exception: undefined
 return (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:53:4:53:14) val returns 42
 return (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:55:4:55:14) val returns 43
-functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:48:2:58:2) / 3
 functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:48:2:58:2) / returnVal (number): 43
 functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:2:60:2) / 3
 [ 'Object.create', 'foo' ]

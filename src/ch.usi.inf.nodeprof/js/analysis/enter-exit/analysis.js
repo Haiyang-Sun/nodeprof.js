@@ -35,9 +35,12 @@
 
     this.functionExit = function (iid, returnVal, wrappedExceptionVal) {
       if(!('exception' in wrappedExceptionVal)) {
-        console.log("functionExit: %s / %d", J$.iidToLocation(iid), arguments.length);
-        if (typeof returnVal === 'number')
+        if (typeof returnVal === 'number') {
+          // log return value only when it's a number (to avoid large objects/functions end up in the output)
           console.log("functionExit: %s / returnVal (number): %d", J$.iidToLocation(iid), returnVal);
+        } else {
+          console.log("functionExit: %s / %d", J$.iidToLocation(iid), arguments.length);
+        }
       } else {
         console.log('functionExit with exception "%s": %s / %d', formatException(wrappedExceptionVal.exception), J$.iidToLocation(iid), arguments.length);
       }
