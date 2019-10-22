@@ -1,8 +1,5 @@
-dist: xenial
+dist: bionic
 language: cpp
-
-compiler:
-  - clang
 
 cache:
   ccache: true
@@ -15,7 +12,12 @@ before_install:
       echo "Building a tag."
     else
       if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+        echo "Building a pull request."
         TRAVIS_COMMIT_RANGE="$TRAVIS_BRANCH"
+      fi
+      if [ -z "$TRAVIS_COMMIT_RANGE" ]; then
+        echo "Building a new branch."
+        TRAVIS_COMMIT_RANGE="HEAD~..HEAD"
       fi
       (git diff --name-only $TRAVIS_COMMIT_RANGE || echo "") | grep -qvE '(\.md$)' || {
         echo "Only docs were updated, stopping build process."
@@ -30,9 +32,6 @@ before_install:
 before_script:
   - export JAVA_HOME=$TRAVIS_BUILD_DIR/openjdk1.8.0-jvmci
   - export PATH=$TRAVIS_BUILD_DIR/mx:$JAVA_HOME/bin:$PATH
-  - sudo ln -s $(which ccache) /usr/lib/ccache/clang
-  - sudo ln -s $(which ccache) /usr/lib/ccache/clang++
-  - export CFLAGS="-Wno-unknown-warning-option"
 
 script:
   - mx sforceimports
