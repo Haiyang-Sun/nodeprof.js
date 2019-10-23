@@ -139,6 +139,17 @@ public class JalangiAdapter implements TruffleObject {
     }
 
     @TruffleBoundary
+    private Object getConfig() {
+        JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
+        DynamicObject obj = JSUserObject.create(ctx);
+        OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
+        for (OptionDescriptor o: NodeProfCLI.ods) {
+            String shortKey = o.getName().replace("nodeprof.", "");
+            JSObject.set(obj, shortKey, opts.get(o.getKey()));
+        }
+        return obj;
+    }
+
     @ExportMessage
     final Object invokeMember(String identifier, Object[] arguments) throws ArityException, UnsupportedTypeException {
         ApiMember api;
@@ -234,14 +245,7 @@ public class JalangiAdapter implements TruffleObject {
                 return ProfilerExecutionEventNode.getEnabled();
             }
             case GETCONFIG: {
-                JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
-                DynamicObject obj = JSUserObject.create(ctx);
-                OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
-                for (OptionDescriptor o : NodeProfCLI.ods) {
-                    String shortKey = o.getName().replace("nodeprof.", "");
-                    JSObject.set(obj, shortKey, opts.get(o.getKey()));
-                }
-                return obj;
+                return getConfig();
             }
 
             default: {
