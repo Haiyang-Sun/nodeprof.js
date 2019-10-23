@@ -20,14 +20,14 @@
         this.functionEnter = function (iid, f, base, args) {
             console.log("functionEnter@ " + J$.iidToLocation(iid));
         };
-        this.functionExit = function (iid) {
-            console.log("functionExit@ " + J$.iidToLocation(iid));
+        this.functionExit = function (iid, result, exception) {
+            console.log("functionExit@ " + J$.iidToLocation(iid), result, exception);
         };
         this.asyncFunctionEnter = function(iid) {
-            console.log('async enter', J$.iidToLocation(iid));
+            console.log('asyncEnter', J$.iidToLocation(iid));
         }
         this.asyncFunctionExit = function(iid, returnVal, wrappedException) {
-            console.log('async exit', J$.iidToLocation(iid), returnVal, wrappedException);
+            console.log('asyncExit', J$.iidToLocation(iid), returnVal, wrappedException);
         }
         this.awaitPre = function(iid, valAwaited) {
             console.log('awaitPre', J$.iidToLocation(iid), valAwaited);
@@ -35,8 +35,8 @@
         this.awaitPost = function(iid, result, exceptionWrapper) {
             console.log('awaitPost', J$.iidToLocation(iid), result, exceptionWrapper);
         }
-        this.binary = function(iid, op, left, right) {
-            console.log('binary', op, left, right);
+        this.binary = function(iid, op, left, right, result) {
+            console.log('binary', left, op, right, '=', result);
         }
         this.write = function(iid, name, val) {
             console.log('write', J$.iidToLocation(iid), name, val);
