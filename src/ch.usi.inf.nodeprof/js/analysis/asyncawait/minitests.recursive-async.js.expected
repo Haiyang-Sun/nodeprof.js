@@ -1,0 +1,112 @@
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:1:1:38:4)
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:1:1:38:4)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:1:2:38:2)
+write (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2) countTo6 [AsyncFunction: countTo6]
+write (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:30:1:32:2) main [AsyncFunction: main]
+async enter (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:31:4:31:29)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:30:1:32:2)
+async enter (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+in count 1
+binary > 1 5
+binary + 1 1
+async enter (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+in count 2
+binary > 2 5
+binary + 2 1
+async enter (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+in count 3
+binary > 3 5
+binary + 3 1
+async enter (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+in count 4
+binary > 4 5
+binary + 4 1
+async enter (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+in count 5
+binary > 5 5
+binary + 5 1
+async enter (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+in count 6
+binary > 6 5
+return (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:24:8:24:17) 6
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+async exit (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2) Promise { 6 } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { 6 }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+async exit (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2) Promise { <pending> } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+async exit (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2) Promise { <pending> } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+async exit (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2) Promise { <pending> } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+async exit (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2) Promise { <pending> } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+async exit (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:28:28:2) Promise { <pending> } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:31:11:31:28) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:30:1:32:2)
+async exit (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:31:4:31:29) Promise { <pending> } {}
+***************** event loop first tick ***********************
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:1:2:38:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+in count 1
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+in count 2
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+in count 3
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+in count 4
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+in count 5
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+in count 6
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:20:22:22:6)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { 6 }
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) 6 {}
+return (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:9:26:38) 6
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { 6 }
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) 6 {}
+return (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:9:26:38) 6
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { 6 }
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) 6 {}
+return (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:9:26:38) 6
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { 6 }
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) 6 {}
+return (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:9:26:38) 6
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) Promise { 6 }
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:16:26:37) 6 {}
+return (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:26:9:26:38) 6
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:18:1:28:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:30:1:32:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:31:11:31:28) Promise { 6 }
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:31:11:31:28) 6 {}
+return (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:31:4:31:29) 6
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:30:1:32:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:34:13:34:52)
+binary + done! answer =  6
+done! answer = 6
+return (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:34:18:34:52) undefined
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/recursive-async.js:34:13:34:52)

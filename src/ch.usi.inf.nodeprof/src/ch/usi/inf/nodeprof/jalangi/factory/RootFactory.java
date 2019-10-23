@@ -23,6 +23,7 @@ import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.ReturnException;
+import com.oracle.truffle.js.nodes.control.YieldException;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -82,8 +83,6 @@ public class RootFactory extends AbstractFactory {
                     return;
                 }
 
-
-
                 if (!this.isBuiltin && post != null) {
                     setPostArguments(0, getSourceIID());
                     setPostArguments(1, Undefined.instance);
@@ -94,15 +93,28 @@ public class RootFactory extends AbstractFactory {
 
             @Override
             public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception,
-                                                   Object[] inputs) {
+                            Object[] inputs) {
                 // ignore Truffle-internal control flow exceptions
                 if (exception instanceof ReturnException) {
-                    executePost(frame, ((ReturnException) exception).getResult(), inputs);
-                    return;
-                }
+                    Object returnExceptionValue = ((ReturnException) exception).getResult();
 
-                Logger.error("Unexpected control flow exception: " + exception.getClass().getSimpleName());
-                executeExceptional(frame, exception);
+                    if (returnExceptionValue != null) {
+                        // ConstantReturnNode
+                        executePost(frame, returnExceptionValue, inputs);
+                    } else {
+                        // FrameReturnNode
+                        // TODO, ideally there should be some util function in JSFrameUtil to fetch
+                        // the return slot's value
+                        executePost(frame, getReturnValueFromFrame(frame), inputs);
+                    }
+                    return;
+                } else if (exception instanceof YieldException) {
+                    executeExceptional(frame, exception);
+                    return;
+                } else {
+                    Logger.error("Unexpected control flow exception: " + exception.getClass().getSimpleName());
+                    executeExceptional(frame, exception);
+                }
             }
         };
     }

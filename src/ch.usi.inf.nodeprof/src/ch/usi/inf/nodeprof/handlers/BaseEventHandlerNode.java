@@ -16,7 +16,10 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
+import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
@@ -36,6 +39,16 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
  */
 public abstract class BaseEventHandlerNode extends Node {
     protected final EventContext context;
+    @CompilationFinal private FrameSlot returnSlot;
+
+    public Object getReturnValueFromFrame(VirtualFrame frame) {
+        // cache the frame slot for the return value
+        if (returnSlot == null) {
+            CompilerDirectives.transferToInterpreterAndInvalidate();
+            returnSlot = frame.getFrameDescriptor().findFrameSlot("<return>");
+        }
+        return frame.getValue(returnSlot);
+    }
 
     /**
      * the unique instrumentation ID for the instrumented source section
