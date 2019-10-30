@@ -2,7 +2,7 @@ builtinEnter: Object.create / 4
 builtinExit: Object.create / 6
 builtinEnter: Object.create / 4
 builtinExit: Object.create / 6
-functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:1:48:4) / 3
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:1:60:4) / 3
 functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:18:1:20:2) / 4
 functionExit with exception "this is an exception": (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:18:1:20:2) / 3
 exception: this is an exception
@@ -10,5 +10,8 @@ functionExit with exception "Error: this is an error": (src/ch.usi.inf.nodeprof.
 exception: Error: this is an error
 functionExit with exception "undefined": (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:26:1:28:2) / 3
 exception: undefined
-functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:2:48:2) / 3
+return (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:53:4:53:14) val returns 42
+return (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:55:4:55:14) val returns 43
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:48:2:58:2) / returnVal (number): 43
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:1:2:60:2) / 3
 [ 'Object.create', 'foo' ]

@@ -19,6 +19,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.nodes.control.ReturnException;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -47,6 +48,25 @@ public class ReturnFactory extends AbstractFactory {
                     }
                     directCall(preCall, true, getSourceIID());
                 }
+            }
+
+            @Override
+            public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
+                if (pre != null && isReturnNode() && exception instanceof ReturnException) {
+                    // TODO trigger for ConstantReturnNode which does not have input only?
+                    if (inputs.length == 0) {
+                        setPreArguments(0, getSourceIID());
+                        Object returnExceptionValue = ((ReturnException) exception).getResult();
+
+                        if (returnExceptionValue == null) {
+                            setPreArguments(1, getReturnValueFromFrame(frame));
+                        } else {
+                            setPreArguments(1, ((ReturnException) exception).getResult());
+                        }
+                        directCall(preCall, true, getSourceIID());
+                    }
+                }
+
             }
         };
     }

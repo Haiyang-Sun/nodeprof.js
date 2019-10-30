@@ -15,44 +15,22 @@
  * limitations under the License.
  *******************************************************************************/
 
-function foo(){
-  throw "this is an exception";
-};
-
-function bar(){
-  throw new Error("this is an error");
-};
-
-function baz(){
-  throw undefined;
-};
-
-try {
-  foo();
-}catch(e){
-  console.log("exception: "+e);
+async function countTo6(x) {
+    console.log('in count', x);
+    process.nextTick(()=>{
+        console.log('in count', x);
+    });
+    if (x > 5) {
+	      return x;
+    } else {
+        return await countTo6(x + 1);
+    }
 }
 
-try {
-  bar();
-}catch(e){
-  console.log("exception: "+e);
+async function main() {
+	  return await countTo6(1);
 }
 
-try {
-  baz();
-}catch(e){
-  console.log("exception: "+e);
-}
+main().then(v => console.log("done! answer = " + v));
 
-(function() {
- try {
-   throw Error("with finally");
-   return 'nope';
- } catch(e) {
-   return 42;
- } finally {
-   return 43;
- }
- return 'nope';
-})();
+console.log('***************** event loop first tick ***********************');

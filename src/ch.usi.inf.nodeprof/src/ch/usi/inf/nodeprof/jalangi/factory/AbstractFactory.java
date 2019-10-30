@@ -23,6 +23,7 @@ import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.nodes.control.YieldException;
 import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.JSCancelledExecutionException;
 import com.oracle.truffle.js.runtime.JSContext;
@@ -124,6 +125,7 @@ public abstract class AbstractFactory implements
     }
 
     protected void setPreArguments(int index, Object value) {
+        assert value != null;
         if (this.pre != null) {
             assert this.preArguments.length > index + 2;
             this.preArguments[index + 2] = value;
@@ -131,6 +133,7 @@ public abstract class AbstractFactory implements
     }
 
     protected void setPostArguments(int index, Object value) {
+        assert value != null;
         if (this.post != null) {
             assert this.postArguments.length > index + 2;
             this.postArguments[index + 2] = value;
@@ -209,10 +212,12 @@ public abstract class AbstractFactory implements
         } else {
             JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
             DynamicObject wrapped = JSUserObject.create(ctx);
-            // TODO we could create and freeze an empty singleton object when no-exception (null)
-            if (exception != null) {
+            if (exception instanceof YieldException) {
+                JSObject.set(wrapped, "yield", true);
+            } else {
                 Object errObj = parseErrorObject(exception);
                 JSObject.set(wrapped, "exception", errObj == null ? "Unknown Exception" : errObj);
+
             }
             return wrapped;
         }

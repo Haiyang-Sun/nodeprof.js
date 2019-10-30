@@ -67,6 +67,11 @@ public class AsyncRootFactory extends AbstractFactory {
                     directCall(postCall, false, getSourceIID());
                 }
             }
+
+            @Override
+            public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
+                // TODO, to check if we need to deal with YieldException
+            }
         };
     }
 }

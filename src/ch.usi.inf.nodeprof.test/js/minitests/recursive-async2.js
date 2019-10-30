@@ -15,44 +15,22 @@
  * limitations under the License.
  *******************************************************************************/
 
-function foo(){
-  throw "this is an exception";
-};
-
-function bar(){
-  throw new Error("this is an error");
-};
-
-function baz(){
-  throw undefined;
-};
-
-try {
-  foo();
-}catch(e){
-  console.log("exception: "+e);
+async function fib(x) {
+    console.log('in fib', x);
+    process.nextTick(()=>{
+        console.log('in fib', x);
+    });
+    if (x < 2) {
+	      return x;
+    } else {
+        return await fib(x-1) + await fib(x-2);
+    }
 }
 
-try {
-  bar();
-}catch(e){
-  console.log("exception: "+e);
+async function main() {
+	  return await fib(4);
 }
 
-try {
-  baz();
-}catch(e){
-  console.log("exception: "+e);
-}
+main().then(v => console.log("done! answer = " + v));
 
-(function() {
- try {
-   throw Error("with finally");
-   return 'nope';
- } catch(e) {
-   return 42;
- } finally {
-   return 43;
- }
- return 'nope';
-})();
+console.log('***************** event loop first tick ***********************');

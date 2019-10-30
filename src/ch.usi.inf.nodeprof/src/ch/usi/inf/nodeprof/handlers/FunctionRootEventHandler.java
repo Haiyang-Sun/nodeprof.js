@@ -45,6 +45,7 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
     protected final String builtinName;
 
     @CompilationFinal private FrameSlot thisSlot;
+
     @CompilationFinal private boolean thisSlotInitialized = false;
 
     public FunctionRootEventHandler(EventContext context) {

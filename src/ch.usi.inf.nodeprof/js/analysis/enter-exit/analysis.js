@@ -35,7 +35,12 @@
 
     this.functionExit = function (iid, returnVal, wrappedExceptionVal) {
       if(!('exception' in wrappedExceptionVal)) {
-        console.log("functionExit: %s / %d", J$.iidToLocation(iid), arguments.length);
+        if (typeof returnVal === 'number') {
+          // log return value only when it's a number (to avoid large objects/functions end up in the output)
+          console.log("functionExit: %s / returnVal (number): %d", J$.iidToLocation(iid), returnVal);
+        } else {
+          console.log("functionExit: %s / %d", J$.iidToLocation(iid), arguments.length);
+        }
       } else {
         console.log('functionExit with exception "%s": %s / %d', formatException(wrappedExceptionVal.exception), J$.iidToLocation(iid), arguments.length);
       }
@@ -52,6 +57,10 @@
         console.log("builtinExit: %s / %d", name, arguments.length);
       allFuncs.add(name);
     };
+
+    this._return = function(iid, val) {
+      console.log('return', J$.iidToLocation(iid), 'val returns', val);
+    }
 
     this.endExecution = function () {
       console.log([...allFuncs].filter(x => funcNameFilter.has(x)).sort());
