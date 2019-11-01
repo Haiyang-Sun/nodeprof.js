@@ -63,6 +63,7 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingl
     }
 
     @Override
+    @ExplodeLoop
     public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
         for (T handler : handlers) {
             handler.executeExceptionalCtrlFlow(frame, exception, inputs);

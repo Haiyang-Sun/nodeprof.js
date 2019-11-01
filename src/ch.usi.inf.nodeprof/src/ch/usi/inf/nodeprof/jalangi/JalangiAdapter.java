@@ -18,6 +18,7 @@ package ch.usi.inf.nodeprof.jalangi;
 import ch.usi.inf.nodeprof.NodeProfCLI;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.ArityException;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
@@ -68,6 +69,7 @@ public class JalangiAdapter implements TruffleObject {
         return null;
     }
 
+    @TruffleBoundary
     private static int convertIID(Object argument) {
         int iid;
         if (argument instanceof String) {
@@ -84,6 +86,7 @@ public class JalangiAdapter implements TruffleObject {
         return iid;
     }
 
+    @TruffleBoundary
     private static boolean checkArguments(int count, Object[] arguments, String funcName) throws ArityException {
         if (arguments.length < count) {
             Logger.error("call to " + funcName + " expects " + count + " argument(s)");
@@ -98,6 +101,7 @@ public class JalangiAdapter implements TruffleObject {
         return true;
     }
 
+    @TruffleBoundary
     @ExportMessage
     final Object invokeMember(String identifier, Object[] arguments) throws ArityException, UnsupportedTypeException {
         if ("iidToLocation".equals(identifier)) {
@@ -165,7 +169,7 @@ public class JalangiAdapter implements TruffleObject {
             JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
             DynamicObject obj = JSUserObject.create(ctx);
             OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
-            for (OptionDescriptor o: NodeProfCLI.ods) {
+            for (OptionDescriptor o : NodeProfCLI.ods) {
                 String shortKey = o.getName().replace("nodeprof.", "");
                 JSObject.set(obj, shortKey, opts.get(o.getKey()));
             }
