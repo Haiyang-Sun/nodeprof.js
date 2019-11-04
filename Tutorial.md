@@ -58,7 +58,7 @@ If benchmarkName is specified, only test files inside nodeprof/src/ch.usi.inf.no
   - Decompress the package (e.g., to graalvm-ee-1.0.0-rc2)
 
   - Run NodeProf with the following command:
-    * ``` PATH_GRAALVM/bin/node --jvm --jvm.Dtruffle.class.path.append=PATH_NODEPROF_JAR/nodeprof.jar --nodeprof PATH_NODEPROF/src/ch.usi.inf.nodeprof/js/jalangi.js [--analysis analysisFile]* test-file ``` (similar to ```mx jalangi```).
+    * ``` PATH_GRAALVM/bin/node --jvm --experimental-options --vm.Dtruffle.class.path.append=PATH_NODEPROF_JAR/nodeprof.jar --nodeprof PATH_NODEPROF/src/ch.usi.inf.nodeprof/js/jalangi.js [--analysis analysisFile]* test-file ``` (similar to ```mx jalangi```).
     * To specify the scope, add an option ```--nodeprof.Scope=[app|module|all]```
     * To add exclusion list, add an option ```--nodeprof.ExcludeSource="keyword1,keyword2"```
 

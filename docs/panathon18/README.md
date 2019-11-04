@@ -44,7 +44,7 @@ You can directly run NodeProf with a pre-built JAR file and the latest GraalVM.
 6. Copy the `nodeprof.js/src/ch.usi.inf.nodeprof/js/jalangi.js` file to the `NODEPROF_HOME` folder.
 7. You can now run an analysis using the following command:
     ```
-    $GRAAL_HOME/bin/node --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js [--analysis analysisFile]* test-file
+    $GRAAL_HOME/bin/node --jvm --experimental-options --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js [--analysis analysisFile]* test-file
     ```
 
 Congratulations, you're all set to run NodeProf. You can now try to implement [your first analysis](#implementing-a-nodeprof-analysis).
@@ -125,7 +125,7 @@ We will now run the dynamic call graph analysis on the `nodeprof.js/panathon18/t
 
 If you followed the [basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos) instructions, you can run the dynamic call graph analysis with the following command:
 ```
-$GRAAL_HOME/bin/node --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis <path_to>/dynCallGraph.js <path_to>/callMeMaybe.js
+$GRAAL_HOME/bin/node --jvm --experimental-options --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis <path_to>/dynCallGraph.js <path_to>/callMeMaybe.js
 ```
 If you followed the [advanced installation](#advanced-installation---building-nodeprof-and-graalvm-from-source-linux-only) instructions, you can run the dynamic call graph analysis with the following command:
 ```
@@ -178,7 +178,7 @@ NodeProf allows to set a coarse-grained instrumentation scope for your analysis 
 
 [basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos):
 ```
-$GRAAL_HOME/bin/node --nodeprof.Scope=[app|module|all] --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js
+$GRAAL_HOME/bin/node --nodeprof.Scope=[app|module|all] --jvm --experimental-options --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js
 ```
 
 [advanced installation](#advanced-installation---building-nodeprof-and-graalvm-from-source-linux-only):
@@ -202,7 +202,7 @@ cd panathon18/scripts
 First, we use `--scope=module` to instrument both application and module code.
 
 ```
-$GRAAL_HOME/bin/node --nodeprof.Scope=module --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis panathon18/sample-analyses/dynCallGraph.js panathon18/tests/franc/app.js
+$GRAAL_HOME/bin/node --jvm --experimental-options --nodeprof.Scope=module --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js --analysis panathon18/sample-analyses/dynCallGraph.js panathon18/tests/franc/app.js
 ```
 
 Now, set `--scope` to `app` to see the difference. When you set `--scope` to `all`, you also get results for Node.js-internal libraries.
@@ -215,7 +215,7 @@ NodeProf supports the following file-based filtering methods to make selective i
 
 [basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos):
 ```
-$GRAAL_HOME/bin/node --nodeprof.ExcludeSource=keyword1,keyword2 --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js
+$GRAAL_HOME/bin/node --nodeprof.ExcludeSource=keyword1,keyword2 --jvm --experimental-options --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof $NODEPROF_HOME/jalangi.js
 ```
 
 [advanced installation](#advanced-installation---building-nodeprof-and-graalvm-from-source-linux-only):
@@ -228,14 +228,14 @@ In this example we run JITProf's typed array analysis ([TypedArray.js](https://g
 
 [basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos):
 ```
-$GRAAL_HOME/bin/node --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof --nodeprof.Scope=module $NODEPROF_HOME/jalangi.js --analysis Utils.js --analysis TypedArray.js panathon18/tests/franc/app.js
+$GRAAL_HOME/bin/node --jvm --experimental-options --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof --nodeprof.Scope=module $NODEPROF_HOME/jalangi.js --analysis Utils.js --analysis TypedArray.js panathon18/tests/franc/app.js
 ```
 
 Exclude all soprces from the `trigram-utils` module and run again:
 
 [basic installation](#basic-installation---running-a-pre-built-version-of-nodeprof-on-graalvm-linux-and-macos):
 ```
-$GRAAL_HOME/bin/node --vm --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof --nodeprof.ExcludeSource=express --nodeprof.Scope=module $NODEPROF_HOME/jalangi.js --analysis Utils.js --analysis TypedArray.js panathon18/tests/franc/app.js
+$GRAAL_HOME/bin/node --jvm --experimental-options --vm.Dtruffle.class.path.append=$NODEPROF_HOME/nodeprof.jar --nodeprof --nodeprof.ExcludeSource=express --nodeprof.Scope=module $NODEPROF_HOME/jalangi.js --analysis Utils.js --analysis TypedArray.js panathon18/tests/franc/app.js
 ```
 
 You will no longer see any result from `trigram-utils`.
