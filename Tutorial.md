@@ -51,11 +51,11 @@ If benchmarkName is specified, only test files inside nodeprof/src/ch.usi.inf.no
   You can directly run NodeProf with a pre-built jar file and the latest GraalVM.
   - Get nodeprof.jar
     * You can get the nodeprof.jar after running ```mx build```. The jar file will be generated in workspace-nodeprof/nodeprof.js/build
-    * Or you can download a snapshot of the latest nodeprof [here](https://github.com/Haiyang-Sun/nodeprof.js/tree/master/snapshot/nodeprof.jar)
+    * Or you can download a snapshot of the latest nodeprof [here](https://github.com/Haiyang-Sun/nodeprof.js/releases)
 
-  - Download the latest GraalVM (e.g., graalvm-ee-1.0.0-rc2-linux-amd64.tar.gz) [here](http://www.oracle.com/technetwork/oracle-labs/program-languages/downloads/index.html)
+  - Download the latest GraalVM (e.g., graalvm-ce-linux-amd64-19.2.1.tar.gz) from [GraalVM on Github](https://github.com/oracle/graal/releases)
 
-  - Decompress the package (e.g., to graalvm-ee-1.0.0-rc2)
+  - Decompress the package (e.g., to graalvm-ce-linux-amd64-19.2.1.tar.gz)
 
   - Run NodeProf with the following command:
     * ``` PATH_GRAALVM/bin/node --jvm --experimental-options --vm.Dtruffle.class.path.append=PATH_NODEPROF_JAR/nodeprof.jar --nodeprof PATH_NODEPROF/src/ch.usi.inf.nodeprof/js/jalangi.js [--analysis analysisFile]* test-file ``` (similar to ```mx jalangi```).
