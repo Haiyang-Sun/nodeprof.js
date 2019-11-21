@@ -1,11 +1,11 @@
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:11:16:23) type: AutonomousFunctionExpression
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:11:16:23) type: AutonomousFunctionExpression
-write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:5:16:23) foo
+write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:1:16:23) foo
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:9:24:2) type: ObjectLiteral
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:18:10:23:4) type: AutonomousFunctionExpression
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:18:10:23:4) type: AutonomousFunctionExpression
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:9:24:2) type: ObjectLiteral
-write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:5:24:2) o
+write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:1:24:2) o
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:25:1:25:10) type: Invoke0
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:25:1:25:2) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:25:1:25:2) type: JSReadCurrentFrameSlot
@@ -14,7 +14,7 @@ expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:25:1:
 write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:19:5:19:23) func
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:17:20:40) type: LexicalThisFunctionExpression
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:17:20:40) type: LexicalThisFunctionExpression
-write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:9:20:40) arrow
+write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:5:20:40) arrow
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:21:5:21:11) type: Call0
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:21:5:21:9) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:21:5:21:9) type: JSReadCurrentFrameSlot

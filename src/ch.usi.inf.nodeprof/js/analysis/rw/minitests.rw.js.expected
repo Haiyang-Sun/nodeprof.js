@@ -1,5 +1,5 @@
 read (src/ch.usi.inf.nodeprof.test/js/minitests/rw.js:16:12:16:16) this object
-write (src/ch.usi.inf.nodeprof.test/js/minitests/rw.js:16:5:16:16) self object
+write (src/ch.usi.inf.nodeprof.test/js/minitests/rw.js:16:1:16:16) self object
 read (src/ch.usi.inf.nodeprof.test/js/minitests/rw.js:17:8:17:12) self object
 write (src/ch.usi.inf.nodeprof.test/js/minitests/rw.js:21:1:21:6) a number
 read (src/ch.usi.inf.nodeprof.test/js/minitests/rw.js:22:1:22:2) a number

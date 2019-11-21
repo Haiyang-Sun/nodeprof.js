@@ -3,10 +3,10 @@ write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:24:1:26:2) bar func
 read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:22:15:22:18) Foo function
 functionEnter (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:17:1:20:2) Foo Foo {} []
 read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:18:16:18:20) this object
-write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:18:9:18:20) self object
+write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:18:5:18:20) self object
 read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:19:5:19:9) self object
-write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:22:5:22:20) foo object
+write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:22:1:22:20) foo object
 read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:27:11:27:14) bar function
 functionEnter (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:24:1:26:2) bar [object global] []
 read (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:25:10:25:14) this object
-write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:27:5:27:16) baz object
+write (src/ch.usi.inf.nodeprof.test/js/minitests/readThis.js:27:1:27:16) baz object

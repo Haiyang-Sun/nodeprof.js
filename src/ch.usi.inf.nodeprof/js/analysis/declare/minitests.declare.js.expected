@@ -13,9 +13,9 @@ declare (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:16:1:27:2)::d let
 declare (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:16:1:27:2)::j var
 declare (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:16:1:27:2)::arr const
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:17:13:17:14) a 1
-write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:17:9:17:14) d 1
+write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:17:5:17:14) d 1
 declare (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:5:19:6)::i let
-write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:14:18:19) i 0
+write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:10:18:19) i 0
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:21:18:22) i 0
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:28:18:31) i 0
 write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:28:18:31) i 1
@@ -26,7 +26,7 @@ read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:21:18:22) i 2
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:28:18:31) i 2
 write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:28:18:31) i 3
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:18:21:18:22) i 3
-write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:20:14:20:19) j 0
+write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:20:10:20:19) j 0
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:20:21:20:22) j 0
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:20:28:20:31) j 0
 write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:20:28:20:31) j 1
@@ -37,7 +37,7 @@ read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:20:21:20:22) j 2
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:20:28:20:31) j 2
 write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:20:28:20:31) j 3
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:20:21:20:22) j 3
-write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:22:11:22:24) arr [ 1, 2, 3 ]
+write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:22:5:22:24) arr [ 1, 2, 3 ]
 declare (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:23:5:25:6)::key let
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:23:21:23:24) arr [ 1, 2, 3 ]
 write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:23:5:25:6) key 1

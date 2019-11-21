@@ -17,7 +17,7 @@ functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:1:2:24:2) unde
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:2:20:71)
 awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:27:20:38) Promise { 42 }
 awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:27:20:38) 42 {}
-write (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:16:20:38) writeVal 42
+write (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:12:20:38) writeVal 42
 awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:47:20:55) 43
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:2:20:71) undefined { yield: true }
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async.js:20:2:20:71)
