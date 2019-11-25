@@ -38,7 +38,7 @@ def runJNode(args):
 
 def _runJalangi(args, svm=False, debug=False, outFile=None, trace=False):
     from mx_graal_nodejs import run_nodejs
-    jalangiArgs = ['--vm.ea', '--experimental-options', '--engine.InstrumentExceptionsAreThrown=true',  '--vm.Dtruffle.node.js.snapshots=false', '--nodeprof', '--nodeprof.Analysis=NodeProfJalangi']
+    jalangiArgs = ['--vm.ea', '--experimental-options', '--engine.InstrumentExceptionsAreThrown=true', '--nodeprof', '--nodeprof.Analysis=NodeProfJalangi']
     if debug:
         jalangiArgs += ["--nodeprof.Debug"];
     if trace:
