@@ -19,6 +19,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import com.oracle.truffle.js.runtime.builtins.JSFunction;
 
 /**
  * Abstract event handler for function roots
@@ -33,7 +34,11 @@ public abstract class BuiltinRootEventHandler extends BaseSingleTagEventHandler 
     }
 
     public Object getReceiver(VirtualFrame frame) {
-        return frame.getArguments()[0];
+        Object receiver = frame.getArguments()[0];
+        if (receiver == JSFunction.CONSTRUCT) {
+            return "[[Construct]]";
+        }
+        return receiver;
     }
 
     public Object getBuiltinName() {
