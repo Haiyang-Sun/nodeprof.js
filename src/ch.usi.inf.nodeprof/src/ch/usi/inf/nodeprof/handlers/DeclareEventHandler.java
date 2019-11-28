@@ -18,6 +18,7 @@ package ch.usi.inf.nodeprof.handlers;
 import com.oracle.truffle.api.instrumentation.EventContext;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags.DeclareTag;
 
 /**
  * Abstract event handler for literal events
@@ -28,8 +29,8 @@ public abstract class DeclareEventHandler extends BaseSingleTagEventHandler {
 
     public DeclareEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.DECLARE);
-        this.declareType = (String) getAttribute("type");
-        this.declareName = (String) getAttribute("name");
+        this.declareType = (String) getAttribute(DeclareTag.TYPE);
+        this.declareName = (String) getAttribute(DeclareTag.NAME);
     }
 
     /**

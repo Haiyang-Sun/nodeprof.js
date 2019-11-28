@@ -45,7 +45,7 @@ public abstract class LiteralEventHandler extends BaseSingleTagEventHandler {
 
     public LiteralEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.LITERAL);
-        this.literalType = (String) getAttribute("type");
+        this.literalType = (String) getAttribute(LiteralTag.TYPE);
     }
 
     /**

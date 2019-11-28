@@ -230,7 +230,8 @@ public abstract class NodeProfAnalysis {
                     ProfiledTagEnum.STATEMENT,
                     ProfiledTagEnum.EXPRESSION,
                     ProfiledTagEnum.CF_BRANCH,
-                    ProfiledTagEnum.ROOT
+                    ProfiledTagEnum.ROOT,
+                    ProfiledTagEnum.DECLARE
     };
 
     @TruffleBoundary
