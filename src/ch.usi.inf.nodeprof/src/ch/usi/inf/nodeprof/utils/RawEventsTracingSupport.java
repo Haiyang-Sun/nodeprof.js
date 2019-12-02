@@ -33,6 +33,8 @@ import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.JavaScriptNode;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.BuiltinRootTag;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags.DeclareTag;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.ReadPropertyTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.ReadVariableTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.WritePropertyTag;
@@ -142,28 +144,37 @@ public class RawEventsTracingSupport {
                         }
                     }
 
+                    private String appendAttributes(EventContext cx, String... attributeNames) {
+                        StringBuilder sb = new StringBuilder();
+                        for (String aName : attributeNames) {
+                            sb.append(aName + "='" + getAttributeFrom(cx, aName) + "' ");
+                        }
+                        return sb.toString();
+                    }
+
                     private String getAttributesDescription(EventContext cx) {
                         String extra = "";
                         JavaScriptNode n = (JavaScriptNode) cx.getInstrumentedNode();
                         if (n.hasTag(BuiltinRootTag.class)) {
-                            String tagAttribute = getAttributeFrom(cx, "name").toString();
-                            extra += tagAttribute;
+                            extra += appendAttributes(cx, "name");
                         }
                         if (n.hasTag(ReadPropertyTag.class)) {
-                            String tagAttribute = "'" + getAttributeFrom(cx, "key") + "' ";
-                            extra += tagAttribute;
+                            extra += appendAttributes(cx, "key");
                         }
                         if (n.hasTag(ReadVariableTag.class)) {
-                            String tagAttribute = "'" + getAttributeFrom(cx, "name") + "' ";
-                            extra += tagAttribute;
+                            extra += appendAttributes(cx, "name");
                         }
                         if (n.hasTag(WritePropertyTag.class)) {
-                            String tagAttribute = "'" + getAttributeFrom(cx, "key") + "' ";
-                            extra += tagAttribute;
+                            extra += appendAttributes(cx, "key");
                         }
                         if (n.hasTag(WriteVariableTag.class)) {
-                            String tagAttribute = "'" + getAttributeFrom(cx, "name") + "' ";
-                            extra += tagAttribute;
+                            extra += appendAttributes(cx, "name");
+                        }
+                        if (n.hasTag(LiteralTag.class)) {
+                            extra += appendAttributes(cx, LiteralTag.TYPE);
+                        }
+                        if (n.hasTag(DeclareTag.class)) {
+                            extra += appendAttributes(cx, DeclareTag.NAME, DeclareTag.TYPE);
                         }
                         return extra;
                     }
