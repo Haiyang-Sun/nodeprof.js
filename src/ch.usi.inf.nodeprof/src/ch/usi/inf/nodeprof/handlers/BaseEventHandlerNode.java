@@ -151,14 +151,17 @@ public abstract class BaseEventHandlerNode extends Node {
      * get the node-specific attribute, in case of missing such attributes, return null
      *
      * @param key of the current InstrumentableNode
-     * @return the value of this key
+     * @return the value of this key or null if it does not exist
      */
-    public Object getAttributeNoReport(String key) {
+    public Object getAttributeOrNull(String key) {
+        if (!InteropLibrary.getFactory().getUncached().isMemberReadable(((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(), key)) {
+            return null;
+        }
         Object result = null;
         try {
             result = InteropLibrary.getFactory().getUncached().readMember(((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(), key);
         } catch (Exception e) {
-            return null;
+            reportAttributeMissingError(key, e);
         }
         return result;
     }

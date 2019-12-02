@@ -30,7 +30,7 @@ public abstract class ConditionalEventHandler extends BaseSingleTagEventHandler 
     public ConditionalEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.CF_BRANCH);
         boolean typeIsCond = false;
-        typeIsCond = JSTags.ControlFlowBranchTag.Type.Condition.name().equals(getAttributeNoReport("type"));
+        typeIsCond = JSTags.ControlFlowBranchTag.Type.Condition.name().equals(getAttributeOrNull("type"));
         this.isConditional = typeIsCond;
     }
 
