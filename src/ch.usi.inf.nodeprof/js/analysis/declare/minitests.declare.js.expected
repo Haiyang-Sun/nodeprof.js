@@ -3,7 +3,7 @@ declare {{module}}::require var
 declare {{module}}::module var
 declare {{module}}::__filename var
 declare {{module}}::__dirname var
-declare {{module}}::foo var
+declare (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:16:1:27:2)::foo var
 write (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:16:1:27:2) foo [Function: foo]
 read (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:29:1:29:4) foo [Function: foo]
 declare (src/ch.usi.inf.nodeprof.test/js/minitests/declare.js:16:1:27:2)::a var
