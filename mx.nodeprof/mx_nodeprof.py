@@ -60,7 +60,7 @@ def _runJalangi(args, svm=False, debug=False, outFile=None, trace=False):
         ret = mx.run(cmdArgs, nonZeroIsFatal=True, out=out);
         return ret;
 
-def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[], keepRunning=True):
+def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[], keepGoing=True):
     analysisOpt = [];
     if os.path.exists (join(analysisHome, "config")):
         config = open (join(analysisHome, "config"));
@@ -132,7 +132,7 @@ def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[], keepR
                             print("Fail @"+analysis);
                             from subprocess import call
                             call(["diff", fn, outFile])
-                            if not (force or keepRunning):
+                            if not (force or keepGoing):
                                 sys.exit(1);
 
 def testJalangi(args):
@@ -147,7 +147,7 @@ def testJalangi(args):
     all = False;
     analyses = [];
     force = False;
-    keepRunning = False;
+    keepGoing = False;
     testsuites = [];
     for arg in args:
         if arg == "--all":
@@ -156,8 +156,8 @@ def testJalangi(args):
         elif arg == "--force":
             force = True;
             continue;
-        elif arg == "--keep-running":
-            keepRunning = True;
+        elif arg == "--keep-going":
+            keepGoing = True;
         elif os.path.exists (join(analysisdir, arg)) :
             analyses += [arg];
             print ("Adding analysis "+arg)
@@ -169,10 +169,10 @@ def testJalangi(args):
 
     if all:
         for analysis in sorted(os.listdir(analysisdir)):
-            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites, keepRunning);
+            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites, keepGoing);
     elif analyses:
         for analysis in analyses:
-            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites, keepRunning);
+            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites, keepGoing);
     else:
         print ("Usage: mx test-specific [analysis-names...] [--all]")
 
