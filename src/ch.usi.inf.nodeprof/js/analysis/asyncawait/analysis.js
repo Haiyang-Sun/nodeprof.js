@@ -44,6 +44,9 @@
         this._return = function(iid, val) {
             console.log('return', J$.iidToLocation(iid), val);
         }
+        this.conditional = function(iid, cond) {
+            console.log('conditional', J$.iidToLocation(iid), cond);
+        }
     }
 
     sandbox.analysis = new MyAnalysis();

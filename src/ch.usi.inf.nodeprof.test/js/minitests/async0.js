@@ -14,16 +14,16 @@
  * limitations under the License.
  *******************************************************************************/
 
-async function bar() {
-    throw 1;
+async function countTo6(x) {
+    if (x > 1) {
+	      return x;
+    } else {
+        return await countTo6(x + 1);
+    }
 }
 
-(async()=>{
-    try { 
-        await bar();
-    } catch(e){
-        console.log('await exception', e);
-    }
-})();
+async function main() {
+	  return await countTo6(1);
+}
 
-console.log('#####');
+main().then(v => console.log("done! answer = " + v));

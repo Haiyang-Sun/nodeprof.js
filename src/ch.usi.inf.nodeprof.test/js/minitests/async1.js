@@ -14,16 +14,9 @@
  * limitations under the License.
  *******************************************************************************/
 
-async function bar() {
-    throw 1;
-}
-
-(async()=>{
-    try { 
-        await bar();
-    } catch(e){
-        console.log('await exception', e);
+(
+    async function foo(v) { 
+        if (v < 1) {
+            return await foo(v+1);} 
     }
-})();
-
-console.log('#####');
+)(0);
