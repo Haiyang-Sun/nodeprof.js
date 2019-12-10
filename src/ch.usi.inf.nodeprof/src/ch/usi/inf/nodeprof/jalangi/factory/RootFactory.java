@@ -17,6 +17,7 @@
 package ch.usi.inf.nodeprof.jalangi.factory;
 
 import ch.usi.inf.nodeprof.utils.Logger;
+
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument;
@@ -112,10 +113,11 @@ public class RootFactory extends AbstractFactory {
                     executeExceptional(frame, exception);
                     return;
                 } else {
-                    Logger.error("Unexpected control flow exception: " + exception.getClass().getSimpleName());
+                    Logger.error(this.getSourceIID(), "Unexpected control flow exception", exception.getClass());
                     executeExceptional(frame, exception);
                 }
             }
+
         };
     }
 }

@@ -113,6 +113,11 @@ public class Logger {
         error(SourceMapping.getSourceSectionForIID(iid), msg);
     }
 
+    @TruffleBoundary
+    public static void error(int iid, Object msg, Class<?> someClass) {
+        error(SourceMapping.getSourceSectionForIID(iid), msg + "@class[" + someClass.getSimpleName() + "]");
+    }
+
     public static void error(Object msg) {
         print(err, "e", msg);
     }
