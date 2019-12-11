@@ -19,6 +19,7 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
@@ -37,6 +38,14 @@ public class NewSourceFactory extends AbstractFactory {
     }
 
     private Set<Source> seenSources = new HashSet<>();
+
+    @TruffleBoundary
+    private boolean isNewSource(Source source) {
+        if (source == null) {
+            return false;
+        }
+        return seenSources.add(source);
+    }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
@@ -63,17 +72,12 @@ public class NewSourceFactory extends AbstractFactory {
                 }
 
                 Source source = n.getSourceSection().getSource();
-                if (source == null) {
-                    return;
-                }
-
-                if (seenSources.add(source)) {
+                if (isNewSource(source)) {
                     setPostArguments(0, convertResult(source.getName()));
                     setPostArguments(1, source.getCharacters().toString());
                     directCall(postCall, false, getSourceIID());
                 }
             }
-
         };
     }
 }
