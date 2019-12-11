@@ -15,6 +15,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.EventContext;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
@@ -25,6 +26,7 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
 public abstract class ExpressionEventHandler extends BaseSingleTagEventHandler {
     final String expressionType;
 
+    @TruffleBoundary
     public ExpressionEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.EXPRESSION);
         String nodeName = context.getInstrumentedNode().getClass().getSimpleName();

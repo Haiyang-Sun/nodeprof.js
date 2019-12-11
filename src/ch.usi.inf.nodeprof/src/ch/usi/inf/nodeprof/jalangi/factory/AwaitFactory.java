@@ -44,9 +44,12 @@ public class AwaitFactory extends AbstractFactory {
                     if (inputs == null || inputs.length == 0) {
                         return;
                     }
-                    setPreArguments(0, getSourceIID());
-                    setPreArguments(1, inputs[0]);
-                    directCall(preCall, true, getSourceIID());
+                    // awaitPre happens before suspension
+                    if (inputs[0] == inputs[1]) {
+                        setPreArguments(0, getSourceIID());
+                        setPreArguments(1, inputs[0]);
+                        directCall(preCall, true, getSourceIID());
+                    }
                 }
             }
 

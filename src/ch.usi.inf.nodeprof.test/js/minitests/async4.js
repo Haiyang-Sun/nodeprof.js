@@ -14,16 +14,22 @@
  * limitations under the License.
  *******************************************************************************/
 
-async function bar() {
-    throw 1;
+async function func1(x) {
+    console.log('func1', x);
+    await func2(x);
+    await func2(x);
 }
 
-(async()=>{
-    try { 
-        await bar();
-    } catch(e){
-        console.log('await exception', e);
-    }
-})();
+async function func2(x) {
+    console.log('func2', x);
+    return await func3(x);
+}
 
-console.log('#####');
+async function func3(x) {
+    console.log('func3', x);
+    return x;
+}
+
+func1(5);
+
+console.log('###########');

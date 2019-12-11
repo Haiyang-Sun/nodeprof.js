@@ -193,7 +193,7 @@ public abstract class AbstractFactory implements
         } catch (JSCancelledExecutionException e) {
             Logger.error(iid, "execution cancelled probably due to timeout");
         } catch (Exception e) {
-            Logger.error(iid, "unknown exception happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]" + " " + e.getClass().getSimpleName());
+            Logger.error(iid, "unknown exception happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]", e.getClass());
             throw e;
         } finally {
             nestedControl = false;
