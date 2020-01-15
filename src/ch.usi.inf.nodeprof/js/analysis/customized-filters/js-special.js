@@ -25,7 +25,7 @@
   function NodeInternal() {
     const analysis = 'node-module';
     this.functionEnter = function (iid, f, dis, args) {
-      if (f.name == '' || mute)
+      if (f.name == '' || f.name == 'readPackage' || mute)
         return;
       console.log("%s: functionEnter: %s / %s / %d", analysis, f.name, J$.iidToLocation(iid).replace(/:.*[0-9]/,''), arguments.length);
       entered = true;
