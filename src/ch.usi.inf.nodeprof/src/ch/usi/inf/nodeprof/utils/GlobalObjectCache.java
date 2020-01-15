@@ -22,6 +22,8 @@ import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.builtins.JSUserObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
+import com.oracle.truffle.js.runtime.objects.Null;
+import com.oracle.truffle.js.runtime.objects.Undefined;
 
 /**
  *
@@ -78,6 +80,7 @@ public class GlobalObjectCache extends Node {
      * @param someObj a dynamic object which could tell us the jsContext information
      */
     public void addDynamicObject(DynamicObject someObj) {
+        assert someObj != Undefined.instance && someObj != Null.instance;
         if (jscontext == null) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
             jscontext = JSObject.getJSContext(someObj);
