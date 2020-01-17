@@ -17,6 +17,8 @@
 (function (sandbox) {
     function MyAnalysis() {
 
+        let sourceCount = 0;
+
         /**
          * These callbacks are called before and after a function, method, or constructor invocation.
          **/
@@ -155,6 +157,13 @@
             this.evalFunctionPre = function(args) {
             };
             this.evalFunctionPost = function(args, ret, exceptionVal) {
+            };
+
+            /**
+             * This callback is called when new source code is encountered during instrumentation.
+             **/
+            this.newSource = function(name, source) {
+                console.log(`${++sourceCount} source(s) loaded, last: ${name}`);
             };
 
             /**
