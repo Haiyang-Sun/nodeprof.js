@@ -241,7 +241,7 @@ class TestDownload:
         with zipfile.ZipFile(download) as zf:
             zf.extractall(self.downloadRoot)
     def run(self, args, testPath):
-        runJalangi(args + ['--analysis', 'src/ch.usi.inf.nodeprof/js/analysis/trivial/emptyTemplate.js', join(self.testRoot, testPath)])
+        runJalangi(args + ['--analysis', 'test/npm-analysis.js', join(self.testRoot, testPath)])
 
 def testNpm(args):
     lodash = TestDownload('lodash', 'https://github.com/lodash/lodash/archive/4.17.10.zip', 'lodash-4.17.10')
