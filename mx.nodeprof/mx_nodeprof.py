@@ -245,7 +245,7 @@ class TestDownload:
 
 def testNpm(args):
     lodash = TestDownload('lodash', 'https://github.com/lodash/lodash/archive/4.17.10.zip', 'lodash-4.17.10')
-    lodash.run(args, join('test', 'test.js'))
+    lodash.run(args, join('test', 'test-fp.js'))
 
 def test(args):
     unitTests(args)
