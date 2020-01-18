@@ -25,7 +25,10 @@ import com.oracle.truffle.api.frame.MaterializedFrame;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument;
+import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
+import com.oracle.truffle.js.nodes.function.FunctionBodyNode;
 import com.oracle.truffle.js.nodes.function.JSBuiltinNode;
 import com.oracle.truffle.js.runtime.JSFrameUtil;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -117,5 +120,30 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
 
     public String getFunctionName() {
         return this.funcName;
+    }
+
+    /**
+     * @return the source of the instrumented node (or its closest parent), or null if no source is
+     *         available
+     */
+    public Source getSource() {
+        if (isRegularExpression() || this.isBuiltin) {
+            return null;
+        }
+
+        Node n = context.getInstrumentedNode();
+        while (n != null && !(n instanceof FunctionBodyNode)) {
+            n = n.getParent();
+        }
+
+        if (n == null) {
+            return null;
+        }
+
+        if (n.getSourceSection() == null) {
+            return null;
+        }
+
+        return n.getSourceSection().getSource();
     }
 }

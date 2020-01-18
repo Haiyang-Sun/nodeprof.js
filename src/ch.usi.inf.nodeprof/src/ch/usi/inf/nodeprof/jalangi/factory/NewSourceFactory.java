@@ -23,10 +23,8 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
-import com.oracle.truffle.js.nodes.function.FunctionBodyNode;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
@@ -54,24 +52,15 @@ public class NewSourceFactory extends AbstractFactory {
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
-                if (isRegularExpression() || this.isBuiltin || post == null) {
+                if (post == null) {
                     return;
                 }
 
-                Node n = context.getInstrumentedNode();
-                while (n != null && !(n instanceof FunctionBodyNode)) {
-                    n = n.getParent();
-                }
-
-                if (n == null) {
+                Source source = getSource();
+                if (source == null) {
                     return;
                 }
 
-                if (n.getSourceSection() == null) {
-                    return;
-                }
-
-                Source source = n.getSourceSection().getSource();
                 if (isNewSource(source)) {
                     setPostArguments(0, convertResult(source.getName()));
                     setPostArguments(1, source.getCharacters().toString());
