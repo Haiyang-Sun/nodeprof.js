@@ -29,7 +29,7 @@ import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
 public class AwaitFactory extends AbstractFactory {
 
     public AwaitFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("await", jalangiAnalysis, pre, post, 2, 3);
+        super("await", jalangiAnalysis, pre, post, 2, 4);
     }
 
     @Override
@@ -66,12 +66,16 @@ public class AwaitFactory extends AbstractFactory {
                         // TODO, inputs[0] should never be null
                         setPostArguments(1, inputs[0] == null ? Undefined.instance : inputs[0]);
                         setPostArguments(2, assertGetInput(1, inputs, "awaited ret"));
+                        setPostArguments(3, inputs[0] != null && JSPromise.isJSPromise(inputs[0]) && JSPromise.isRejected((DynamicObject) inputs[0]));
+
                         directCall(postCall, false, getSourceIID());
                     } else if (inputs[0] == inputs[1] && !JSPromise.isJSPromise(inputs[0])) {
                         // await some value
                         setPostArguments(0, this.getSourceIID());
                         setPostArguments(1, assertGetInput(0, inputs, "awaited val"));
                         setPostArguments(2, assertGetInput(0, inputs, "awaited ret"));
+                        setPostArguments(3, false);
+
                         directCall(postCall, false, getSourceIID());
                     }
                 }

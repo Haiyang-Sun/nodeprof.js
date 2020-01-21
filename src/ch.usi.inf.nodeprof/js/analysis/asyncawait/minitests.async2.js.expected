@@ -14,6 +14,6 @@ asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:22:5:26:6) Promis
 #####
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:1:2:31:2) undefined {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:21:2:27:2)
-awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:23:9:23:20) <p0> 1 resolved
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:23:9:23:20) <p0> 1 rejected
 await exception 1
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:21:2:27:2) undefined {}

@@ -52,7 +52,7 @@ write (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:9:4:22) res 44
 return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:10:5:10:16) 44
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) 44 {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2)
-awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) <p1> -1 resolved
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) <p1> -1 rejected
 write (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:7:9:7:26) res exception
 exception -1
 return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:10:5:10:16) exception

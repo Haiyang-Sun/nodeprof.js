@@ -28,10 +28,6 @@
             return promises.get(p);
         }
 
-        function isPromiseRejected(p) {
-            return p instanceof Promise && (p+"").indexOf("Promise { <rejected>")>=0;
-        }
-
         this.functionEnter = function (iid, f, base, args) {
             console.log("functionEnter@ " + J$.iidToLocation(iid));
         };
@@ -47,8 +43,8 @@
         this.awaitPre = function(iid, valAwaited) {
             console.log('awaitPre', J$.iidToLocation(iid), getPromiseId(valAwaited));
         }
-        this.awaitPost = function(iid, valAwaited, result) {
-            console.log('awaitPost', J$.iidToLocation(iid), getPromiseId(valAwaited), getPromiseId(result), isPromiseRejected(valAwaited)?'rejected':'resolved');
+        this.awaitPost = function(iid, valAwaited, result, rejected) {
+            console.log('awaitPost', J$.iidToLocation(iid), getPromiseId(valAwaited), getPromiseId(result), rejected?"rejected":"resolved");
         }
         this.binary = function(iid, op, left, right, result) {
             console.log('binary', left, op, right, '=', result);
