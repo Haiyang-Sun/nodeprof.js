@@ -195,7 +195,7 @@
             }
             this.awaitPre = function (iid, promiseOrValAwaited) {
             }
-            this.awaitPost = function (iid, promiseOrValAwaited, valResolveOrRejected) {
+            this.awaitPost = function (iid, promiseOrValAwaited, valResolveOrRejected, isPromiseRejected) {
             }
 
         }
