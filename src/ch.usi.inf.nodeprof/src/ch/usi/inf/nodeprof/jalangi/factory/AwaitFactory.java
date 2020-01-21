@@ -20,6 +20,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.builtins.JSPromise;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -46,21 +47,31 @@ public class AwaitFactory extends AbstractFactory {
                     return;
                 }
                 if (pre != null) {
-                    // ignore the first entry of await node
-                    // awaitPre happens before suspension
-                    // System.out.println("AwaitPre: "+Arrays.toString(inputs));
-                    if (inputs[0] == inputs[1]) {
+                    if (inputs[0] == inputs[1] && JSPromise.isJSPromise(inputs[0])) {
+                        // await some promise
                         setPreArguments(0, getSourceIID());
-                        setPreArguments(1, inputs[0]);
+                        setPreArguments(1, assertGetInput(0, inputs, "awaited val"));
+                        directCall(preCall, true, getSourceIID());
+                    } else if (inputs[0] != inputs[1] && JSPromise.isJSPromise(inputs[1])) {
+                        // await some value, and inputs[1] is the internal promise
+                        setPreArguments(0, getSourceIID());
+                        setPreArguments(1, assertGetInput(0, inputs, "awaited val"));
                         directCall(preCall, true, getSourceIID());
                     }
                 }
                 if (post != null) {
-                    if (inputs[0] != inputs[1]) {
+                    if (inputs[0] != inputs[1] && !JSPromise.isJSPromise((inputs[1]))) {
+                        // await some promise
                         setPostArguments(0, this.getSourceIID());
+                        // TODO, inputs[0] should never be null
                         setPostArguments(1, inputs[0] == null ? Undefined.instance : inputs[0]);
-                        setPostArguments(2, inputs[1]);
-                        // System.out.println("AwaitPost: "+Arrays.toString(inputs));
+                        setPostArguments(2, assertGetInput(1, inputs, "awaited ret"));
+                        directCall(postCall, false, getSourceIID());
+                    } else if (inputs[0] == inputs[1] && !JSPromise.isJSPromise(inputs[0])) {
+                        // await some value
+                        setPostArguments(0, this.getSourceIID());
+                        setPostArguments(1, assertGetInput(0, inputs, "awaited val"));
+                        setPostArguments(2, assertGetInput(0, inputs, "awaited ret"));
                         directCall(postCall, false, getSourceIID());
                     }
                 }
@@ -68,7 +79,6 @@ public class AwaitFactory extends AbstractFactory {
 
             @Override
             public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
-                // TODO handle Yield exception
             }
         };
     }

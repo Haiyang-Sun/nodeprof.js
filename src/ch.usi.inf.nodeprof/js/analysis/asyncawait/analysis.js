@@ -17,6 +17,21 @@
 //DO NOT INSTRUMENT
 (function (sandbox) {
     function MyAnalysis() {
+        let promises = new Map();
+
+        function getPromiseId(p) {
+            if (!(p instanceof Promise))
+                return p;
+            if (!promises.has(p)) {
+                promises.set(p, '<p'+promises.size+'>');
+            }
+            return promises.get(p);
+        }
+
+        function isPromiseRejected(p) {
+            return p instanceof Promise && (p+"").indexOf("Promise { <rejected>")>=0;
+        }
+
         this.functionEnter = function (iid, f, base, args) {
             console.log("functionEnter@ " + J$.iidToLocation(iid));
         };
@@ -30,10 +45,10 @@
             console.log('asyncExit', J$.iidToLocation(iid), returnVal, wrappedException);
         }
         this.awaitPre = function(iid, valAwaited) {
-            console.log('awaitPre', J$.iidToLocation(iid), valAwaited);
+            console.log('awaitPre', J$.iidToLocation(iid), getPromiseId(valAwaited));
         }
-        this.awaitPost = function(iid, result, exceptionWrapper) {
-            console.log('awaitPost', J$.iidToLocation(iid), result, exceptionWrapper);
+        this.awaitPost = function(iid, valAwaited, result) {
+            console.log('awaitPost', J$.iidToLocation(iid), getPromiseId(valAwaited), getPromiseId(result), isPromiseRejected(valAwaited)?'rejected':'resolved');
         }
         this.binary = function(iid, op, left, right, result) {
             console.log('binary', left, op, right, '=', result);
