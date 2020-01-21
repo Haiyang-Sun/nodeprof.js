@@ -1,0 +1,89 @@
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:1:22:4)
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:1:22:4) [Function] {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:2:22:2)
+write (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) foo [AsyncFunction: foo]
+asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:12:13:24)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:2:13:24)
+asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:84:11:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) Promise { 44 }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) undefined { yield: true }
+asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:84:11:2) Promise { <pending> } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:12:13:24) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:2:13:24) undefined { yield: true }
+asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:12:13:24) Promise { <pending> } {}
+asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:14:12:14:24)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:14:2:14:24)
+asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:84:11:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) Promise { <rejected> -1 }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) undefined { yield: true }
+asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:84:11:2) Promise { <pending> } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:14:12:14:24) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:14:2:14:24) undefined { yield: true }
+asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:14:12:14:24) Promise { <pending> } {}
+asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:15:12:15:24)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:15:2:15:24)
+asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:84:11:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2)
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) 43 Promise { 43 }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) undefined { yield: true }
+asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:84:11:2) Promise { <pending> } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:15:12:15:24) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:15:2:15:24) undefined { yield: true }
+asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:15:12:15:24) Promise { <pending> } {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:38:20:2)
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:38:20:2) undefined {}
+asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:12:16:24)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:2:16:24)
+asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:84:11:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) undefined { yield: true }
+asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:84:11:2) Promise { <pending> } {}
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:12:16:24) Promise { <pending> }
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:2:16:24) undefined { yield: true }
+asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:12:16:24) Promise { <pending> } {}
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:2:22:2) undefined {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2)
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) Promise { 44 } 44
+write (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:9:4:22) res 44
+44
+return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:10:5:10:16) 44
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) 44 {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2)
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) Promise { <rejected> -1 } -1
+write (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:7:9:7:26) res exception
+exception -1
+return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:10:5:10:16) exception
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) exception {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2)
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) 43
+write (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:9:4:22) res 43
+43
+return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:10:5:10:16) 43
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) 43 {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:2:13:24)
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:12:13:24) Promise { 44 } 44
+return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:12:13:24) 44
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:2:13:24) 44 {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:14:2:14:24)
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:14:12:14:24) Promise { 'exception' } exception
+return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:14:12:14:24) exception
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:14:2:14:24) exception {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:15:2:15:24)
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:15:12:15:24) Promise { 43 } 43
+return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:15:12:15:24) 43
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:15:2:15:24) 43 {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:17:16:19:6)
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:17:16:19:6) undefined {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2)
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:15:4:22) Promise { 'timeout' } timeout
+write (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:4:9:4:22) res timeout
+timeout
+return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:10:5:10:16) timeout
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:62:11:2) timeout {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:2:16:24)
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:12:16:24) Promise { 'timeout' } timeout
+return (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:12:16:24) timeout
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:16:2:16:24) timeout {}

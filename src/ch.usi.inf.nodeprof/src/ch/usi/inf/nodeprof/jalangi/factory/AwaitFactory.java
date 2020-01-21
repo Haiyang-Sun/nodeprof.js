@@ -39,39 +39,30 @@ public class AwaitFactory extends AbstractFactory {
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) {
-                if (pre != null && this.isAwaitNode()) {
+                if (!this.isAwaitNode()) {
+                    return;
+                }
+                if (inputs == null || inputs.length == 0) {
+                    return;
+                }
+                if (pre != null) {
                     // ignore the first entry of await node
-                    if (inputs == null || inputs.length == 0) {
-                        return;
-                    }
                     // awaitPre happens before suspension
+                    // System.out.println("AwaitPre: "+Arrays.toString(inputs));
                     if (inputs[0] == inputs[1]) {
                         setPreArguments(0, getSourceIID());
                         setPreArguments(1, inputs[0]);
                         directCall(preCall, true, getSourceIID());
                     }
                 }
-            }
-
-            @Override
-            public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
-
-                if (post != null && this.isAwaitNode()) {
-                    setPostArguments(0, this.getSourceIID());
-                    setPostArguments(1, result);
-                    setPostArguments(2, createWrappedException(null));
-                    directCall(postCall, false, getSourceIID());
-                }
-            }
-
-            @Override
-            public void executeExceptional(VirtualFrame frame, Throwable exception) {
                 if (post != null) {
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, Undefined.instance);
-                    setPostArguments(2, createWrappedException(exception));
-                    directCall(postCall, false, getSourceIID());
+                    if (inputs[0] != inputs[1]) {
+                        setPostArguments(0, this.getSourceIID());
+                        setPostArguments(1, inputs[0] == null ? Undefined.instance : inputs[0]);
+                        setPostArguments(2, inputs[1]);
+                        // System.out.println("AwaitPost: "+Arrays.toString(inputs));
+                        directCall(postCall, false, getSourceIID());
+                    }
                 }
             }
 

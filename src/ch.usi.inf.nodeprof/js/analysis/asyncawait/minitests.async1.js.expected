@@ -17,6 +17,6 @@ functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:18:5:21:6) un
 asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:17:1:22:2) Promise { <pending> } {}
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:1:2:24:2) undefined {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:18:5:21:6)
-awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:20:20:20:34) undefined {}
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:20:20:20:34) Promise { undefined } undefined
 return (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:20:13:20:35) undefined
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:18:5:21:6) undefined {}

@@ -7,7 +7,6 @@ functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:21:2:27:2)
 asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:18:5:18:13)
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:17:1:19:2)
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:17:1:19:2) undefined { exception: 1 }
-awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:18:5:18:13) undefined { exception: 1 }
 asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:18:5:18:13) Promise { <rejected> 1 } {}
 awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:23:9:23:20) Promise { <rejected> 1 }
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:21:2:27:2) undefined { yield: true }
@@ -15,6 +14,6 @@ asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:22:5:26:6) Promis
 #####
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:1:2:31:2) undefined {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:21:2:27:2)
-awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:23:9:23:20) undefined { exception: 1 }
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:23:9:23:20) Promise { <rejected> 1 } 1
 await exception 1
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:21:2:27:2) undefined {}
