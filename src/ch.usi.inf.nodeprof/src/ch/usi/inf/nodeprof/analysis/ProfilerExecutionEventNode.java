@@ -127,7 +127,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     @TruffleBoundary
     private void reportError(Object[] inputs, Exception e) {
-        Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + (inputs == null ? "null" : inputs.length));
+        Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + (inputs == null ? "null" : inputs.length) + " " + e.getMessage());
         if (inputs != null) {
             for (int i = 0; i < inputs.length; i++) {
                 Logger.error(context.getInstrumentedSourceSection(),
