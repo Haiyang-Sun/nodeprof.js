@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -27,44 +29,31 @@ public class BinaryFactory extends AbstractFactory {
 
     public BinaryFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("binary", jalangiAnalysis, pre, post, 7, 8);
-        // TODO
-        setPreArguments(4, false); // isOpAssign
-        setPreArguments(5, false); // isSwitchCaseComparison
-        setPreArguments(6, false); // isComputed
-        setPostArguments(5, false); // isOpAssign
-        setPostArguments(6, false); // isSwitchCaseComparison
-        setPostArguments(7, false); // isComputed
+        super("binary", jalangiAnalysis, pre, post);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new BinaryEventHandler(context) {
-            @Child DirectCallNode preCall = createPreCallNode();
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null && !isLogic()) {
-                    // the arguments array is shared among different nodes
-                    setPreArguments(0, getSourceIID());
-                    setPreArguments(1, getOp());
-                    setPreArguments(2, getLeft(inputs));
-                    setPreArguments(3, getRight(inputs));
-                    directCall(preCall, true, getSourceIID());
+                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getOp(), getLeft(inputs), getRight(inputs), false // isOpAssign
+                    , false// isSwitchCaseComparison
+                    , false // isComputed
+                    );
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (post != null && !isLogic()) {
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, getOp());
-                    setPostArguments(2, getLeft(inputs));
-                    setPostArguments(3, getRight(inputs));
-                    setPostArguments(4, convertResult(result));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post,
+                                    getSourceIID(), getOp(), getLeft(inputs), getRight(inputs), convertResult(result));
                 }
             }
         };

@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -27,34 +29,27 @@ public class UnaryFactory extends AbstractFactory {
 
     public UnaryFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("unary", jalangiAnalysis, pre, post, 3, 4);
+        super("unary", jalangiAnalysis, pre, post);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new UnaryEventHandler(context) {
-            @Child DirectCallNode preCall = createPreCallNode();
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    setPreArguments(0, getSourceIID());
-                    setPreArguments(1, getOp());
-                    setPreArguments(2, getValue(inputs));
-                    directCall(preCall, true, getSourceIID());
+                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getOp(), getValue(inputs));
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (post != null) {
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, getOp());
-                    setPostArguments(2, getValue(inputs));
-                    setPostArguments(3, convertResult(result));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getOp(), getValue(inputs), convertResult(result));
                 }
             }
         };

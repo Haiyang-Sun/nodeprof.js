@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -29,7 +31,7 @@ public class ConditionalFactory extends AbstractFactory {
 
     public ConditionalFactory(Object jalangiAnalysis, DynamicObject post,
                     boolean isBinary) {
-        super("conditional", jalangiAnalysis, null, post, -1, 2);
+        super("conditional", jalangiAnalysis, null, post);
         this.isBinary = isBinary;
     }
 
@@ -37,39 +39,25 @@ public class ConditionalFactory extends AbstractFactory {
     public BaseEventHandlerNode create(EventContext context) {
         if (!isBinary) {
             return new ConditionalEventHandler(context) {
-                @Child DirectCallNode postCall = isConditional() ? createPostCallNode() : null;
-
-                @Override
-                public void executePre(VirtualFrame frame, Object[] inputs) {
-
-                }
+                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
-                                Object[] inputs) {
+                                Object[] inputs) throws InteropException {
                     if (post != null && isConditional()) {
-                        setPostArguments(0, getSourceIID());
-                        setPostArguments(1, result);
-                        directCall(postCall, false, getSourceIID());
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), convertResult(result));
                     }
                 }
             };
         } else {
             return new BinaryEventHandler(context) {
-                @Child DirectCallNode postCall = createPostCallNode();
-
-                @Override
-                public void executePre(VirtualFrame frame, Object[] inputs) {
-
-                }
+                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
-                                Object[] inputs) {
+                                Object[] inputs) throws InteropException {
                     if (post != null && this.isLogic()) {
-                        setPostArguments(0, getSourceIID());
-                        setPostArguments(1, convertResult(result));
-                        directCall(postCall, false, getSourceIID());
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), convertResult(result));
                     }
                 }
             };

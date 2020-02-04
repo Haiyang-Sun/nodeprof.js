@@ -18,8 +18,11 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.nodes.control.YieldException;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -28,56 +31,51 @@ import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
 public class AwaitFactory extends AbstractFactory {
 
     public AwaitFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("await", jalangiAnalysis, pre, post, 2, 3);
+        super("await", jalangiAnalysis, pre, post);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new CFBranchEventHandler(context) {
-            @Child DirectCallNode preCall = createDirectCallNode(pre);
-            @Child DirectCallNode postCall = createDirectCallNode(post);
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null && this.isAwaitNode()) {
                     // ignore the first entry of await node
                     if (inputs == null || inputs.length == 0) {
                         return;
                     }
-                    // awaitPre happens before suspension
                     if (inputs[0] == inputs[1]) {
-                        setPreArguments(0, getSourceIID());
-                        setPreArguments(1, inputs[0]);
-                        directCall(preCall, true, getSourceIID());
+                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), convertResult(inputs[0]));
                     }
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
 
                 if (post != null && this.isAwaitNode()) {
-                    setPostArguments(0, this.getSourceIID());
-                    setPostArguments(1, result);
-                    setPostArguments(2, createWrappedException(null));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), result, createWrappedException(null));
                 }
             }
 
             @Override
-            public void executeExceptional(VirtualFrame frame, Throwable exception) {
-                if (post != null) {
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, Undefined.instance);
-                    setPostArguments(2, createWrappedException(exception));
-                    directCall(postCall, false, getSourceIID());
+            public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
+                if (post != null && this.isAwaitNode()) {
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
+
                 }
             }
 
             @Override
-            public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
+            public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) throws InteropException {
                 // TODO handle Yield exception
+                if (exception instanceof YieldException) {
+                    executeExceptional(frame, exception);
+                }
             }
         };
     }

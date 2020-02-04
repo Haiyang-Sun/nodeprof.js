@@ -16,9 +16,9 @@
 package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags.DeclareTag;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
-import com.oracle.truffle.js.nodes.instrumentation.JSTags.DeclareTag;
 
 /**
  * Abstract event handler for literal events

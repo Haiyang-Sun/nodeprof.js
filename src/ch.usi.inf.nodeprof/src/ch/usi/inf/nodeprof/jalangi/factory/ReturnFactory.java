@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.ReturnException;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -27,43 +29,30 @@ import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
 
 public class ReturnFactory extends AbstractFactory {
     public ReturnFactory(Object jalangiAnalysis, DynamicObject pre) {
-        super("_return", jalangiAnalysis, pre, null, 2, -1);
+        super("_return", jalangiAnalysis, pre, null);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new CFBranchEventHandler(context) {
-            @Child DirectCallNode preCall = createPreCallNode();
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
 
             @Override
             public void executePre(VirtualFrame frame,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (pre != null && isReturnNode()) {
-                    setPreArguments(0, getSourceIID());
-                    if (inputs == null || inputs.length == 0) {
-                        // empty return statement (i.e., 'return;')
-                        setPreArguments(1, Undefined.instance);
-                    } else {
-                        setPreArguments(1, inputs[0]);
-                    }
-                    directCall(preCall, true, getSourceIID());
+                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), (inputs == null || inputs.length == 0) ? Undefined.instance : inputs[0]);
                 }
             }
 
             @Override
-            public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
+            public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) throws InteropException {
                 if (pre != null && isReturnNode() && exception instanceof ReturnException) {
                     // TODO trigger for ConstantReturnNode which does not have input only?
                     if (inputs.length == 0) {
-                        setPreArguments(0, getSourceIID());
                         Object returnExceptionValue = ((ReturnException) exception).getResult();
+                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), (returnExceptionValue == null) ? getReturnValueFromFrame(frame) : ((ReturnException) exception).getResult());
 
-                        if (returnExceptionValue == null) {
-                            setPreArguments(1, getReturnValueFromFrame(frame));
-                        } else {
-                            setPreArguments(1, ((ReturnException) exception).getResult());
-                        }
-                        directCall(preCall, true, getSourceIID());
                     }
                 }
 

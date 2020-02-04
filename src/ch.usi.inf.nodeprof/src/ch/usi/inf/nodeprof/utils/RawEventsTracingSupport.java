@@ -26,9 +26,11 @@ import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.api.instrumentation.SourceSectionFilter;
 import com.oracle.truffle.api.instrumentation.StandardTags;
 import com.oracle.truffle.api.instrumentation.Tag;
+import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.JavaScriptNode;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags;
@@ -66,6 +68,9 @@ public class RawEventsTracingSupport {
         }
     }
 
+    static DynamicObject cb = null;
+    static DynamicObject bak = null;
+
     private static ExecutionEventNodeFactory getFactory() {
         ExecutionEventNodeFactory factory = new ExecutionEventNodeFactory() {
 
@@ -74,6 +79,8 @@ public class RawEventsTracingSupport {
             @Override
             public ExecutionEventNode create(EventContext c) {
                 return new ExecutionEventNode() {
+
+                    @Node.Child private InteropLibrary dispatch = InteropLibrary.getFactory().createDispatched(3);
 
                     private void log(String s) {
                         String p = "";
@@ -89,7 +96,7 @@ public class RawEventsTracingSupport {
                         if (JSFunction.isJSFunction(inputValue)) {
                             return "JSFunction:'" + JSFunction.getName((DynamicObject) inputValue) + "'";
                         } else if (JSObject.isJSObject(inputValue)) {
-                            return "JSObject: instance";
+                            return "JSObject: instance" + inputValue.toString();
                         } else if (inputValue instanceof String) {
                             return inputValue.toString();
                         } else if (inputValue instanceof Number) {
@@ -107,20 +114,41 @@ public class RawEventsTracingSupport {
                                         getTagNames((JavaScriptNode) c.getInstrumentedNode()),
                                         c.getInstrumentedNode().getClass().getSimpleName(), getValueDescription(inputValue), i.getInstrumentedNode().getClass().getSimpleName());
                         log(format);
+                        if (bak == null && JSFunction.isJSFunction(inputValue) && JSFunction.getName((DynamicObject) inputValue).equals("cb")) {
+                            bak = cb = (DynamicObject) inputValue;
+                            Logger.info("cb:" + inputValue + JSFunction.getName((DynamicObject) inputValue));
+                        }
+
                     }
 
                     @TruffleBoundary
                     @Override
                     public void onEnter(VirtualFrame frame) {
-                        String format = String.format("%-7s|tag: %-20s @ %-20s |attr: %-20s", "ENTER", getTagNames((JavaScriptNode) c.getInstrumentedNode()),
-                                        c.getInstrumentedNode().getClass().getSimpleName(), getAttributesDescription(c));
+                        String format = String.format("%-7s|tag: %-20s @ %-20s |attr: %-20s %s", "ENTER", getTagNames((JavaScriptNode) c.getInstrumentedNode()),
+                                        c.getInstrumentedNode().getClass().getSimpleName(), getAttributesDescription(c),
+                                        c.getInstrumentedSourceSection().toString());
                         log(format);
                         depth++;
+                        if (c.getInstrumentedSourceSection().toString().contains("###")) {
+                            Logger.debug("anything");
+                        }
+                        if (cb != null) {
+                            cb = null;
+                            try {
+                                dispatch.execute(bak);
+                            } catch (InteropException e) {
+
+                            }
+                            cb = bak;
+                        }
                     }
 
                     @TruffleBoundary
                     @Override
                     protected void onReturnValue(VirtualFrame frame, Object result) {
+                        if (result.equals(42)) {
+                            Logger.debug("anything");
+                        }
                         depth--;
                         String format = String.format("%-7s|tag: %-20s @ %-20s |rval: %-20s |attr: %-20s", "RETURN", getTagNames((JavaScriptNode) c.getInstrumentedNode()),
                                         c.getInstrumentedNode().getClass().getSimpleName(), getValueDescription(result), getAttributesDescription(c));

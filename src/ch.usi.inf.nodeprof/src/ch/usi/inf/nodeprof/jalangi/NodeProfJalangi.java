@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
@@ -45,6 +44,7 @@ import ch.usi.inf.nodeprof.analysis.AnalysisFilterBase;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterJS;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
 import ch.usi.inf.nodeprof.analysis.NodeProfAnalysis;
+import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 /**

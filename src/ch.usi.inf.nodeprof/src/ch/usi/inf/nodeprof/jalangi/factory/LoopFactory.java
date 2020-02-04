@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -25,32 +27,27 @@ import ch.usi.inf.nodeprof.handlers.LoopEventHandler;
 
 public class LoopFactory extends AbstractFactory {
     public LoopFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("loop", jalangiAnalysis, pre, post, 2, 2);
+        super("loop", jalangiAnalysis, pre, post);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new LoopEventHandler(context) {
-            @Child DirectCallNode preCall = createPreCallNode();
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    setPreArguments(0, getSourceIID());
-                    setPreArguments(1, getLoopType());
-                    directCall(preCall, true, getSourceIID());
+                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getLoopType());
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (post != null) {
-
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, getLoopType());
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getLoopType());
                 }
             }
         };

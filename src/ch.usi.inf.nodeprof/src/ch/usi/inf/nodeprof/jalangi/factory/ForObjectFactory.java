@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -25,21 +27,19 @@ import ch.usi.inf.nodeprof.handlers.LoopEventHandler;
 
 public class ForObjectFactory extends AbstractFactory {
     public ForObjectFactory(Object jalangiAnalysis, DynamicObject pre) {
-        super("forObject", jalangiAnalysis, pre, null, 2, -1);
+        super("forObject", jalangiAnalysis, pre, null);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new LoopEventHandler(context) {
-            @Child DirectCallNode preCall = createPreCallNode();
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
 
             @Override
             public void executePre(VirtualFrame frame,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (pre != null && (isForIn() || isForOf())) {
-                    setPreArguments(0, getSourceIID());
-                    setPreArguments(1, isForIn());
-                    directCall(preCall, true, getSourceIID());
+                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), isForIn());
                 }
             }
         };

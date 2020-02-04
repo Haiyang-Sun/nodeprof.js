@@ -88,8 +88,9 @@ public abstract class BaseEventHandlerNode extends Node {
     /**
      * @param frame the current virtual frame
      * @param inputs the input array get from ExecutionEventNode.getSavedInputValues()
+     * @throws Exception
      */
-    public void executePre(VirtualFrame frame, Object[] inputs) {
+    public void executePre(VirtualFrame frame, Object[] inputs) throws Exception {
 
     }
 
@@ -98,18 +99,20 @@ public abstract class BaseEventHandlerNode extends Node {
      * @param result of the execution of the instrumented node
      * @param inputs the input array get from ExecutionEventNode.getSavedInputValues()
      */
-    public void executePost(VirtualFrame frame, Object result, Object[] inputs) {
+    public void executePost(VirtualFrame frame, Object result, Object[] inputs) throws Exception {
 
     }
 
-    public void executeExceptional(@SuppressWarnings("unused") VirtualFrame frame, @SuppressWarnings("unused") Throwable exception) {
+    public void executeExceptional(@SuppressWarnings("unused") VirtualFrame frame, @SuppressWarnings("unused") Throwable exception) throws Exception {
 
     }
 
     /**
      * Control flow exception that may be treated like executePost, thus includes inputs[]
+     * 
+     * @throws Exception
      */
-    public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
+    public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) throws Exception {
         executeExceptional(frame, exception);
     }
 

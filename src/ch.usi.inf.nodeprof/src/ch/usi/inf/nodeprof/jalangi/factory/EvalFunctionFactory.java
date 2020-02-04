@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -28,45 +30,39 @@ public class EvalFunctionFactory extends AbstractFactory {
 
     public EvalFunctionFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("evalfunc", jalangiAnalysis, pre, post, 1, 3);
+        super("evalfunc", jalangiAnalysis, pre, post);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new BuiltinRootEventHandler(context) {
-            @Child DirectCallNode preCall = createPreCallNode();
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 2, 0);
 
             final boolean isTarget = getBuiltinName().equals("Function");
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (isTarget && pre != null) {
-                    setPreArguments(0, makeArgs.executeArguments(getArguments(frame)));
-
-                    directCall(preCall, true, getSourceIID());
+                    wrappedDispatchExecution(preDispatch, pre, makeArgs.executeArguments(getArguments(frame)));
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (isTarget && post != null) {
-                    setPostArguments(0, makeArgs.executeArguments(getArguments(frame)));
-                    setPostArguments(1, convertResult(result));
-                    setPostArguments(2, createWrappedException(null));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, makeArgs.executeArguments(getArguments(frame)), convertResult(result), createWrappedException(null));
+
                 }
             }
 
             @Override
-            public void executeExceptional(VirtualFrame frame, Throwable exception) {
+            public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
                 if (isTarget && post != null) {
-                    setPostArguments(0, makeArgs.executeArguments(getArguments(frame)));
-                    setPostArguments(1, Undefined.instance);
-                    setPostArguments(2, createWrappedException(exception));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, makeArgs.executeArguments(getArguments(frame)), Undefined.instance, createWrappedException(exception));
+
                 }
             }
         };

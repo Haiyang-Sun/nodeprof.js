@@ -16,12 +16,12 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
-import ch.usi.inf.nodeprof.utils.Logger;
-
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.ReturnException;
 import com.oracle.truffle.js.nodes.control.YieldException;
@@ -29,13 +29,14 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
+import ch.usi.inf.nodeprof.utils.Logger;
 
 public class RootFactory extends AbstractFactory {
 
     protected final TruffleInstrument.Env env;
 
     public RootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post, TruffleInstrument.Env env) {
-        super("function", jalangiAnalysis, pre, post, 4, 3);
+        super("function", jalangiAnalysis, pre, post);
         this.env = env;
     }
 
@@ -43,58 +44,46 @@ public class RootFactory extends AbstractFactory {
     public BaseEventHandlerNode create(EventContext context) {
         return new FunctionRootEventHandler(context) {
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 2, 0);
-            @Child DirectCallNode preCall = createDirectCallNode(pre);
-            @Child DirectCallNode postCall = createDirectCallNode(post);
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (isRegularExpression()) {
                     return;
                 }
 
                 if (!this.isBuiltin && pre != null) {
-
-                    setPreArguments(0, getSourceIID());
-                    setPreArguments(1, getFunction(frame));
-                    setPreArguments(2, getReceiver(frame, env));
-                    setPreArguments(3, makeArgs.executeArguments(getArguments(frame)));
-
-                    directCall(preCall, true, getSourceIID());
+                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getFunction(frame), getReceiver(frame, env), makeArgs.executeArguments(getArguments(frame)));
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (isRegularExpression()) {
                     return;
                 }
 
                 if (!this.isBuiltin && post != null) {
-                    setPostArguments(0, this.getSourceIID());
-                    setPostArguments(1, convertResult(result));
-                    setPostArguments(2, createWrappedException(null));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), convertResult(result), createWrappedException(null));
                 }
             }
 
             @Override
-            public void executeExceptional(VirtualFrame frame, Throwable exception) {
+            public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
                 if (isRegularExpression()) {
                     return;
                 }
 
                 if (!this.isBuiltin && post != null) {
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, Undefined.instance);
-                    setPostArguments(2, createWrappedException(exception));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
                 }
             }
 
             @Override
             public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 // ignore Truffle-internal control flow exceptions
                 if (exception instanceof ReturnException) {
                     Object returnExceptionValue = ((ReturnException) exception).getResult();

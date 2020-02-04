@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
@@ -29,13 +31,8 @@ public class InvokeFactory extends AbstractFactory {
 
     public InvokeFactory(Object jalangiAnalysis, ProfiledTagEnum tag, DynamicObject pre,
                     DynamicObject post) {
-        super("invokeFun", jalangiAnalysis, pre, post, 8, 9);
+        super("invokeFun", jalangiAnalysis, pre, post);
         this.tag = tag;
-        // TODO
-        setPreArguments(6, 0); // functionIid
-        setPreArguments(7, 0); // functionSid
-        setPostArguments(7, 0); // functionIid
-        setPostArguments(8, 0); // functionSid
     }
 
     @Override
@@ -43,36 +40,23 @@ public class InvokeFactory extends AbstractFactory {
         return new FunctionCallEventHandler(context, tag) {
 
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, getOffSet(), 0);
-            @Child DirectCallNode preCall = createPreCallNode();
-
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-
-                    setPreArguments(0, getSourceIID());
-                    setPreArguments(1, getFunction(inputs));
-                    setPreArguments(2, getReceiver(inputs));
-                    setPreArguments(3, makeArgs.executeArguments(inputs));
-                    setPreArguments(4, this.isNew());
-                    setPreArguments(5, this.isInvoke());
-                    directCall(preCall, true, getSourceIID());
+                    // TODO Jalangi's function iid/sid are set to be 0/0
+                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), isNew(), isInvoke(), 0, 0);
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (post != null) {
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, getFunction(inputs));
-                    setPostArguments(2, getReceiver(inputs));
-                    setPostArguments(3, makeArgs.executeArguments(inputs));
-                    setPostArguments(4, convertResult(result));
-                    setPostArguments(5, this.isNew());
-                    setPostArguments(6, this.isInvoke());
-                    directCall(postCall, false, getSourceIID());
+                    // TODO Jalangi's function iid/sid are set to be 0/0
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), convertResult(result), isNew(), isInvoke(), 0, 0);
                 }
             }
         };

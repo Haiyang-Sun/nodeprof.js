@@ -15,8 +15,9 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import ch.usi.inf.nodeprof.NodeProfCLI;
-import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
+import org.graalvm.options.OptionDescriptor;
+import org.graalvm.options.OptionValues;
+
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.ArityException;
@@ -33,12 +34,12 @@ import com.oracle.truffle.js.runtime.builtins.JSUserObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
+import ch.usi.inf.nodeprof.NodeProfCLI;
 import ch.usi.inf.nodeprof.analysis.ProfilerExecutionEventNode;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
+import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
-import org.graalvm.options.OptionDescriptor;
-import org.graalvm.options.OptionValues;
 
 /**
  * Java class exposed to the Jalangi framework

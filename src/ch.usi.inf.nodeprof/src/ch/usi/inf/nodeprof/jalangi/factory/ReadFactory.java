@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -30,52 +32,34 @@ public class ReadFactory extends AbstractFactory {
 
     public ReadFactory(Object jalangiAnalysis, DynamicObject post,
                     boolean isProperty) {
-        super("read", jalangiAnalysis, null, post, -1, 5);
+        super("read", jalangiAnalysis, null, post);
         this.isProperty = isProperty;
-        setPostArguments(4, true); // TODO, isScriptLocal
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         if (!isProperty) {
             return new VarReadEventHandler(context) {
-                @Child DirectCallNode postCall = createPostCallNode();
-
-                @Override
-                public void executePre(VirtualFrame frame, Object[] inputs) {
-
-                }
+                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
-                                Object[] inputs) {
+                                Object[] inputs) throws InteropException {
                     if (post != null) {
-                        setPostArguments(0, getSourceIID());
-                        setPostArguments(1, getName());
-                        setPostArguments(2, convertResult(result));
-                        setPostArguments(3, false); // isGlobal
-                        directCall(postCall, false, getSourceIID());
+                        // TODO, isScriptLocal is set true here
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), getName(), convertResult(result), false, true);
                     }
                 }
             };
         } else {
             return new PropertyReadEventHandler(context) {
-                @Child DirectCallNode postCall = createPostCallNode();
-
-                @Override
-                public void executePre(VirtualFrame frame, Object[] inputs) {
-
-                }
+                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
-                                Object[] inputs) {
+                                Object[] inputs) throws InteropException {
                     if (post != null && this.isGlobal(inputs)) {
-                        setPostArguments(0, getSourceIID());
-                        setPostArguments(1, getProperty());
-                        setPostArguments(2, convertResult(result));
-                        setPostArguments(3, true); // isGlobal
-                        directCall(postCall, false, getSourceIID());
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), getProperty(), convertResult(result), true, true);
                     }
                 }
 
