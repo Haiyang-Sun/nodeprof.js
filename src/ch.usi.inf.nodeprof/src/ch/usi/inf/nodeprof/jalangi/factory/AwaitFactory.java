@@ -22,7 +22,7 @@ import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
-import com.oracle.truffle.js.nodes.control.YieldException;
+import com.oracle.truffle.js.runtime.builtins.JSPromise;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -41,42 +41,40 @@ public class AwaitFactory extends AbstractFactory {
             @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
+
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
-                if (pre != null && this.isAwaitNode()) {
-                    // ignore the first entry of await node
-                    if (inputs == null || inputs.length == 0) {
-                        return;
+                if (!this.isAwaitNode()) {
+                    return;
+                }
+                if (inputs == null || inputs.length == 0) {
+                    return;
+                }
+                if (pre != null) {
+                    if (inputs[0] == inputs[1] && JSPromise.isJSPromise(inputs[0])) {
+                        // await some promise
+                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                    } else if (inputs[0] != inputs[1] && JSPromise.isJSPromise(inputs[1])) {
+                        // await some value, and inputs[1] is the internal promise
+                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
                     }
-                    if (inputs[0] == inputs[1]) {
-                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), convertResult(inputs[0]));
+                }
+                if (post != null) {
+                    if (inputs[0] != inputs[1] && !JSPromise.isJSPromise((inputs[1]))) {
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(),
+                                        inputs[0] == null ? Undefined.instance : inputs[0],
+                                        assertGetInput(1, inputs, "awaited ret"),
+                                        inputs[0] != null && JSPromise.isJSPromise(inputs[0]) && JSPromise.isRejected((DynamicObject) inputs[0]));
+                    } else if (inputs[0] == inputs[1] && !JSPromise.isJSPromise(inputs[0])) {
+                        // await some value
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(),
+                                        assertGetInput(0, inputs, "awaited val"),
+                                        assertGetInput(0, inputs, "awaited ret"),
+                                        false);
+
                     }
                 }
             }
 
-            @Override
-            public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) throws InteropException {
-
-                if (post != null && this.isAwaitNode()) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), result, createWrappedException(null));
-                }
-            }
-
-            @Override
-            public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
-                if (post != null && this.isAwaitNode()) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
-
-                }
-            }
-
-            @Override
-            public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) throws InteropException {
-                // TODO handle Yield exception
-                if (exception instanceof YieldException) {
-                    executeExceptional(frame, exception);
-                }
-            }
         };
     }
 }

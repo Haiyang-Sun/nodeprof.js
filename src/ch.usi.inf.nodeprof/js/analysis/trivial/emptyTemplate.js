@@ -199,9 +199,9 @@
             }
             this.asyncFunctionExit = function (iid, result, exceptionVal) {
             }
-            this.awaitPre = function (iid, valAwaited) {
+            this.awaitPre = function (iid, promiseOrValAwaited) {
             }
-            this.awaitPost = function (iid, result, exceptionVal) {
+            this.awaitPost = function (iid, promiseOrValAwaited, valResolveOrRejected, isPromiseRejected) {
             }
 
         }
