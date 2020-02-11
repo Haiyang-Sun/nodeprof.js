@@ -107,6 +107,17 @@ J$={};
       sandbox.addAnalysis(a);
     }
   });
+
+  sandbox.startupPromises = [];
+  sandbox.addStartupPromise = function(p) {
+    if (p instanceof Promise) {
+      sandbox.startupPromises.push(p);
+    } else {
+      console.log('addStartupPromise() should be used with Promise objects');
+      process.exit(1);
+    }
+  }
+
 }(J$));
 
 /**
@@ -254,4 +265,10 @@ function loadAnalysis(){
 }
 
 loadAnalysis();
-require('module').runMain();
+Promise.all(J$.startupPromises).then( () => {
+  require('module').runMain();
+}, error => {
+  console.log('Analysis startup promise failed:', error);
+  process.exit(-1);
+});
+
