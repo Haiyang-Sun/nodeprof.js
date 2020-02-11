@@ -31,6 +31,8 @@ import com.oracle.truffle.api.source.Source;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
 
+import static ch.usi.inf.nodeprof.utils.SourceMapping.getJSObjectForSource;
+
 public class NewSourceFactory extends AbstractFactory {
 
     public NewSourceFactory(Object jalangiAnalysis, DynamicObject post) {
@@ -51,7 +53,6 @@ public class NewSourceFactory extends AbstractFactory {
     public BaseEventHandlerNode create(EventContext context) {
         return new FunctionRootEventHandler(context) {
             @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
-            final Source source = getSource();
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
@@ -59,12 +60,15 @@ public class NewSourceFactory extends AbstractFactory {
                     return;
                 }
 
+                Source source = getSource();
                 if (source == null) {
                     return;
                 }
 
                 if (isNewSource(source)) {
-                    wrappedDispatchExecution(postDispatch, post, convertResult(source.getName()), source.getCharacters().toString());
+                    wrappedDispatchExecution(postDispatch, post,
+                            getJSObjectForSource(source), // arg 1: source object
+                            source.getCharacters().toString()); // arg 2: source code
                 }
             }
         };

@@ -160,8 +160,11 @@
 
             /**
              * This callback is called when new source code is encountered during instrumentation.
+             *
+             * @ param {object} source - object describing the source. contains {string} name and {boolean} internal properties.
+             * @ param {string} code - the source code text.
              **/
-            this.newSource = function(name, source) {
+            this.newSource = function(source, code) {
             };
 
             /**

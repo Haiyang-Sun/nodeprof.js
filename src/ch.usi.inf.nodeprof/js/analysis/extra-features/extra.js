@@ -47,16 +47,16 @@ const path = require('path');
       }
     }
 
-    this.newSource = function (name, contents) {
+    this.newSource = function (source, code) {
       // XXX skip eval for now
-      if (name.startsWith('eval'))
+      if (source.name.startsWith('eval'))
         return;
       // mangle absolute path name for test output
-      name = path.parse(name).base;
+      const name = path.parse(source.name).base;
       // count something in source contents to make sure it's there
       const re = /foo|var/g;
       console.log("newSource: %s / %d", name, arguments.length);
-      console.log("newSource matches: %d", (contents.match(re) || []).length);
+      console.log("newSource matches: %d", (code.match(re) || []).length);
     }
   };
   sandbox.addAnalysis(new TestEval(), {includes: 'eval.js,eval2.js,evalfunc.js'});
