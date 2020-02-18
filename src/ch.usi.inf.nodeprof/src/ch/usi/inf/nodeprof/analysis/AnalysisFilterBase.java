@@ -66,4 +66,9 @@ public abstract class AnalysisFilterBase implements SourceSectionFilter.SourcePr
     static boolean isForeignSource(final Source source) {
         return !JavaScriptLanguage.ID.equals(source.getLanguage());
     }
+
+    /**
+     * @return a string describing the filter
+     */
+    public abstract String getDescription();
 }

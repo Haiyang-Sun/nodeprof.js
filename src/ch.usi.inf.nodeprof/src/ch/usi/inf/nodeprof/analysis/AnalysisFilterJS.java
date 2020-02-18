@@ -51,6 +51,11 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
     }
 
     @Override
+    public String getDescription() {
+        return "JS-based filter";
+    }
+
+    @Override
     @TruffleBoundary
     public boolean test(final Source source) {
         if (isForeignSource(source) || excludedSources.contains(source)) {

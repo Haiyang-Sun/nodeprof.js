@@ -157,13 +157,12 @@ public class NodeProfJalangi extends NodeProfAnalysis {
             AnalysisFilterSourceList listFilter;
             // return a filter based on excludeFilter, filterList and global excludes
             if (excludeFilter) {
-                Logger.debug("a customized filter with exclusion list " + filters);
                 listFilter = AnalysisFilterSourceList.makeExcludeFilter(filterList, !instrumentInternal);
                 listFilter = AnalysisFilterSourceList.addGlobalExcludes(listFilter);
             } else {
-                Logger.debug("a customized filter with inclusion list " + filters);
                 listFilter = AnalysisFilterSourceList.makeIncludeFilter(filterList, "");
             }
+            Logger.debug("Custom source filter: " + listFilter.getDescription());
             result = listFilter;
         }
         return result;

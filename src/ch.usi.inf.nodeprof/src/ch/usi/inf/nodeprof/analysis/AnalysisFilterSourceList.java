@@ -48,7 +48,9 @@ public final class AnalysisFilterSourceList extends AnalysisFilterBase {
             case all:
                 return addGlobalExcludes(makeExcludeFilter(NO_EXCLUDES, false));
             case builtin:
-                return makeIncludeFilter(Collections.singletonList("<builtin>"), "(builtin-filter)");
+                AnalysisFilterSourceList filter = makeIncludeFilter(Collections.singletonList("<builtin>"), "(builtin-filter)");
+                filter.loggingEnabled = false;
+                return filter;
             case app:
                 return addGlobalExcludes(makeExcludeFilter(Arrays.asList("node_modules", Evaluator.FUNCTION_SOURCE_NAME), true));
             case allExceptInternal:
@@ -62,6 +64,7 @@ public final class AnalysisFilterSourceList extends AnalysisFilterBase {
     private final String debugHint;
     private final HashSet<String> matchSources;
     private final HashSet<Source> loggedSources;
+    private boolean loggingEnabled = true;
 
     /**
      * @param filterExcludes true for an exclude-filter, false for an include-filter
@@ -98,6 +101,11 @@ public final class AnalysisFilterSourceList extends AnalysisFilterBase {
             return new HashSet<>();
         }
         return new HashSet<>(Arrays.asList(GlobalConfiguration.EXCL.split(",")));
+    }
+
+    @Override
+    public String getDescription() {
+        return "list-based " + (filterExcludes ? "exclusion" : "inclusion") + " " + matchSources;
     }
 
     /**
@@ -188,7 +196,7 @@ public final class AnalysisFilterSourceList extends AnalysisFilterBase {
         if (instrumentInternal || !isInternal) {
             // log warning if source does not have a name
             if (name.equals("")) {
-                if (loggedSources.add(source)) {
+                if (logSource(source)) {
                     Logger.warning("Source filter: ignoring source without name");
                 }
             } else {
@@ -202,10 +210,9 @@ public final class AnalysisFilterSourceList extends AnalysisFilterBase {
                 }
                 if (res && containsDoNotInstrument(source)) {
                     res = false;
-                    if (loggedSources.add(source)) {
-                        Logger.debug("Source filter: " + name + " -> excluded due to 'DO NOT INSTRUMENT'" + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
+                    if (logSource(source)) {
+                        Logger.debug("Source filter: " + logName(name, isInternal) + " -> excluded due to 'DO NOT INSTRUMENT'" + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
                     }
-
                 }
             }
         } else {
@@ -213,15 +220,15 @@ public final class AnalysisFilterSourceList extends AnalysisFilterBase {
             res = false;
         }
 
-        if (res && loggedSources.add(source)) {
-            Logger.debug("Source filter: " + name + " -> included " + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
+        if (res && logSource(source)) {
+            Logger.debug("Source filter: " + logName(name, isInternal) + " -> included " + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
         }
 
         // debug log (once per source) if filter did something
-        if (res != filterExcludes && loggedSources.add(source)) {
+        if (logSource(source)) {
             // don't log internal if they are being excluded (there are a lot of them)
             if (instrumentInternal || !isInternal) {
-                Logger.debug("Source filter: " + name + " -> " + (res ? "included" : "excluded") + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
+                Logger.debug("Source filter: " + logName(name, isInternal) + " -> " + (res ? "included" : "excluded") + (this.debugHint.isEmpty() ? "" : (" " + this.debugHint)));
             }
         }
         return res;
@@ -232,4 +239,19 @@ public final class AnalysisFilterSourceList extends AnalysisFilterBase {
         return true;
     }
 
+    private boolean logSource(final Source source) {
+        if (!loggingEnabled) {
+            return false;
+        }
+        return loggedSources.add(source);
+    }
+
+    static String logName(String name, boolean internal) {
+        StringBuilder b = new StringBuilder();
+        b.append(name);
+        if (internal) {
+            b.append("*");
+        }
+        return b.toString();
+    }
 }
