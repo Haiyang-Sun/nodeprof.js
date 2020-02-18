@@ -18,6 +18,8 @@ package ch.usi.inf.nodeprof.utils;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
@@ -25,6 +27,7 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
+import com.oracle.truffle.js.runtime.Evaluator;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSUserObject;
@@ -117,7 +120,19 @@ public abstract class SourceMapping {
         }
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
         DynamicObject o = JSUserObject.create(ctx);
-        JSObject.set(o, "name", shortPath(source.getName()));
+        String srcName = source.getName();
+        if (isEval(source)) {
+            String evalSrc = innerMostEvalSource(source.getName());
+            if (evalSrc != null) {
+                // strip :line:column from source name
+                srcName = evalSrc.split(":")[0];
+            } else {
+                Logger.error("Failed to parse eval source: " + source.getName());
+            }
+            // 'eval' property signals the source is an eval-string, it contains the full eval hint
+            JSObject.set(o, "eval", source.getName());
+        }
+        JSObject.set(o, "name", shortPath(srcName));
         JSObject.set(o, "internal", isInternal(source));
         return o;
     }
@@ -173,6 +188,21 @@ public abstract class SourceMapping {
      * @return true if src is considered internal
      */
     public static boolean isInternal(final Source src) {
-        return src.isInternal() || src.getPath() == null || src.getPath().equals("");
+        return src.isInternal() || (!isEval(src) && (src.getPath() == null || src.getPath().equals("")));
+    }
+
+    public static boolean isEval(final Source src) {
+        return src.getName().startsWith(Evaluator.EVAL_AT_SOURCE_NAME_PREFIX);
+    }
+
+    public static String innerMostEvalSource(String srcString) {
+        String res = null;
+        Pattern p = Pattern.compile(Evaluator.EVAL_AT_SOURCE_NAME_PREFIX + "[^\\s]+ \\((.*)\\)");
+        Matcher m = p.matcher(srcString);
+        while (m.matches()) {
+            res = m.group(1);
+            m = p.matcher(res);
+        }
+        return res;
     }
 }

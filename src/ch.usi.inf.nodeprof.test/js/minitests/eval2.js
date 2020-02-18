@@ -13,4 +13,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-eval("var x = 1; function foo(a){console.log(a);}; foo(x);");
+const nested = "var y = 1; function bar(a){console.log(a);}; bar(x);";
+eval(`var x = 1; function foo(a){eval("${nested}");}; foo(x);`);

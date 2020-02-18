@@ -162,20 +162,15 @@ public final class AnalysisFilterSourceList extends AnalysisFilterBase {
         boolean isInternal = SourceMapping.isInternal(source);
         // use name or path of source depending whether we consider it internal
 
-        boolean isEval = isInternal && source.getName().startsWith(Evaluator.EVAL_AT_SOURCE_NAME_PREFIX);
-        boolean isIndirectEval = isInternal && source.getName().startsWith(Evaluator.FUNCTION_SOURCE_NAME) && !matchSources.contains(Evaluator.FUNCTION_SOURCE_NAME);
+        boolean isEval = SourceMapping.isEval(source);
+        boolean isIndirectEval = source.getName().startsWith(Evaluator.FUNCTION_SOURCE_NAME) && !matchSources.contains(Evaluator.FUNCTION_SOURCE_NAME);
 
         String name;
         if (isEval) {
             name = source.getName();
-            int startPos = name.indexOf('(');
-            int endPos = name.indexOf(')');
-            if (startPos > -1 && endPos > -1) {
-                int fileEnd = name.indexOf(':', startPos);
-                if (fileEnd > -1 && fileEnd < endPos) {
-                    endPos = fileEnd;
-                }
-                name = name.substring(startPos + 1, endPos);
+            String sourceOfEval = SourceMapping.innerMostEvalSource(name);
+            if (sourceOfEval != null) {
+                name = sourceOfEval.split(":")[0];
                 // TODO, currently there is no way to judge if the eval is called from internal
                 // for the moment, we assume it's not internal
                 isInternal = false;

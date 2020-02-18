@@ -1,5 +1,7 @@
-newSource: evalfunc.js / 2
+newSource: src/ch.usi.inf.nodeprof.test/js/minitests/evalfunc.js / internal: false / eval: false / 2
 newSource matches: 2
+newSource: src/ch.usi.inf.nodeprof.test/js/minitests/evalfunc.js / internal: false / eval: true / 2
+newSource matches: 1
 new Function body (function foo() { console.log("abc") })(); return 42;
 result function: anonymous
 invoking func: Function

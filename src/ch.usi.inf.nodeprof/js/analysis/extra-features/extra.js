@@ -48,14 +48,10 @@ const path = require('path');
     }
 
     this.newSource = function (source, code) {
-      // XXX skip eval for now
-      if (source.name.startsWith('eval'))
-        return;
-      // mangle absolute path name for test output
-      const name = path.parse(source.name).base;
+      const name = source.name;
       // count something in source contents to make sure it's there
       const re = /foo|var/g;
-      console.log("newSource: %s / %d", name, arguments.length);
+      console.log("newSource: %s / internal: %s / eval: %s / %d", name, source.internal, 'eval' in source, arguments.length);
       console.log("newSource matches: %d", (code.match(re) || []).length);
     }
   };

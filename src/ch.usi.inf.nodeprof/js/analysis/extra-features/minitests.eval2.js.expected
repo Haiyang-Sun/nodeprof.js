@@ -1,8 +1,15 @@
-newSource: eval2.js / 2
-newSource matches: 3
-pre var x = 1; function foo(a){console.log(a);}; foo(x);
+newSource: src/ch.usi.inf.nodeprof.test/js/minitests/eval2.js / internal: false / eval: false / 2
+newSource matches: 4
+pre var x = 1; function foo(a){eval("var y = 1; function bar(a){console.log(a);}; bar(x);");}; foo(x);
+newSource: src/ch.usi.inf.nodeprof.test/js/minitests/eval2.js / internal: false / eval: true / 2
+newSource matches: 4
+pre var y = 1; function bar(a){console.log(a);}; bar(x);
+newSource: src/ch.usi.inf.nodeprof.test/js/minitests/eval2.js / internal: false / eval: true / 2
+newSource matches: 1
 1
 invoking func: bound log
+invoking func: bar
+post var y = 1; function bar(a){console.log(a);}; bar(x);
 invoking func: foo
-location inside eval on line: 16
-post var x = 1; function foo(a){console.log(a);}; foo(x);
+location inside eval on line: 17
+post var x = 1; function foo(a){eval("var y = 1; function bar(a){console.log(a);}; bar(x);");}; foo(x);
