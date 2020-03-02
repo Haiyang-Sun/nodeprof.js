@@ -27,11 +27,9 @@ import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
-import com.oracle.truffle.js.runtime.builtins.JSString;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
-import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 
 public class NewSourceFactory extends AbstractFactory {
 

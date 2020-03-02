@@ -1,3 +1,0 @@
-functionEnter: insideVM / (*evalmachine.<anonymous>:1:10:1:42) / 4
-runInContext failed (as expected): Script execution timed out after 1000ms
-functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/nodetests/vmrun.js:36:1:36:18) / 4
