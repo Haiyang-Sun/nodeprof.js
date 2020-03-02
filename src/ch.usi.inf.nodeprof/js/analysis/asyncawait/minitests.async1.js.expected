@@ -1,6 +1,6 @@
-functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:1:1:24:4)
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:1:1:24:4) [Function] {}
-functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:1:2:24:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:1:1:22:7)
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:1:1:22:7) [Function] {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:1:1:22:7)
 asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:17:1:22:2)
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:18:5:21:6)
 binary 0 < 1 = true
@@ -15,7 +15,7 @@ asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:17:1:22:2) Promis
 awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:20:20:20:34) <p0>
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:18:5:21:6) undefined { yield: true }
 asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:17:1:22:2) Promise { <pending> } {}
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:1:2:24:2) undefined {}
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:1:1:22:7) undefined {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:18:5:21:6)
 awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:20:20:20:34) <p0> undefined resolved
 return (src/ch.usi.inf.nodeprof.test/js/minitests/async1.js:20:13:20:35) undefined

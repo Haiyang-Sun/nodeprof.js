@@ -1,6 +1,6 @@
-functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:1:1:37:4)
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:1:1:37:4) [Function] {}
-functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:1:2:37:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:1:1:35:29)
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:1:1:35:29) [Function] {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:1:1:35:29)
 write (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:17:1:21:2) func1 [AsyncFunction: func1]
 write (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:23:1:26:2) func2 [AsyncFunction: func2]
 write (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:28:1:31:2) func3 [AsyncFunction: func3]
@@ -23,7 +23,7 @@ awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:19:5:19:19) <p1>
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:17:1:21:2) undefined { yield: true }
 asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:17:25:21:2) Promise { <pending> } {}
 ###########
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:1:2:37:2) undefined {}
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:1:1:35:29) undefined {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:23:1:26:2)
 awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:25:12:25:26) <p0> 5 resolved
 return (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:25:5:25:27) 5
