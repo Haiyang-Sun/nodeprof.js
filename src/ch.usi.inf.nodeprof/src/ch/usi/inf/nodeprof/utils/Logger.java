@@ -44,8 +44,12 @@ public class Logger {
     }
 
     @TruffleBoundary
+    private static void print(PrintStream stream, String tag, String sourceHint, Object msg) {
+        stream.printf("[%s] %s: %s\n", tag, sourceHint, msg.toString());
+    }
+
     private static void print(PrintStream stream, String tag, SourceSection sourceSection, Object msg) {
-        stream.printf("[%s] %s: %s\n", tag, SourceMapping.makeLocationString(sourceSection).toString(), msg.toString());
+        print(stream, tag, SourceMapping.makeLocationString(sourceSection).toString(), msg.toString());
     }
 
     public static void log(Object msg, Level l) {
@@ -111,6 +115,14 @@ public class Logger {
 
     public static void error(int iid, Object msg) {
         error(SourceMapping.getSourceSectionForIID(iid), msg);
+    }
+
+    public static void error(Object iidOrObject, Object msg) {
+        if (iidOrObject instanceof Integer) {
+            error((int) iidOrObject, msg);
+        } else {
+            print(err, "e", iidOrObject.toString(), msg);
+        }
     }
 
     @TruffleBoundary

@@ -157,13 +157,12 @@ public abstract class AbstractFactory implements
      * @param arguments the arguments of the call
      */
     public void wrappedDispatchExecution(InteropLibrary lib, Object receiver, Object... arguments) throws InteropException {
-        int iid = (int) arguments[0];
         if (!nestedControl) {
             nestedControl = true;
             try {
                 lib.execute(receiver, arguments);
             } catch (JSCancelledExecutionException e) {
-                Logger.error(iid, "execution cancelled probably due to timeout");
+                Logger.error(arguments[0], "execution cancelled probably due to timeout");
             } catch (InteropException e) {
                 throw e;
             } finally {
