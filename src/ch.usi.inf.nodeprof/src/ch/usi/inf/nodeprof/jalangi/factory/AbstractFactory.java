@@ -15,6 +15,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
+import ch.usi.inf.nodeprof.utils.Logger;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.interop.InteropLibrary;
@@ -23,6 +24,7 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.YieldException;
 import com.oracle.truffle.js.runtime.GraalJSException;
+import com.oracle.truffle.js.runtime.JSCancelledExecutionException;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
@@ -154,18 +156,19 @@ public abstract class AbstractFactory implements
      * @param receiver the receiver of the call
      * @param arguments the arguments of the call
      */
-    public Object wrappedDispatchExecution(InteropLibrary lib, Object receiver, Object... arguments) throws InteropException {
+    public void wrappedDispatchExecution(InteropLibrary lib, Object receiver, Object... arguments) throws InteropException {
+        int iid = (int) arguments[0];
         if (!nestedControl) {
             nestedControl = true;
             try {
-                return lib.execute(receiver, arguments);
+                lib.execute(receiver, arguments);
+            } catch (JSCancelledExecutionException e) {
+                Logger.error(iid, "execution cancelled probably due to timeout");
             } catch (InteropException e) {
                 throw e;
             } finally {
                 nestedControl = false;
             }
-        } else {
-            return null;
         }
     }
 
