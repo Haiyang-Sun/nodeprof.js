@@ -18,7 +18,7 @@
     function MyAnalysis() {
         function formatDeclareLoc(iid) {
             var locObj = J$.iidToSourceObject(iid);
-            if (locObj.loc.start.line === 1 && locObj.loc.start.column === 2) {
+            if (locObj.loc.start.line === 1 && locObj.loc.start.column === 1) {
                 return '{{module}}';
             }
             return J$.iidToLocation(iid);
