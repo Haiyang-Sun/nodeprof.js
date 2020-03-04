@@ -22,6 +22,7 @@ import java.util.Iterator;
 import org.graalvm.options.OptionDescriptor;
 import org.graalvm.options.OptionDescriptors;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.ExecutionEventNode;
@@ -96,6 +97,7 @@ public class DebugInstrument extends TruffleInstrument {
                 return new ExecutionEventNode() {
                     @Node.Child private InteropLibrary dispatch = InteropLibrary.getFactory().createDispatched(5);
 
+                    @TruffleBoundary
                     @Override
                     public void onEnter(VirtualFrame frame) {
                         /*
