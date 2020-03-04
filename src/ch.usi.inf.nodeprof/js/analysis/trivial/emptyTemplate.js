@@ -97,10 +97,10 @@
         /**
          * These callbacks are called before and after a binary operation.
          **/
-        this.binaryPre = function (iid, op, left, right, isOpAssign, isSwitchCaseComparison, isComputed) {
+        this.binaryPre = function (iid, op, left, right) {
             return {op: op, left: left, right: right, skip: false};
         };
-        this.binary = function (iid, op, left, right, result, isOpAssign, isSwitchCaseComparison, isComputed) {
+        this.binary = function (iid, op, left, right, result) {
             return {result: result};
         };
 

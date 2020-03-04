@@ -41,11 +41,8 @@ public class BinaryFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null && !isLogic()) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getOp(), getLeft(inputs), getRight(inputs),
-                                    false, // isOpAssign
-                                    false, // isSwitchCaseComparison
-                                    false // isComputed
-                    );
+                    wrappedDispatchExecution(preDispatch, pre,
+                                    getSourceIID(), getOp(), getLeft(inputs), getRight(inputs));
                 }
             }
 
