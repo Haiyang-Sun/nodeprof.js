@@ -51,7 +51,7 @@ public class ReturnFactory extends AbstractFactory {
                     // TODO trigger for ConstantReturnNode which does not have input only?
                     if (inputs.length == 0) {
                         Object returnExceptionValue = ((ReturnException) exception).getResult();
-                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), (returnExceptionValue == null) ? getReturnValueFromFrame(frame) : ((ReturnException) exception).getResult());
+                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), (returnExceptionValue == null) ? getReturnValueFromFrameOrDefault(frame, Undefined.instance) : ((ReturnException) exception).getResult());
 
                     }
                 }

@@ -95,7 +95,7 @@ public class RootFactory extends AbstractFactory {
                         // FrameReturnNode
                         // TODO, ideally there should be some util function in JSFrameUtil to fetch
                         // the return slot's value
-                        executePost(frame, getReturnValueFromFrame(frame), inputs);
+                        executePost(frame, getReturnValueFromFrameOrDefault(frame, Undefined.instance), inputs);
                     }
                     return;
                 } else if (exception instanceof YieldException) {

@@ -40,12 +40,20 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
 public abstract class BaseEventHandlerNode extends Node {
     protected final EventContext context;
     @CompilationFinal private FrameSlot returnSlot;
+    @CompilationFinal private boolean noReturnSlot = false;
 
-    public Object getReturnValueFromFrame(VirtualFrame frame) {
+    public Object getReturnValueFromFrameOrDefault(VirtualFrame frame, Object defaultValue) {
         // cache the frame slot for the return value
-        if (returnSlot == null) {
+        if (returnSlot == null && !noReturnSlot) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
             returnSlot = frame.getFrameDescriptor().findFrameSlot("<return>");
+            if (returnSlot == null) {
+                Logger.warning("Could not find <return> slot");
+                noReturnSlot = true;
+            }
+        }
+        if (noReturnSlot) {
+            return defaultValue;
         }
         return frame.getValue(returnSlot);
     }
