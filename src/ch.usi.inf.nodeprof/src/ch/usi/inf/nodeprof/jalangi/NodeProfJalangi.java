@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
@@ -45,6 +44,7 @@ import ch.usi.inf.nodeprof.analysis.AnalysisFilterBase;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterJS;
 import ch.usi.inf.nodeprof.analysis.AnalysisFilterSourceList;
 import ch.usi.inf.nodeprof.analysis.NodeProfAnalysis;
+import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 
 /**
@@ -62,7 +62,7 @@ public class NodeProfJalangi extends NodeProfAnalysis {
     public Object onLoad() throws Exception {
         // Get the global object via an indirect eval that works in strict mode.
         // Define __jalangiAdapter on it, then implicitly "return" it to set the JS context.
-        Source src = Source.newBuilder(JavaScriptLanguage.ID, "(1,eval)('this').__jalangiAdapter = adapterVar; (1,eval)('this')", "nodeprof").build();
+        Source src = Source.newBuilder(JavaScriptLanguage.ID, "(1,eval)('this').__jalangiAdapter = adapterVar; return (1,eval)('this')", "nodeprof").build();
         CallTarget bootstrap = this.getEnv().parse(src, "adapterVar");
         Object globalObject = bootstrap.call(new JalangiAdapter(this));
         assert JSTypes.isDynamicObject(globalObject) : "bootstrap call did not return object";

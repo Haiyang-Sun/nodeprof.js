@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -27,44 +29,31 @@ public class GetFieldFactory extends AbstractFactory {
 
     public GetFieldFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post) {
-        super("getField", jalangiAnalysis, pre, post, 6, 7);
+        super("getField", jalangiAnalysis, pre, post);
         // TODO
-        setPreArguments(3, false); // isComputed
-        setPostArguments(4, false); // isComputed
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new PropertyReadEventHandler(context) {
-            @Child DirectCallNode preCall = createPreCallNode();
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
                     if (!this.isGlobal(inputs)) {
-                        setPreArguments(0, getSourceIID());
-                        setPreArguments(1, getReceiver(inputs));
-                        setPreArguments(2, getProperty());
-                        setPreArguments(4, isOpAssign());
-                        setPreArguments(5, isMethodCall());
-                        directCall(preCall, true, getSourceIID());
+                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getReceiver(inputs), getProperty(), false, isOpAssign(), isMethodCall());
                     }
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (post != null) {
                     if (!this.isGlobal(inputs)) {
-                        setPostArguments(0, getSourceIID());
-                        setPostArguments(1, getReceiver(inputs));
-                        setPostArguments(2, getProperty());
-                        setPostArguments(3, convertResult(result));
-                        setPostArguments(5, isOpAssign());
-                        setPostArguments(6, isMethodCall());
-                        directCall(postCall, false, getSourceIID());
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), getReceiver(inputs), getProperty(), convertResult(result), false, isOpAssign(), isMethodCall());
                     }
                 }
             }

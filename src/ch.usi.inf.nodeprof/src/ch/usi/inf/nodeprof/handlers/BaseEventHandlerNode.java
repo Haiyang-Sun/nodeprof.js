@@ -40,12 +40,20 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
 public abstract class BaseEventHandlerNode extends Node {
     protected final EventContext context;
     @CompilationFinal private FrameSlot returnSlot;
+    @CompilationFinal private boolean noReturnSlot = false;
 
-    public Object getReturnValueFromFrame(VirtualFrame frame) {
+    public Object getReturnValueFromFrameOrDefault(VirtualFrame frame, Object defaultValue) {
         // cache the frame slot for the return value
-        if (returnSlot == null) {
+        if (returnSlot == null && !noReturnSlot) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
             returnSlot = frame.getFrameDescriptor().findFrameSlot("<return>");
+            if (returnSlot == null) {
+                Logger.warning("Could not find <return> slot");
+                noReturnSlot = true;
+            }
+        }
+        if (noReturnSlot) {
+            return defaultValue;
         }
         return frame.getValue(returnSlot);
     }
@@ -88,8 +96,9 @@ public abstract class BaseEventHandlerNode extends Node {
     /**
      * @param frame the current virtual frame
      * @param inputs the input array get from ExecutionEventNode.getSavedInputValues()
+     * @throws Exception
      */
-    public void executePre(VirtualFrame frame, Object[] inputs) {
+    public void executePre(VirtualFrame frame, Object[] inputs) throws Exception {
 
     }
 
@@ -98,18 +107,20 @@ public abstract class BaseEventHandlerNode extends Node {
      * @param result of the execution of the instrumented node
      * @param inputs the input array get from ExecutionEventNode.getSavedInputValues()
      */
-    public void executePost(VirtualFrame frame, Object result, Object[] inputs) {
+    public void executePost(VirtualFrame frame, Object result, Object[] inputs) throws Exception {
 
     }
 
-    public void executeExceptional(@SuppressWarnings("unused") VirtualFrame frame, @SuppressWarnings("unused") Throwable exception) {
+    public void executeExceptional(@SuppressWarnings("unused") VirtualFrame frame, @SuppressWarnings("unused") Throwable exception) throws Exception {
 
     }
 
     /**
      * Control flow exception that may be treated like executePost, thus includes inputs[]
+     * 
+     * @throws Exception
      */
-    public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
+    public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) throws Exception {
         executeExceptional(frame, exception);
     }
 

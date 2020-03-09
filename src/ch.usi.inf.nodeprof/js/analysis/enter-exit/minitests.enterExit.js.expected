@@ -2,10 +2,10 @@ builtinEnter: Object.create / 4
 builtinExit: Object.create / 6
 builtinEnter: Object.create / 4
 builtinExit: Object.create / 6
-functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:1:1:20:4) / 3
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:1:1:18:7) / 3
 functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:16:2:18:2) / 4
 builtinEnter: Object.create / 4
 builtinExit: Object.create / 6
 functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:16:2:18:2) / 3
-functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:1:2:20:2) / 3
+functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/enterExit.js:1:1:18:7) / 3
 [ 'Object.create', 'foo' ]

@@ -15,13 +15,12 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
-import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
+import ch.usi.inf.nodeprof.utils.Logger;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.Truffle;
+import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
-import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.YieldException;
 import com.oracle.truffle.js.runtime.GraalJSException;
@@ -29,7 +28,6 @@ import com.oracle.truffle.js.runtime.JSCancelledExecutionException;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
-import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.builtins.JSUserObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Null;
@@ -37,18 +35,16 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.analysis.AnalysisFactory;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
-import ch.usi.inf.nodeprof.utils.Logger;
+import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 
+// a factory corresponds to a callback defined in Jalangi-like analysis
 public abstract class AbstractFactory implements
                 AnalysisFactory<BaseEventHandlerNode> {
+    // the jalangi analysis object
     protected final Object jalangiAnalysis;
 
     protected final DynamicObject pre;
     protected final DynamicObject post;
-
-    // for a given callback, the arguments have the same layout
-    protected final Object[] preArguments;
-    protected final Object[] postArguments;
 
     protected final String jalangiCallback;
 
@@ -103,56 +99,11 @@ public abstract class AbstractFactory implements
     }
 
     public AbstractFactory(String jalangiCallback, Object jalangiAnalysis, DynamicObject pre,
-                    DynamicObject post, int numPreArguments, int numPostArguments) {
+                    DynamicObject post) {
         this.jalangiCallback = jalangiCallback;
         this.jalangiAnalysis = jalangiAnalysis;
         this.pre = pre;
         this.post = post;
-        if (this.pre != null) {
-            this.preArguments = new Object[2 + numPreArguments];
-            this.preArguments[0] = this.jalangiAnalysis;
-            this.preArguments[1] = this.pre;
-        } else {
-            this.preArguments = null;
-        }
-        if (this.post != null) {
-            this.postArguments = new Object[2 + numPostArguments];
-            this.postArguments[0] = this.jalangiAnalysis;
-            this.postArguments[1] = this.post;
-        } else {
-            this.postArguments = null;
-        }
-    }
-
-    protected void setPreArguments(int index, Object value) {
-        assert value != null;
-        if (this.pre != null) {
-            assert this.preArguments.length > index + 2;
-            this.preArguments[index + 2] = value;
-        }
-    }
-
-    protected void setPostArguments(int index, Object value) {
-        assert value != null;
-        if (this.post != null) {
-            assert this.postArguments.length > index + 2;
-            this.postArguments[index + 2] = value;
-        }
-    }
-
-    @TruffleBoundary
-    public static DirectCallNode createDirectCallNode(DynamicObject func) {
-        return func == null ? null
-                        : Truffle.getRuntime().createDirectCallNode(
-                                        JSFunction.getCallTarget(func));
-    }
-
-    protected DirectCallNode createPreCallNode() {
-        return createDirectCallNode(pre);
-    }
-
-    protected DirectCallNode createPostCallNode() {
-        return createDirectCallNode(post);
     }
 
     /**
@@ -166,38 +117,6 @@ public abstract class AbstractFactory implements
             return Null.instance;
         }
         return result;
-    }
-
-    private static boolean nestedControl = false;
-
-    /**
-     * nestedControl is a tag to avoid instrumentation of the Jalangi analysis being called
-     * recursively
-     *
-     * call from Java to Jalangi JavaScript
-     *
-     * @param callNode
-     * @param isPre pre or post callback
-     * @param iid source section id
-     */
-    protected void directCall(DirectCallNode callNode, boolean isPre, int iid) {
-        if (nestedControl) {
-            return;
-        }
-        nestedControl = true;
-        try {
-            callNode.call(isPre ? preArguments : postArguments);
-        } catch (GraalJSException e) {
-            Logger.error(iid, "error happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]");
-            Logger.dumpException(e);
-        } catch (JSCancelledExecutionException e) {
-            Logger.error(iid, "execution cancelled probably due to timeout");
-        } catch (Exception e) {
-            Logger.error(iid, "unknown exception happened in event handler " + this.jalangiCallback + "[" + (isPre ? "Pre" : "Post") + "]", e.getClass());
-            throw e;
-        } finally {
-            nestedControl = false;
-        }
     }
 
     @TruffleBoundary
@@ -222,5 +141,37 @@ public abstract class AbstractFactory implements
             return wrapped;
         }
 
+    }
+
+    /**
+     * nestedControl is a tag to avoid instrumentation of the Jalangi analysis being called
+     * recursively
+     */
+    private static boolean nestedControl = false;
+
+    /**
+     * call from Java to Jalangi JavaScript using Interop
+     *
+     * @param lib interop library object
+     * @param receiver the receiver of the call
+     * @param arguments the arguments of the call
+     */
+    public void wrappedDispatchExecution(InteropLibrary lib, Object receiver, Object... arguments) throws InteropException {
+        if (!nestedControl) {
+            nestedControl = true;
+            try {
+                lib.execute(receiver, arguments);
+            } catch (JSCancelledExecutionException e) {
+                Logger.error(arguments[0], "execution cancelled probably due to timeout");
+            } catch (InteropException e) {
+                throw e;
+            } finally {
+                nestedControl = false;
+            }
+        }
+    }
+
+    public InteropLibrary createDispatchNode() {
+        return InteropLibrary.getFactory().create(this.jalangiAnalysis);
     }
 }

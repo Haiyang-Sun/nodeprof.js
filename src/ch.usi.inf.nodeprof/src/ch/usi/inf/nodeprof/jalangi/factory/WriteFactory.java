@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -31,58 +33,41 @@ public class WriteFactory extends AbstractFactory {
 
     public WriteFactory(Object jalangiAnalysis, DynamicObject post,
                     boolean isProperty) {
-        super("write", jalangiAnalysis, null, post, -1, 6);
+        super("write", jalangiAnalysis, null, post);
         this.isProperty = isProperty;
-        // TODO
-        setPostArguments(3, Undefined.instance); // value before write
-        setPostArguments(5, true); // isScriptLocal
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         if (!isProperty) {
             return new VarWriteEventHandler(context) {
-                @Child DirectCallNode postCall = createPostCallNode();
-
-                @Override
-                public void executePre(VirtualFrame frame, Object[] inputs) {
-
-                }
+                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
-                                Object[] inputs) {
+                                Object[] inputs) throws InteropException {
                     if (post == null) {
                         return;
                     }
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, getName());
-                    setPostArguments(2, getValue(inputs));
-                    setPostArguments(4, false); // isGlobal
-                    directCall(postCall, false, getSourceIID());
+                    // TODO: the value before write is set to be Undefined and isScriptLocal is
+                    // always true
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getName(), getValue(inputs), Undefined.instance, false, true);
                 }
             };
         } else {
             return new PropertyWriteEventHandler(context) {
-                @Child DirectCallNode postCall = createPostCallNode();
-
-                @Override
-                public void executePre(VirtualFrame frame, Object[] inputs) {
-
-                }
+                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
-                                Object[] inputs) {
+                                Object[] inputs) throws InteropException {
                     if (post == null) {
                         return;
                     }
                     if (isGlobal(inputs)) {
-                        setPostArguments(0, getSourceIID());
-                        setPostArguments(1, getProperty());
-                        setPostArguments(2, getValue(inputs));
-                        setPostArguments(4, true); // isGlobal
-                        directCall(postCall, false, getSourceIID());
+                        // TODO: the value before write is set to be Undefined and isScriptLocal is
+                        // always true
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), getProperty(), getValue(inputs), Undefined.instance, true, true);
                     }
                 }
             };

@@ -1,6 +1,6 @@
-functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:1:1:31:4)
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:1:1:31:4) [Function] {}
-functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:1:2:31:2)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:1:1:29:55)
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:1:1:29:55) [Function] {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:1:1:29:55)
 write (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:17:1:23:2) countTo6 [AsyncFunction: countTo6]
 write (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:25:1:27:2) main [AsyncFunction: main]
 asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:26:4:26:29)
@@ -17,19 +17,19 @@ conditional (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:18:9:18:14) tru
 return (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:19:8:19:17) 2
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:17:1:23:2) 2 {}
 asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:18:5:22:6) Promise { 2 } {}
-awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:21:16:21:37) Promise { 2 }
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:21:16:21:37) <p0>
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:17:1:23:2) undefined { yield: true }
 asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:18:5:22:6) Promise { <pending> } {}
-awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:26:11:26:28) Promise { <pending> }
+awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:26:11:26:28) <p1>
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:25:1:27:2) undefined { yield: true }
 asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:26:4:26:29) Promise { <pending> } {}
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:1:2:31:2) undefined {}
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:1:1:29:55) undefined {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:17:1:23:2)
-awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:21:16:21:37) 2 {}
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:21:16:21:37) <p0> 2 resolved
 return (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:21:9:21:38) 2
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:17:1:23:2) 2 {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:25:1:27:2)
-awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:26:11:26:28) 2 {}
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:26:11:26:28) <p1> 2 resolved
 return (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:26:4:26:29) 2
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:25:1:27:2) 2 {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async0.js:29:13:29:52)

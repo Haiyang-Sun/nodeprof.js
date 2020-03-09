@@ -17,7 +17,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -30,55 +32,42 @@ public class BuiltinFactory extends AbstractFactory {
 
     public BuiltinFactory(Object jalangiAnalysis, DynamicObject pre,
                     DynamicObject post, String builtinFilter) {
-        super("builtin", jalangiAnalysis, pre, post, 4, 6);
+        super("builtin", jalangiAnalysis, pre, post);
         this.builtinFilter = builtinFilter;
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new BuiltinRootEventHandler(context) {
-            @Child DirectCallNode preCall = createPreCallNode();
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 2, 0);
 
             final boolean isTarget = builtinFilter == null ? true : getBuiltinName().equals(builtinFilter);
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (isTarget && pre != null) {
-                    setPreArguments(0, this.getBuiltinName());
-                    setPreArguments(1, getFunction(frame));
-                    setPreArguments(2, getReceiver(frame));
-                    setPreArguments(3, makeArgs.executeArguments(getArguments(frame)));
-
-                    directCall(preCall, true, getSourceIID());
+                    wrappedDispatchExecution(preDispatch, pre, getBuiltinName(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)));
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (isTarget && post != null) {
-                    setPostArguments(0, this.getBuiltinName());
-                    setPostArguments(1, getFunction(frame));
-                    setPostArguments(2, getReceiver(frame));
-                    setPostArguments(3, makeArgs.executeArguments(getArguments(frame)));
-                    setPostArguments(4, convertResult(result));
-                    setPostArguments(5, createWrappedException(null));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, this.getBuiltinName(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)), convertResult(result),
+                                    createWrappedException(null));
                 }
             }
 
             @Override
-            public void executeExceptional(VirtualFrame frame, Throwable exception) {
+            public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
                 if (isTarget && post != null) {
-                    setPostArguments(0, this.getBuiltinName());
-                    setPostArguments(1, getFunction(frame));
-                    setPostArguments(2, getReceiver(frame));
-                    setPostArguments(3, makeArgs.executeArguments(getArguments(frame)));
-                    setPostArguments(4, Undefined.instance);
-                    setPostArguments(5, createWrappedException(exception));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, this.getBuiltinName(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)), Undefined.instance,
+                                    createWrappedException(null));
+
                 }
             }
         };

@@ -29,6 +29,7 @@ import com.oracle.truffle.api.instrumentation.Tag;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.JavaScriptNode;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags;
@@ -39,7 +40,7 @@ import com.oracle.truffle.js.nodes.instrumentation.JSTags.ReadPropertyTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.ReadVariableTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.WritePropertyTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.WriteVariableTag;
-import com.oracle.truffle.js.runtime.JSTruffleOptions;
+import com.oracle.truffle.js.runtime.JSConfig;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 
@@ -61,7 +62,7 @@ public class RawEventsTracingSupport {
                             StandardTags.ExpressionTag.class,
                             JSTags.InputNodeTag.class).build();
             instrumenter.attachExecutionEventFactory(sourceSectionFilter, inputGeneratingObjects, getFactory());
-            Logger.info("Low-level event tracing enabled [SVM: " + JSTruffleOptions.SubstrateVM + "]");
+            Logger.info("Low-level event tracing enabled [SVM: " + JSConfig.SubstrateVM + "]");
             enabled = true;
         }
     }
@@ -109,13 +110,23 @@ public class RawEventsTracingSupport {
                         log(format);
                     }
 
+                    @Node.Child private InteropLibrary dispatch = InteropLibrary.getFactory().createDispatched(5);
+
                     @TruffleBoundary
                     @Override
                     public void onEnter(VirtualFrame frame) {
+                        DynamicObject func = (DynamicObject) frame.getArguments()[1];
+                        try {
+                            dispatch.execute(JSFunction.createEmptyFunction(JSObject.getJSContext(func).getRealm()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         String format = String.format("%-7s|tag: %-20s @ %-20s |attr: %-20s", "ENTER", getTagNames((JavaScriptNode) c.getInstrumentedNode()),
                                         c.getInstrumentedNode().getClass().getSimpleName(), getAttributesDescription(c));
                         log(format);
                         depth++;
+
                     }
 
                     @TruffleBoundary

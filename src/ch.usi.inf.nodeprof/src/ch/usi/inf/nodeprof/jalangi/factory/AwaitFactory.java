@@ -18,8 +18,11 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.builtins.JSPromise;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -28,57 +31,50 @@ import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
 public class AwaitFactory extends AbstractFactory {
 
     public AwaitFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("await", jalangiAnalysis, pre, post, 2, 3);
+        super("await", jalangiAnalysis, pre, post);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new CFBranchEventHandler(context) {
-            @Child DirectCallNode preCall = createDirectCallNode(pre);
-            @Child DirectCallNode postCall = createDirectCallNode(post);
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
-                if (pre != null && this.isAwaitNode()) {
-                    // ignore the first entry of await node
-                    if (inputs == null || inputs.length == 0) {
-                        return;
-                    }
-                    // awaitPre happens before suspension
-                    if (inputs[0] == inputs[1]) {
-                        setPreArguments(0, getSourceIID());
-                        setPreArguments(1, inputs[0]);
-                        directCall(preCall, true, getSourceIID());
+
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
+                if (!this.isAwaitNode()) {
+                    return;
+                }
+                if (inputs == null || inputs.length == 0) {
+                    return;
+                }
+                if (pre != null) {
+                    if (inputs[0] == inputs[1] && JSPromise.isJSPromise(inputs[0])) {
+                        // await some promise
+                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                    } else if (inputs[0] != inputs[1] && JSPromise.isJSPromise(inputs[1])) {
+                        // await some value, and inputs[1] is the internal promise
+                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
                     }
                 }
-            }
-
-            @Override
-            public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
-
-                if (post != null && this.isAwaitNode()) {
-                    setPostArguments(0, this.getSourceIID());
-                    setPostArguments(1, result);
-                    setPostArguments(2, createWrappedException(null));
-                    directCall(postCall, false, getSourceIID());
-                }
-            }
-
-            @Override
-            public void executeExceptional(VirtualFrame frame, Throwable exception) {
                 if (post != null) {
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, Undefined.instance);
-                    setPostArguments(2, createWrappedException(exception));
-                    directCall(postCall, false, getSourceIID());
+                    if (inputs[0] != inputs[1] && !JSPromise.isJSPromise((inputs[1]))) {
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(),
+                                        inputs[0] == null ? Undefined.instance : inputs[0],
+                                        assertGetInput(1, inputs, "awaited ret"),
+                                        inputs[0] != null && JSPromise.isJSPromise(inputs[0]) && JSPromise.isRejected((DynamicObject) inputs[0]));
+                    } else if (inputs[0] == inputs[1] && !JSPromise.isJSPromise(inputs[0])) {
+                        // await some value
+                        wrappedDispatchExecution(postDispatch, post, getSourceIID(),
+                                        assertGetInput(0, inputs, "awaited val"),
+                                        assertGetInput(0, inputs, "awaited ret"),
+                                        false);
+
+                    }
                 }
             }
 
-            @Override
-            public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
-                // TODO handle Yield exception
-            }
         };
     }
 }

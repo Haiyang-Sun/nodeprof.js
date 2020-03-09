@@ -18,7 +18,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -28,43 +30,36 @@ import ch.usi.inf.nodeprof.handlers.CFRootEventHandler;
 public class AsyncRootFactory extends AbstractFactory {
 
     public AsyncRootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
-        super("async-root", jalangiAnalysis, pre, post, 1, 3);
+        super("async-root", jalangiAnalysis, pre, post);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new CFRootEventHandler(context) {
-            @Child DirectCallNode preCall = createDirectCallNode(pre);
-            @Child DirectCallNode postCall = createDirectCallNode(post);
+            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null && this.isAsyncRoot()) {
-                    setPreArguments(0, getSourceIID());
-                    directCall(preCall, true, getSourceIID());
+                    wrappedDispatchExecution(preDispatch, pre, getSourceIID());
                 }
             }
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
 
                 if (post != null && this.isAsyncRoot()) {
-                    setPostArguments(0, this.getSourceIID());
                     assert (result instanceof DynamicObject);
-                    setPostArguments(1, result);
-                    setPostArguments(2, createWrappedException(null));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), result, createWrappedException(null));
                 }
             }
 
             @Override
-            public void executeExceptional(VirtualFrame frame, Throwable exception) {
+            public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
                 if (post != null) {
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, Undefined.instance);
-                    setPostArguments(2, createWrappedException(exception));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
                 }
             }
 

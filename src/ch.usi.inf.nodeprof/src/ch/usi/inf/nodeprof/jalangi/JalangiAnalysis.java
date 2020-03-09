@@ -16,7 +16,24 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import static ch.usi.inf.nodeprof.ProfiledTagEnum.*;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.BINARY;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.BUILTIN;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.CF_BRANCH;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.CF_ROOT;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.DECLARE;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.ELEMENT_READ;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.ELEMENT_WRITE;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.EVAL;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.EXPRESSION;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.INVOKE;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.LITERAL;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.NEW;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.PROPERTY_READ;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.PROPERTY_WRITE;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.ROOT;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.UNARY;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_READ;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_WRITE;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,7 +51,6 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.jalangi.factory.AsyncRootFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.AwaitFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BinaryFactory;
-import ch.usi.inf.nodeprof.jalangi.factory.ReturnFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.BuiltinFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ConditionalFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.DeclareFactory;
@@ -51,6 +67,7 @@ import ch.usi.inf.nodeprof.jalangi.factory.NewSourceFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutElementFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ReadFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.ReturnFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.RootFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.UnaryFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.WriteFactory;

@@ -20,7 +20,9 @@ import java.util.EnumSet;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralTag;
 
@@ -34,7 +36,7 @@ public class LiteralFactory extends AbstractFactory {
 
     @TruffleBoundary
     public LiteralFactory(Object jalangiAnalysis, DynamicObject post) {
-        super("literal", jalangiAnalysis, null, post, -1, 5);
+        super("literal", jalangiAnalysis, null, post);
 
         if (!isPropertyUndefined(post, "types")) {
             Object[] literalTypes = readArray(post, "types");
@@ -57,23 +59,13 @@ public class LiteralFactory extends AbstractFactory {
     public BaseEventHandlerNode create(EventContext context) {
         return new LiteralEventHandler(context) {
             private final boolean skip = !types.contains(LiteralTag.Type.valueOf(getLiteralType()));
-            @Child DirectCallNode postCall = skip ? null : createPostCallNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (post != null && !skip) {
-                    /**
-                     * TODO, move constant argument setting to Node constructor and see if the
-                     * performance is better e.g., getSourceIID, hasGetterSetter, literalType,
-                     * literalMembers are all constant specific to the current node
-                     **/
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, convertResult(result));
-                    setPostArguments(2, hasGetterSetter(result));
-                    setPostArguments(3, getLiteralType());
-                    setPostArguments(4, getObjectLiteralMembers(result));
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), convertResult(result), hasGetterSetter(result), getLiteralType(), getObjectLiteralMembers(result));
                 }
             }
 

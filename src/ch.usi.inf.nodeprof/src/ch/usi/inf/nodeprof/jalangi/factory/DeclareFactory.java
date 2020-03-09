@@ -18,7 +18,9 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -28,22 +30,19 @@ public class DeclareFactory extends AbstractFactory {
 
     @TruffleBoundary
     public DeclareFactory(Object jalangiAnalysis, DynamicObject post) {
-        super("declare", jalangiAnalysis, null, post, -1, 3);
+        super("declare", jalangiAnalysis, null, post);
     }
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new DeclareEventHandler(context) {
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
-                            Object[] inputs) {
+                            Object[] inputs) throws InteropException {
                 if (post != null) {
-                    setPostArguments(0, getSourceIID());
-                    setPostArguments(1, getDeclareName());
-                    setPostArguments(2, getDeclareType());
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getDeclareName(), getDeclareType());
                 }
             }
 

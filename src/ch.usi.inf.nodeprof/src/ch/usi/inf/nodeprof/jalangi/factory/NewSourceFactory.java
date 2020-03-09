@@ -22,7 +22,9 @@ import java.util.Set;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 
@@ -32,7 +34,7 @@ import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
 public class NewSourceFactory extends AbstractFactory {
 
     public NewSourceFactory(Object jalangiAnalysis, DynamicObject post) {
-        super("newSource", jalangiAnalysis, null, post, -1, 2);
+        super("newSource", jalangiAnalysis, null, post);
     }
 
     private Set<Source> seenSources = new HashSet<>();
@@ -48,23 +50,21 @@ public class NewSourceFactory extends AbstractFactory {
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new FunctionRootEventHandler(context) {
-            @Child DirectCallNode postCall = createPostCallNode();
+            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            final Source source = getSource();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) {
+            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (post == null) {
                     return;
                 }
 
-                Source source = getSource();
                 if (source == null) {
                     return;
                 }
 
                 if (isNewSource(source)) {
-                    setPostArguments(0, convertResult(source.getName()));
-                    setPostArguments(1, source.getCharacters().toString());
-                    directCall(postCall, false, getSourceIID());
+                    wrappedDispatchExecution(postDispatch, post, convertResult(source.getName()), source.getCharacters().toString());
                 }
             }
         };

@@ -17,9 +17,9 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.js.runtime.builtins.JSFunction;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
-import com.oracle.truffle.js.runtime.builtins.JSFunction;
 
 /**
  * Abstract event handler for function roots

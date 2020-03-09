@@ -60,10 +60,10 @@ public enum ProfiledTagEnum {
      * counting the instrumentation
      */
     public int usedAnalysis = 0;
-    public double nodeCount = 0;
-    public double preHitCount = 0;
-    public double postHitCount = 0;
-    public double exceptionHitCount = 0;
+    public long nodeCount = 0;
+    public long preHitCount = 0;
+    public long postHitCount = 0;
+    public long exceptionHitCount = 0;
 
     ProfiledTagEnum(Class<? extends Tag> clazz, int expectedNumInputs) {
         this.clazz = clazz;

@@ -40,7 +40,7 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingl
 
     @Override
     @ExplodeLoop
-    public void executePre(VirtualFrame frame, Object[] inputs) {
+    public void executePre(VirtualFrame frame, Object[] inputs) throws Exception {
         for (T handler : handlers) {
             handler.executePre(frame, inputs);
         }
@@ -48,7 +48,7 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingl
 
     @Override
     @ExplodeLoop
-    public void executePost(VirtualFrame frame, Object result, Object[] inputs) {
+    public void executePost(VirtualFrame frame, Object result, Object[] inputs) throws Exception {
         for (T handler : handlers) {
             handler.executePost(frame, result, inputs);
         }
@@ -56,7 +56,7 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingl
 
     @ExplodeLoop
     @Override
-    public void executeExceptional(VirtualFrame frame, Throwable exception) {
+    public void executeExceptional(VirtualFrame frame, Throwable exception) throws Exception {
         for (T handler : handlers) {
             handler.executeExceptional(frame, exception);
         }
@@ -64,7 +64,7 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingl
 
     @Override
     @ExplodeLoop
-    public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) {
+    public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) throws Exception {
         for (T handler : handlers) {
             handler.executeExceptionalCtrlFlow(frame, exception, inputs);
         }

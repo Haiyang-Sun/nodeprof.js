@@ -21,19 +21,18 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.ExecutionEventNode;
+import com.oracle.truffle.api.nodes.ControlFlowException;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
-import com.oracle.truffle.api.nodes.ControlFlowException;
 
 public class ProfilerExecutionEventNode extends ExecutionEventNode {
     protected final EventContext context;
     protected final ProfiledTagEnum cb;
     @Child BaseEventHandlerNode child;
     int hasOnEnter = 0;
-
     /**
      * A flag to switch on/off the profiling analysis: true => enabled, false => disabled
      *
@@ -81,7 +80,11 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
         }
         if (this.child.isLastIndex(getInputCount(), inputIndex)) {
             this.cb.preHitCount++;
-            this.child.executePre(frame, child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null);
+            try {
+                this.child.executePre(frame, child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null);
+            } catch (Exception e) {
+                reportError(null, e);
+            }
         }
     }
 
@@ -90,11 +93,17 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
         if (!profilerEnabled) {
             return;
         }
+
         hasOnEnter++;
-        this.child.enter(frame);
-        if (this.child.isLastIndex(getInputCount(), -1)) {
-            this.cb.preHitCount++;
-            this.child.executePre(frame, null);
+        try {
+            this.child.enter(frame);
+            if (this.child.isLastIndex(getInputCount(), -1)) {
+                this.cb.preHitCount++;
+                this.child.executePre(frame, null);
+
+            }
+        } catch (Exception e) {
+            reportError(null, e);
         }
     }
 
@@ -103,21 +112,22 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
         if (!profilerEnabled) {
             return;
         }
-        if (hasOnEnter > 0) {
-            hasOnEnter--;
-            this.cb.postHitCount++;
-            Object[] inputs = child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null;
-            try {
+        Object[] inputs = null;
+        try {
+            if (hasOnEnter > 0) {
+                hasOnEnter--;
+                this.cb.postHitCount++;
+                inputs = child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null;
                 this.child.executePost(frame, result, inputs);
-            } catch (Exception e) {
-                reportError(inputs, e);
             }
+        } catch (Exception e) {
+            reportError(inputs, e);
         }
     }
 
     @TruffleBoundary
     private void reportError(Object[] inputs, Exception e) {
-        Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + (inputs == null ? "null" : inputs.length));
+        Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + (inputs == null ? "null" : inputs.length) + " " + e.getMessage());
         if (inputs != null) {
             for (int i = 0; i < inputs.length; i++) {
                 Logger.error(context.getInstrumentedSourceSection(),
@@ -137,15 +147,21 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
             return;
         }
 
-        if (hasOnEnter > 0) {
-            hasOnEnter--;
-            this.cb.exceptionHitCount++;
-            if (exception instanceof ControlFlowException) {
-                Object[] inputs = child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null;
-                this.child.executeExceptionalCtrlFlow(frame, exception, inputs);
-            } else {
-                this.child.executeExceptional(frame, exception);
+        Object[] inputs = null;
+        try {
+            if (hasOnEnter > 0) {
+                hasOnEnter--;
+                this.cb.exceptionHitCount++;
+                if (exception instanceof ControlFlowException) {
+                    inputs = child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null;
+                    this.child.executeExceptionalCtrlFlow(frame, exception, inputs);
+                } else {
+                    this.child.executeExceptional(frame, exception);
+                }
+
             }
+        } catch (Exception e) {
+            reportError(inputs, e);
         }
     }
 
