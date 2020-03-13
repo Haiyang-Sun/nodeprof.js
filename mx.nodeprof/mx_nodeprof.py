@@ -143,7 +143,7 @@ def testJalangi(args):
 
     analysisdir = join(_suite.dir, 'src/ch.usi.inf.nodeprof/js/analysis');
     testdir = join(_suite.dir, 'src/ch.usi.inf.nodeprof.test/js');
-    vmArgs = [];
+    vmArgs = ["--symbolic-locs"];
     all = False;
     analyses = [];
     force = False;
@@ -189,6 +189,7 @@ def runJalangi(args, excl="", outFile=None, tracable=True):
     parser.add_argument("--debugger", action="store_true")
     parser.add_argument("--excl", "--nodeprof.ExcludeSource", help="exclude sources", default="")
     parser.add_argument("--scope", "--nodeprof.Scope", help="instrumentation scope", choices=["app", "module", "all"], default="module")
+    parser.add_argument("--symbolic-locs", "--nodeprof.SymbolicLocations", help="symbolic locations", action="store_true")
     # mx-only options
     parser.add_argument("--svm", help="enable SubstrateVM", action="store_true")
     parser.add_argument("--trace", help="enable instrumentation API tracing", action="store_true")
@@ -211,7 +212,7 @@ def runJalangi(args, excl="", outFile=None, tracable=True):
     # exclude analyses by default
     excl = ','.join([i for i in parsed.excl.split(',') if i != ''] + [os.path.abspath(i) for i in parsed.analysis])
 
-    jalangiArgs = (["--vm.Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"] if parsed.debugger else []) + ["--nodeprof.Scope="+parsed.scope] + (["--nodeprof.ExcludeSource="+excl] if len(excl) else []) + jalangiArgs + jalangiAnalysisArg
+    jalangiArgs = (["--vm.Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"] if parsed.debugger else []) + ["--nodeprof.Scope="+parsed.scope] + (["--nodeprof.ExcludeSource="+excl] if len(excl) else []) + (["--nodeprof.SymbolicLocations=true"] if parsed.symbolic_locs else []) + jalangiArgs + jalangiAnalysisArg
     _runJalangi(jalangiArgs, outFile=outFile, svm=parsed.svm, debug=parsed.debug, trace=(tracable and parsed.trace));
 
 def unitTests(args):

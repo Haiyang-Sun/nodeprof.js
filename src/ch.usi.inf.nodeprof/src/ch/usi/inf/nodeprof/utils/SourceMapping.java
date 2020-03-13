@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,16 +36,20 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 
 public abstract class SourceMapping {
     private static int iidGen = 0;
-    @CompilationFinal private static HashMap<Integer, String> iidMap;
+    @CompilationFinal private static HashMap<Integer, String> iidToLocationCache;
     @CompilationFinal private static HashMap<SourceSection, Integer> sourceSet;
     @CompilationFinal private static HashMap<Integer, SourceSection> idToSource;
+    @CompilationFinal private static HashMap<SourceSection, String> syntheticLocations;
 
     @TruffleBoundary
     private static void init() {
         CompilerDirectives.transferToInterpreterAndInvalidate();
-        iidMap = new HashMap<>();
+        iidToLocationCache = new HashMap<>();
         sourceSet = new HashMap<>();
         idToSource = new HashMap<>();
+        if (GlobalConfiguration.SYMBOLIC_LOCATIONS) {
+            syntheticLocations = new HashMap<>();
+        }
     }
 
     static {
@@ -66,11 +70,11 @@ public abstract class SourceMapping {
 
     @TruffleBoundary
     public static String getLocationForIID(int iid) {
-        if (iidMap.containsKey(iid)) {
-            return iidMap.get(iid);
+        if (iidToLocationCache.containsKey(iid)) {
+            return iidToLocationCache.get(iid);
         } else if (idToSource.containsKey(iid)) {
             String res = makeLocationString(idToSource.get(iid)).toString();
-            iidMap.put(iid, res);
+            iidToLocationCache.put(iid, res);
             return res;
         } else {
             return null;
@@ -137,10 +141,18 @@ public abstract class SourceMapping {
         return o;
     }
 
+    public static boolean isModuleOrWrapper(SourceSection section) {
+        if (section == null) {
+            return false;
+        }
+        int start = section.getCharIndex();
+        return start <= 1;
+    }
+
     @TruffleBoundary
     public static synchronized void reset() {
         iidGen = 0;
-        iidMap.clear();
+        iidToLocationCache.clear();
         sourceSet.clear();
         idToSource.clear();
     }
@@ -162,6 +174,11 @@ public abstract class SourceMapping {
 
     private static StringBuilder makeSectionString(SourceSection sourceSection) {
         StringBuilder b = new StringBuilder();
+        if (syntheticLocations != null && syntheticLocations.containsKey(sourceSection)) {
+            b.append("{{");
+            b.append(syntheticLocations.get(sourceSection));
+            return b.append("}}");
+        }
         b.append(sourceSection.getStartLine()).append(":").append(sourceSection.getStartColumn()).append(":").append(sourceSection.getEndLine()).append(":").append(sourceSection.getEndColumn() + 1);
         return b;
     }
@@ -179,6 +196,15 @@ public abstract class SourceMapping {
         b.append(":").append(makeSectionString(sourceSection));
         b.append(")");
         return b;
+    }
+
+    public static void addSyntheticLocation(SourceSection sourceSection, String name) {
+        assert syntheticLocations != null : "SYMBOLIC_LOCATIONS not enabled";
+        boolean added = syntheticLocations.put(sourceSection, name) != null;
+        if (added) {
+            // invalidate cache
+            iidToLocationCache.remove(sourceSet.get(sourceSection));
+        }
     }
 
     /**

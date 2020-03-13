@@ -64,6 +64,11 @@ public class GlobalConfiguration {
      */
     @CompilationFinal public static boolean LOG_ABSOLUTE_PATH;
 
+    /**
+     * use synthetic locations for modules, wrappers in iidToLocation
+     */
+    @CompilationFinal public static boolean SYMBOLIC_LOCATIONS;
+
     @TruffleBoundary
     public static void setup(Env env) {
         DEBUG_TRACING = env.getOptions().get(NodeProfCLI.TRACE_EVENTS);
@@ -73,5 +78,6 @@ public class GlobalConfiguration {
         EXCL = env.getOptions().get(NodeProfCLI.EXCLUDE_SOURCE);
         IGNORE_JALANGI_EXCEPTION = env.getOptions().get(NodeProfCLI.IGNORE_JALANGI_EXCEPTION);
         LOG_ABSOLUTE_PATH = env.getOptions().get(NodeProfCLI.LOG_ABSOLUTE_PATH);
+        SYMBOLIC_LOCATIONS = env.getOptions().get(NodeProfCLI.SYMBOLIC_LOCATIONS);
     }
 }

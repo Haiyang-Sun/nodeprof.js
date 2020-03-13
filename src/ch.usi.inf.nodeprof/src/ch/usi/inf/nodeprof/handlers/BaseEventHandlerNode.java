@@ -25,7 +25,10 @@ import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.api.nodes.RootNode;
+import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.SourceSection;
+import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
@@ -242,5 +245,27 @@ public abstract class BaseEventHandlerNode extends Node {
      */
     public int getPriority() {
         return 0;
+    }
+
+    private static boolean isModuleInvocation(Object[] args) {
+        if (args.length != 7) {
+            return false;
+        }
+        if (JSFunction.isJSFunction(args[3])) {
+            return "require".equals(JSFunction.getName((DynamicObject) args[3]));
+        }
+        return false;
+    }
+
+    protected static void checkForSymbolicLocation(Node node, Object[] args) {
+        if (GlobalConfiguration.SYMBOLIC_LOCATIONS) {
+            RootNode root = node.getRootNode();
+            assert root != null;
+            if (":program".equals(root.getName())) {
+                SourceMapping.addSyntheticLocation(root.getSourceSection(), ":program");
+            } else if (SourceMapping.isModuleOrWrapper(root.getSourceSection()) && isModuleInvocation(args)) {
+                SourceMapping.addSyntheticLocation(root.getSourceSection(), "module");
+            }
+        }
     }
 }

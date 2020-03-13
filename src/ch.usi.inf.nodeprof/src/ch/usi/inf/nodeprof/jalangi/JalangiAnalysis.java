@@ -345,11 +345,10 @@ public class JalangiAnalysis {
         /**
          * New source code callback
          */
-        if (this.callbacks.containsKey("newSource")) {
-            this.instrument.onCallback(
-                            ProfiledTagEnum.ROOT,
-                            new NewSourceFactory(this.jsAnalysis, callbacks.get("newSource")));
-        }
+        // TODO always enabled but should deactivate after first execution
+        this.instrument.onCallback(
+                        ProfiledTagEnum.ROOT,
+                        new NewSourceFactory(this.jsAnalysis, callbacks.get("newSource")));
     }
 
     /**

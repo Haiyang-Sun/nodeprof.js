@@ -42,6 +42,8 @@ public class DeclareFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
+                    checkForSymbolicLocation(context.getInstrumentedNode(), frame.getArguments());
+
                     wrappedDispatchExecution(postDispatch, post, getSourceIID(), getDeclareName(), getDeclareType());
                 }
             }
