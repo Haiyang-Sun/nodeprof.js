@@ -1,6 +1,6 @@
-functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:1:1:30:55)
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:1:1:30:55) [Function] {}
-functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:1:1:30:55)
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:{{:program}})
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:{{:program}}) [Function] {}
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:{{module}})
 write (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:17:1:24:2) countTo6 [AsyncFunction: countTo6]
 write (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:26:1:28:2) main [AsyncFunction: main]
 asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:27:4:27:29)
@@ -61,7 +61,7 @@ asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:17:28:24:2) Promi
 awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:27:11:27:28) <p5>
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:26:1:28:2) undefined { yield: true }
 asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:27:4:27:29) Promise { <pending> } {}
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:1:1:30:55) undefined {}
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:{{module}}) undefined {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:17:1:24:2)
 awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:22:16:22:37) <p0> 6 resolved
 return (src/ch.usi.inf.nodeprof.test/js/minitests/async3.js:22:9:22:38) 6

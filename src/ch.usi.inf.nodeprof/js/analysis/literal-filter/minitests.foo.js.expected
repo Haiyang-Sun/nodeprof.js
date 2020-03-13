@@ -1,2 +1,2 @@
-(src/ch.usi.inf.nodeprof.test/js/minitests/foo.js:1:1:4:9) FunctionLiteral [Function]
+(src/ch.usi.inf.nodeprof.test/js/minitests/foo.js:{{:program}}) FunctionLiteral [Function]
 (src/ch.usi.inf.nodeprof.test/js/minitests/foo.js:1:1:2:2) FunctionLiteral [Function: foo]

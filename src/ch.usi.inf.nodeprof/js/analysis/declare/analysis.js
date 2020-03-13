@@ -16,15 +16,8 @@
 //DO NOT INSTRUMENT
 (function (sandbox) {
     function MyAnalysis() {
-        function formatDeclareLoc(iid) {
-            var locObj = J$.iidToSourceObject(iid);
-            if (locObj.loc.start.line === 1 && locObj.loc.start.column === 1) {
-                return '{{module}}';
-            }
-            return J$.iidToLocation(iid);
-        }
         this.declare = function (iid, name, type) {
-            console.log(`declare ${formatDeclareLoc(iid)}::${name} ${type}`);
+            console.log(`declare ${J$.iidToLocation(iid)}::${name} ${type}`);
         };
         this.read = function(iid, name, val) {
             console.log("read", J$.iidToLocation(iid), name, val);
