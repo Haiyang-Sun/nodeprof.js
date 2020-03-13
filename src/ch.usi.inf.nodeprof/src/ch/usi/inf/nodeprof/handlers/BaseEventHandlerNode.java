@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -231,5 +231,16 @@ public abstract class BaseEventHandlerNode extends Node {
         } else {
             return index == expected - 1;
         }
+    }
+
+    /**
+     * Can be overridden to avoid multiple handlers, which rely on the same instrumentation tag (see
+     * {@link MultiEventHandler}), to execute in arbitrary order. A lower integer means higher
+     * priority.
+     *
+     * @return the priority value of the handler
+     */
+    public int getPriority() {
+        return 0;
     }
 }

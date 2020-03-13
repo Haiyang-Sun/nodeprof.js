@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +15,9 @@
  * limitations under the License.
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
+
+import java.util.Arrays;
+import java.util.Comparator;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
@@ -30,7 +34,10 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingl
      */
     protected MultiEventHandler(ProfiledTagEnum tag, T[] handlers) {
         super(handlers[0].context, tag);
-        this.handlers = handlers;
+        this.handlers = handlers.clone();
+
+        // sort handlers by their priority
+        Arrays.sort(this.handlers, Comparator.comparingInt(BaseEventHandlerNode::getPriority));
     }
 
     public static <T extends BaseEventHandlerNode> MultiEventHandler<T> create(ProfiledTagEnum tag, T[] handlers) {
