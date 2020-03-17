@@ -54,7 +54,7 @@ public class RootFactory extends AbstractFactory {
                 }
 
                 if (!this.isBuiltin && pre != null) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getFunction(frame), getReceiver(frame, env), makeArgs.executeArguments(getArguments(frame)));
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getFunction(frame), getReceiver(frame, env), makeArgs.executeArguments(getArguments(frame)));
                 }
             }
 
@@ -66,7 +66,7 @@ public class RootFactory extends AbstractFactory {
                 }
 
                 if (!this.isBuiltin && post != null) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), convertResult(result), createWrappedException(null));
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), convertResult(result), createWrappedException(null));
                 }
             }
 
@@ -77,7 +77,7 @@ public class RootFactory extends AbstractFactory {
                 }
 
                 if (!this.isBuiltin && post != null) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
                 }
             }
 

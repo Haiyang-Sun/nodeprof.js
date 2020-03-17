@@ -39,7 +39,7 @@ public class ForObjectFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame,
                             Object[] inputs) throws InteropException {
                 if (pre != null && (isForIn() || isForOf())) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), isForIn());
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), isForIn());
                 }
             }
         };

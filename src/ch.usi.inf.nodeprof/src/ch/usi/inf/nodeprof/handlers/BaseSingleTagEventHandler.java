@@ -11,7 +11,7 @@ public class BaseSingleTagEventHandler extends BaseEventHandlerNode {
         this.tag = tag;
     }
 
-    private final ProfiledTagEnum tag;
+    protected final ProfiledTagEnum tag;
 
     @Override
     public int expectedNumInputs() {

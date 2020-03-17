@@ -41,7 +41,7 @@ public class PutElementFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getReceiver(inputs), getProperty(inputs), getValue(inputs), false, isOpAssign());
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getReceiver(inputs), getProperty(inputs), getValue(inputs), false, isOpAssign());
                 }
             }
 
@@ -49,7 +49,7 @@ public class PutElementFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getReceiver(inputs), getProperty(inputs), getValue(inputs), false, isOpAssign());
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getReceiver(inputs), getProperty(inputs), getValue(inputs), false, isOpAssign());
                 }
             }
         };

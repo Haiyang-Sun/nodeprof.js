@@ -47,7 +47,7 @@ public class ReadFactory extends AbstractFactory {
                                 Object[] inputs) throws InteropException {
                     if (post != null) {
                         // TODO, isScriptLocal is set true here
-                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), getName(), convertResult(result), false, true);
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getName(), convertResult(result), false, true);
                     }
                 }
             };
@@ -59,7 +59,7 @@ public class ReadFactory extends AbstractFactory {
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) throws InteropException {
                     if (post != null && this.isGlobal(inputs)) {
-                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), getProperty(), convertResult(result), true, true);
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getProperty(), convertResult(result), true, true);
                     }
                 }
 

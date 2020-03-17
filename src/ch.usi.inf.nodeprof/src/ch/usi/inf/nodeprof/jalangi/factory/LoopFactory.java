@@ -39,7 +39,7 @@ public class LoopFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getLoopType());
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getLoopType());
                 }
             }
 
@@ -47,7 +47,7 @@ public class LoopFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getLoopType());
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getLoopType());
                 }
             }
         };

@@ -16,47 +16,84 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.ListIterator;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 
-public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingleTagEventHandler {
+public class MultiEventHandler extends BaseSingleTagEventHandler {
 
-    @Children final T[] handlers;
+    @Children final BaseEventHandlerNode[] handlers;
 
     /**
      *
      * @param handlers should be of the same kind T
      */
-    protected MultiEventHandler(ProfiledTagEnum tag, T[] handlers) {
+    protected MultiEventHandler(ProfiledTagEnum tag, BaseEventHandlerNode[] handlers) {
         super(handlers[0].context, tag);
         this.handlers = handlers.clone();
 
         // sort handlers by their priority
-        Arrays.sort(this.handlers, Comparator.comparingInt(BaseEventHandlerNode::getPriority));
+        Arrays.sort(this.handlers, Comparator.comparingInt(ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode::getPriority));
     }
 
-    public static <T extends BaseEventHandlerNode> MultiEventHandler<T> create(ProfiledTagEnum tag, T[] handlers) {
+    public static MultiEventHandler create(ProfiledTagEnum tag, BaseEventHandlerNode[] handlers) {
         assert (handlers != null && handlers.length > 0);
-        return new MultiEventHandler<>(tag, handlers);
+        return new MultiEventHandler(tag, handlers);
     }
 
     @Override
     @ExplodeLoop
     public void executePre(VirtualFrame frame, Object[] inputs) throws Exception {
-        for (T handler : handlers) {
+        for (BaseEventHandlerNode handler : handlers) {
             handler.executePre(frame, inputs);
         }
+    }
+
+    // TODO: optimize into single loop and annotate with ExplodeLoop
+    @Override
+    public BaseEventHandlerNode wantsToUpdateHandler() {
+        ArrayList<BaseEventHandlerNode> newHandlers = new ArrayList<>(Arrays.asList(handlers));
+
+        // 1st iteration: remove deactivated handlers
+        boolean modified = newHandlers.removeIf((BaseEventHandlerNode h) -> h.wantsToUpdateHandler() == null);
+
+        // 2nd iteration: replace updated handlers
+        ListIterator<BaseEventHandlerNode> iter = newHandlers.listIterator();
+        while (iter.hasNext()) {
+            BaseEventHandlerNode cur = iter.next();
+            BaseEventHandlerNode replacement = cur.wantsToUpdateHandler();
+            if (cur != replacement) {
+                iter.set(replacement);
+                modified = true;
+            }
+        }
+
+        if (modified) {
+            if (newHandlers.size() > 1) {
+                // return new MultiEventHandler
+                return new MultiEventHandler(this.tag, newHandlers.toArray(new BaseEventHandlerNode[0]));
+            } else if (newHandlers.size() == 1) {
+                // optimize to SingleEventHandler
+                return newHandlers.get(0);
+            } else {
+                // remove ourselves
+                return null;
+            }
+        }
+
+        return this;
     }
 
     @Override
     @ExplodeLoop
     public void executePost(VirtualFrame frame, Object result, Object[] inputs) throws Exception {
-        for (T handler : handlers) {
+        for (BaseEventHandlerNode handler : handlers) {
             handler.executePost(frame, result, inputs);
         }
     }
@@ -64,7 +101,7 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingl
     @ExplodeLoop
     @Override
     public void executeExceptional(VirtualFrame frame, Throwable exception) throws Exception {
-        for (T handler : handlers) {
+        for (BaseEventHandlerNode handler : handlers) {
             handler.executeExceptional(frame, exception);
         }
     }
@@ -72,7 +109,7 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingl
     @Override
     @ExplodeLoop
     public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, Object[] inputs) throws Exception {
-        for (T handler : handlers) {
+        for (BaseEventHandlerNode handler : handlers) {
             handler.executeExceptionalCtrlFlow(frame, exception, inputs);
         }
     }
@@ -81,7 +118,7 @@ public class MultiEventHandler<T extends BaseEventHandlerNode> extends BaseSingl
     @Override
     public Object onUnwind(VirtualFrame frame, Object info) {
         Object res = null;
-        for (T handler : handlers) {
+        for (BaseEventHandlerNode handler : handlers) {
             res = handler.onUnwind(frame, info);
             if (res != null) {
                 return res;

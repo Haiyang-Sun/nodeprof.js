@@ -59,6 +59,12 @@ public class NewSourceFactory extends AbstractFactory {
             }
 
             @Override
+            public BaseEventHandlerNode wantsToUpdateHandler() {
+                // remove after initial execution
+                return null;
+            }
+
+            @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 checkForSymbolicLocation(context.getInstrumentedNode(), getArguments(frame));
 
@@ -72,7 +78,7 @@ public class NewSourceFactory extends AbstractFactory {
                 }
 
                 if (isNewSource(source)) {
-                    wrappedDispatchExecution(postDispatch, post,
+                    wrappedDispatchExecution(this, postDispatch, post,
                             SourceMapping.getJSObjectForSource(source), // arg 1: source object
                             source.getCharacters().toString()); // arg 2: source code
                 }

@@ -49,7 +49,7 @@ public class BuiltinFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (isTarget && pre != null) {
-                    wrappedDispatchExecution(preDispatch, pre, getBuiltinName(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)));
+                    wrappedDispatchExecution(this, preDispatch, pre, getBuiltinName(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)));
                 }
             }
 
@@ -57,7 +57,7 @@ public class BuiltinFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (isTarget && post != null) {
-                    wrappedDispatchExecution(postDispatch, post, this.getBuiltinName(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)), convertResult(result),
+                    wrappedDispatchExecution(this, postDispatch, post, this.getBuiltinName(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)), convertResult(result),
                                     createWrappedException(null));
                 }
             }
@@ -65,7 +65,7 @@ public class BuiltinFactory extends AbstractFactory {
             @Override
             public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
                 if (isTarget && post != null) {
-                    wrappedDispatchExecution(postDispatch, post, this.getBuiltinName(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)), Undefined.instance,
+                    wrappedDispatchExecution(this, postDispatch, post, this.getBuiltinName(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)), Undefined.instance,
                                     createWrappedException(null));
 
                 }

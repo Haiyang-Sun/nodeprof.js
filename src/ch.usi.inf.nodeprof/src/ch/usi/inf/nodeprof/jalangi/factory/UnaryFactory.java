@@ -41,7 +41,7 @@ public class UnaryFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getOp(), getValue(inputs));
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getOp(), getValue(inputs));
                 }
             }
 
@@ -49,7 +49,7 @@ public class UnaryFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getOp(), getValue(inputs), convertResult(result));
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getOp(), getValue(inputs), convertResult(result));
                 }
             }
         };

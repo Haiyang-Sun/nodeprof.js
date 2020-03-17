@@ -45,7 +45,7 @@ public class ConditionalFactory extends AbstractFactory {
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) throws InteropException {
                     if (post != null && isConditional()) {
-                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), convertResult(result));
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), convertResult(result));
                     }
                 }
             };
@@ -57,7 +57,7 @@ public class ConditionalFactory extends AbstractFactory {
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) throws InteropException {
                     if (post != null && this.isLogic()) {
-                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), convertResult(result));
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), convertResult(result));
                     }
                 }
             };

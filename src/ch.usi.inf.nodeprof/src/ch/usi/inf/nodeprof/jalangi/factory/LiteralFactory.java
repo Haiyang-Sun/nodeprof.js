@@ -65,7 +65,7 @@ public class LiteralFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null && !skip) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), convertResult(result), hasGetterSetter(result), getLiteralType(), getObjectLiteralMembers(result));
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), convertResult(result), hasGetterSetter(result), getLiteralType(), getObjectLiteralMembers(result));
                 }
             }
 

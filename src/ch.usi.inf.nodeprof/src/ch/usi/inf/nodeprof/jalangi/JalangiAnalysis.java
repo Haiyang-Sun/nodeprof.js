@@ -345,7 +345,7 @@ public class JalangiAnalysis {
         /**
          * New source code callback
          */
-        // TODO always enabled but should deactivate after first execution
+        // always enabled but deactivates after first execution
         this.instrument.onCallback(
                         ProfiledTagEnum.ROOT,
                         new NewSourceFactory(this.jsAnalysis, callbacks.get("newSource")));

@@ -41,7 +41,7 @@ public class EvalFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getCode(inputs));
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getCode(inputs));
                 }
             }
 
@@ -49,7 +49,7 @@ public class EvalFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getCode(inputs), convertResult(result));
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getCode(inputs), convertResult(result));
                 }
             }
         };

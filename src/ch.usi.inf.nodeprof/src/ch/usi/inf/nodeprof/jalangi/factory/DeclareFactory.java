@@ -44,7 +44,7 @@ public class DeclareFactory extends AbstractFactory {
                 if (post != null) {
                     checkForSymbolicLocation(context.getInstrumentedNode(), frame.getArguments());
 
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getDeclareName(), getDeclareType());
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getDeclareName(), getDeclareType());
                 }
             }
 

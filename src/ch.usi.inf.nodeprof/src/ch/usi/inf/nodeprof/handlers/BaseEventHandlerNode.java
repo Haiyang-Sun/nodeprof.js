@@ -16,6 +16,7 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
@@ -44,6 +45,7 @@ public abstract class BaseEventHandlerNode extends Node {
     protected final EventContext context;
     @CompilationFinal private FrameSlot returnSlot;
     @CompilationFinal private boolean noReturnSlot = false;
+    @CompilationFinal private boolean deactivated = false;
 
     public Object getReturnValueFromFrameOrDefault(VirtualFrame frame, Object defaultValue) {
         // cache the frame slot for the return value
@@ -245,6 +247,22 @@ public abstract class BaseEventHandlerNode extends Node {
      */
     public int getPriority() {
         return 0;
+    }
+
+    /**
+     * Allows handlers to ask for eventual replacement or removal.
+     * 
+     * @return <code>null</code> to remove this handler, another instance of
+     *         {@link BaseEventHandlerNode} to replace this handler with, or <code>this</code> to
+     *         continue without change.
+     */
+    public BaseEventHandlerNode wantsToUpdateHandler() {
+        return deactivated ? null : this;
+    }
+
+    public void deactivate() {
+        CompilerAsserts.neverPartOfCompilation();
+        deactivated = true;
     }
 
     private static boolean isModuleInvocation(Object[] args) {

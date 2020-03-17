@@ -83,6 +83,9 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
             this.cb.preHitCount++;
             try {
                 this.child.executePre(frame, child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null);
+
+                // allow for handler changes after executePre/Post
+                checkHandlerChanges();
             } catch (UserScriptException e) {
                 reportError(e);
             } catch (Throwable e) {
@@ -104,6 +107,8 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 this.cb.preHitCount++;
                 this.child.executePre(frame, null);
 
+                // allow for handler changes after executePre/Post
+                checkHandlerChanges();
             }
         } catch (UserScriptException e) {
             reportError(e);
@@ -124,6 +129,9 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 this.cb.postHitCount++;
                 inputs = child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null;
                 this.child.executePost(frame, result, inputs);
+
+                // allow for handler changes after executePre/Post
+                checkHandlerChanges();
             }
         } catch (UserScriptException e) {
             reportError(e);
@@ -185,5 +193,28 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     public ProfiledTagEnum getType() {
         return this.cb;
+    }
+
+    private void checkHandlerChanges() {
+        // check for handler changes
+        BaseEventHandlerNode newChild = this.child.wantsToUpdateHandler();
+        if (newChild == null) {
+            removeInstrumentation();
+        } else if (newChild != this.child) {
+            updateChild(newChild);
+        }
+    }
+
+    private void updateChild(BaseEventHandlerNode child) {
+        CompilerDirectives.transferToInterpreterAndInvalidate();
+        this.child = child;
+    }
+
+    private void removeInstrumentation() {
+        CompilerDirectives.transferToInterpreterAndInvalidate();
+        Logger.debug("Removing instrumentation for " + this.child.getClass().getTypeName() + " / " + this + " @ " + context.getInstrumentedNode());
+        this.replace(new ExecutionEventNode() {
+        }, "NodeProf instrumentation handler removed");
+        this.cb.deactivatedCount++;
     }
 }

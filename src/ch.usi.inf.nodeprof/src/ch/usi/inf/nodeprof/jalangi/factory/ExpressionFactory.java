@@ -42,7 +42,7 @@ public class ExpressionFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getExpressionType());
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getExpressionType());
                 }
             }
 
@@ -50,7 +50,7 @@ public class ExpressionFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getExpressionType(), convertResult(result));
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getExpressionType(), convertResult(result));
                 }
             }
 

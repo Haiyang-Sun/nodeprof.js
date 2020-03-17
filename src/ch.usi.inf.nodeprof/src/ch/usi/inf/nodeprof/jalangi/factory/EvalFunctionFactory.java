@@ -45,7 +45,7 @@ public class EvalFunctionFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (isTarget && pre != null) {
-                    wrappedDispatchExecution(preDispatch, pre, makeArgs.executeArguments(getArguments(frame)));
+                    wrappedDispatchExecution(this, preDispatch, pre, makeArgs.executeArguments(getArguments(frame)));
                 }
             }
 
@@ -53,7 +53,7 @@ public class EvalFunctionFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (isTarget && post != null) {
-                    wrappedDispatchExecution(postDispatch, post, makeArgs.executeArguments(getArguments(frame)), convertResult(result), createWrappedException(null));
+                    wrappedDispatchExecution(this, postDispatch, post, makeArgs.executeArguments(getArguments(frame)), convertResult(result), createWrappedException(null));
 
                 }
             }
@@ -61,7 +61,7 @@ public class EvalFunctionFactory extends AbstractFactory {
             @Override
             public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
                 if (isTarget && post != null) {
-                    wrappedDispatchExecution(postDispatch, post, makeArgs.executeArguments(getArguments(frame)), Undefined.instance, createWrappedException(exception));
+                    wrappedDispatchExecution(this, postDispatch, post, makeArgs.executeArguments(getArguments(frame)), Undefined.instance, createWrappedException(exception));
 
                 }
             }

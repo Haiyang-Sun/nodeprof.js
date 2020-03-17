@@ -47,7 +47,7 @@ public class InvokeFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
                     // TODO Jalangi's function iid/sid are set to be 0/0
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), isNew(), isInvoke(), 0, 0);
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), isNew(), isInvoke(), 0, 0);
                 }
             }
 
@@ -56,7 +56,7 @@ public class InvokeFactory extends AbstractFactory {
                             Object[] inputs) throws InteropException {
                 if (post != null) {
                     // TODO Jalangi's function iid/sid are set to be 0/0
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), convertResult(result), isNew(), isInvoke(), 0, 0);
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), convertResult(result), isNew(), isInvoke(), 0, 0);
                 }
             }
         };

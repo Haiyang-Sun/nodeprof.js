@@ -16,6 +16,7 @@
 package ch.usi.inf.nodeprof.jalangi.factory;
 
 import ch.usi.inf.nodeprof.utils.Logger;
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.interop.InteropLibrary;
@@ -156,11 +157,19 @@ public abstract class AbstractFactory implements
      * @param receiver the receiver of the call
      * @param arguments the arguments of the call
      */
-    public void wrappedDispatchExecution(InteropLibrary lib, Object receiver, Object... arguments) throws InteropException {
+    public void wrappedDispatchExecution(BaseEventHandlerNode handler, InteropLibrary lib, Object receiver, Object... arguments) throws InteropException {
         if (!nestedControl) {
             nestedControl = true;
+
             try {
-                lib.execute(receiver, arguments);
+                Object ret = lib.execute(receiver, arguments);
+                if (ret != Undefined.instance && JSObject.isJSObject(ret)) {
+                    Object prop = JSObject.get((DynamicObject) ret, "deactivate");
+                    if (prop.equals(true)) {
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        handler.deactivate();
+                    }
+                }
             } catch (JSCancelledExecutionException e) {
                 Logger.error(arguments[0], "execution cancelled probably due to timeout");
             } catch (InteropException e) {

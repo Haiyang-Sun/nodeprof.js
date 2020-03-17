@@ -41,7 +41,7 @@ public class BinaryFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null && !isLogic()) {
-                    wrappedDispatchExecution(preDispatch, pre,
+                    wrappedDispatchExecution(this, preDispatch, pre,
                                     getSourceIID(), getOp(), getLeft(inputs), getRight(inputs));
                 }
             }
@@ -50,7 +50,7 @@ public class BinaryFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null && !isLogic()) {
-                    wrappedDispatchExecution(postDispatch, post,
+                    wrappedDispatchExecution(this, postDispatch, post,
                                     getSourceIID(), getOp(), getLeft(inputs), getRight(inputs), convertResult(result));
                 }
             }

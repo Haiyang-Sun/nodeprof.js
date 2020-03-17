@@ -52,21 +52,21 @@ public class AwaitFactory extends AbstractFactory {
                 if (pre != null) {
                     if (inputs[0] == inputs[1] && JSPromise.isJSPromise(inputs[0])) {
                         // await some promise
-                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
                     } else if (inputs[0] != inputs[1] && JSPromise.isJSPromise(inputs[1])) {
                         // await some value, and inputs[1] is the internal promise
-                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
                     }
                 }
                 if (post != null) {
                     if (inputs[0] != inputs[1] && !JSPromise.isJSPromise((inputs[1]))) {
-                        wrappedDispatchExecution(postDispatch, post, getSourceIID(),
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(),
                                         inputs[0] == null ? Undefined.instance : inputs[0],
                                         assertGetInput(1, inputs, "awaited ret"),
                                         inputs[0] != null && JSPromise.isJSPromise(inputs[0]) && JSPromise.isRejected((DynamicObject) inputs[0]));
                     } else if (inputs[0] == inputs[1] && !JSPromise.isJSPromise(inputs[0])) {
                         // await some value
-                        wrappedDispatchExecution(postDispatch, post, getSourceIID(),
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(),
                                         assertGetInput(0, inputs, "awaited val"),
                                         assertGetInput(0, inputs, "awaited ret"),
                                         false);

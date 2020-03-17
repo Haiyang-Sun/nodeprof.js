@@ -51,7 +51,7 @@ public class WriteFactory extends AbstractFactory {
                     }
                     // TODO: the value before write is set to be Undefined and isScriptLocal is
                     // always true
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), getName(), getValue(inputs), Undefined.instance, false, true);
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getName(), getValue(inputs), Undefined.instance, false, true);
                 }
             };
         } else {
@@ -67,7 +67,7 @@ public class WriteFactory extends AbstractFactory {
                     if (isGlobal(inputs)) {
                         // TODO: the value before write is set to be Undefined and isScriptLocal is
                         // always true
-                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), getProperty(), getValue(inputs), Undefined.instance, true, true);
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getProperty(), getValue(inputs), Undefined.instance, true, true);
                     }
                 }
             };

@@ -64,6 +64,7 @@ public enum ProfiledTagEnum {
     public long preHitCount = 0;
     public long postHitCount = 0;
     public long exceptionHitCount = 0;
+    public long deactivatedCount = 0;
 
     ProfiledTagEnum(Class<? extends Tag> clazz, int expectedNumInputs) {
         this.clazz = clazz;
@@ -90,6 +91,9 @@ public enum ProfiledTagEnum {
                     }
                     if (cb.postHitCount > 0) {
                         Logger.debug("CounterPost: " + cb.toString() + " " + cb.postHitCount);
+                    }
+                    if (cb.deactivatedCount > 0) {
+                        Logger.debug("Deactivated: " + cb.toString() + " " + cb.deactivatedCount);
                     }
                 }
             }

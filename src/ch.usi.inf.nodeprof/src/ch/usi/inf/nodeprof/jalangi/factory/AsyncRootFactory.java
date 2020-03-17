@@ -42,7 +42,7 @@ public class AsyncRootFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null && this.isAsyncRoot()) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID());
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID());
                 }
             }
 
@@ -52,14 +52,14 @@ public class AsyncRootFactory extends AbstractFactory {
 
                 if (post != null && this.isAsyncRoot()) {
                     assert (result instanceof DynamicObject);
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), result, createWrappedException(null));
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), result, createWrappedException(null));
                 }
             }
 
             @Override
             public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
                 if (post != null) {
-                    wrappedDispatchExecution(postDispatch, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
+                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
                 }
             }
 

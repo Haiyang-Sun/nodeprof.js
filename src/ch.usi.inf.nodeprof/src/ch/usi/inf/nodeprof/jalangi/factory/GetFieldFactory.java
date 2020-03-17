@@ -43,7 +43,7 @@ public class GetFieldFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
                     if (!this.isGlobal(inputs)) {
-                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getReceiver(inputs), getProperty(), false, isOpAssign(), isMethodCall());
+                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getReceiver(inputs), getProperty(), false, isOpAssign(), isMethodCall());
                     }
                 }
             }
@@ -53,7 +53,7 @@ public class GetFieldFactory extends AbstractFactory {
                             Object[] inputs) throws InteropException {
                 if (post != null) {
                     if (!this.isGlobal(inputs)) {
-                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), getReceiver(inputs), getProperty(), convertResult(result), false, isOpAssign(), isMethodCall());
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getReceiver(inputs), getProperty(), convertResult(result), false, isOpAssign(), isMethodCall());
                     }
                 }
             }

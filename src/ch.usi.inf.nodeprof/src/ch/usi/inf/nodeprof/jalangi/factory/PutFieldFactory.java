@@ -42,7 +42,7 @@ public class PutFieldFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
                     if (!this.isGlobal(inputs)) {
-                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), getReceiver(inputs), getProperty(), getValue(inputs), true, isOpAssign());
+                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getReceiver(inputs), getProperty(), getValue(inputs), true, isOpAssign());
                     }
                 }
             }
@@ -52,7 +52,7 @@ public class PutFieldFactory extends AbstractFactory {
                             Object[] inputs) throws InteropException {
                 if (post != null) {
                     if (!this.isGlobal(inputs)) {
-                        wrappedDispatchExecution(postDispatch, post, getSourceIID(), getReceiver(inputs), getProperty(), getValue(inputs), true, isOpAssign());
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getReceiver(inputs), getProperty(), getValue(inputs), true, isOpAssign());
                     }
                 }
             }

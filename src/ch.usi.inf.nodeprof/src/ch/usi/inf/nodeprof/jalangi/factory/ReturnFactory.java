@@ -41,7 +41,7 @@ public class ReturnFactory extends AbstractFactory {
             public void executePre(VirtualFrame frame,
                             Object[] inputs) throws InteropException {
                 if (pre != null && isReturnNode()) {
-                    wrappedDispatchExecution(preDispatch, pre, getSourceIID(), (inputs == null || inputs.length == 0) ? Undefined.instance : inputs[0]);
+                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), (inputs == null || inputs.length == 0) ? Undefined.instance : inputs[0]);
                 }
             }
 
@@ -51,7 +51,7 @@ public class ReturnFactory extends AbstractFactory {
                     // TODO trigger for ConstantReturnNode which does not have input only?
                     if (inputs.length == 0) {
                         Object returnExceptionValue = ((ReturnException) exception).getResult();
-                        wrappedDispatchExecution(preDispatch, pre, getSourceIID(), (returnExceptionValue == null) ? getReturnValueFromFrameOrDefault(frame, Undefined.instance) : ((ReturnException) exception).getResult());
+                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), (returnExceptionValue == null) ? getReturnValueFromFrameOrDefault(frame, Undefined.instance) : ((ReturnException) exception).getResult());
 
                     }
                 }
