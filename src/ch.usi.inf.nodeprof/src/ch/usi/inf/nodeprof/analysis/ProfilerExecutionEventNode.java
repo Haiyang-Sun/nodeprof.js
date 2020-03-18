@@ -82,7 +82,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
             this.cb.preHitCount++;
             try {
                 this.child.executePre(frame, child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 reportError(null, e);
             }
         }
@@ -102,7 +102,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 this.child.executePre(frame, null);
 
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             reportError(null, e);
         }
     }
@@ -120,13 +120,13 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 inputs = child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null;
                 this.child.executePost(frame, result, inputs);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             reportError(inputs, e);
         }
     }
 
     @TruffleBoundary
-    private void reportError(Object[] inputs, Exception e) {
+    private void reportError(Object[] inputs, Throwable e) {
         Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + (inputs == null ? "null" : inputs.length) + " " + e.getMessage());
         if (inputs != null) {
             for (int i = 0; i < inputs.length; i++) {
@@ -160,7 +160,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 }
 
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             reportError(inputs, e);
         }
     }
