@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
+ * Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +16,9 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
+import java.util.Arrays;
+
+import com.oracle.truffle.js.runtime.builtins.JSArray;
 import org.graalvm.options.OptionDescriptor;
 import org.graalvm.options.OptionValues;
 
@@ -23,7 +27,6 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.ArityException;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
-import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
 import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
@@ -52,6 +55,35 @@ public class JalangiAdapter implements TruffleObject {
         this.nodeprofJalangi = nodeprofJalangi;
     }
 
+    public enum ApiMember {
+        IID_TO_LOCATION("iidToLocation"),
+        IID_TO_SOURCE_OBJECT("iidToSourceObject"),
+        NATIVE_LOG("nativeLog"),
+        VALUE_OF("valueOf"),
+        ON_READY("onReady"),
+        REGISTER_CALLBACK("registerCallback"),
+        INSTRUMENTATION_SWITCH("instrumentationSwitch"),
+        GET_CONFIG("getConfig");
+
+        private final String name;
+
+        ApiMember(String name) {
+            this.name = name;
+        }
+
+        public boolean equalsString(String otherName) {
+            return name.equals(otherName);
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+    }
+
+    String[] members = Arrays.stream(ApiMember.values()).map(ApiMember::toString).toArray(String[]::new);
+
+
     @SuppressWarnings("static-method")
     @ExportMessage
     final boolean hasMembers() {
@@ -66,8 +98,8 @@ public class JalangiAdapter implements TruffleObject {
 
     @SuppressWarnings({"static-method", "unused"})
     @ExportMessage
-    final Object getMembers(boolean includeInternal) throws UnsupportedMessageException {
-        return null;
+    final Object getMembers(boolean includeInternal) {
+        return JSArray.createConstantObjectArray(GlobalObjectCache.getInstance().getJSContext(), members);
     }
 
     @TruffleBoundary
@@ -105,7 +137,7 @@ public class JalangiAdapter implements TruffleObject {
     @TruffleBoundary
     @ExportMessage
     final Object invokeMember(String identifier, Object[] arguments) throws ArityException, UnsupportedTypeException {
-        if ("iidToLocation".equals(identifier)) {
+        if (ApiMember.IID_TO_LOCATION.equalsString(identifier)) {
             if (checkArguments(1, arguments, identifier)) {
                 Object result = null;
                 try {
@@ -117,7 +149,7 @@ public class JalangiAdapter implements TruffleObject {
                 }
                 return result == null ? Undefined.instance : result;
             }
-        } else if (identifier.equals("iidToSourceObject")) {
+        } else if (ApiMember.IID_TO_SOURCE_OBJECT.equalsString(identifier)) {
             if (checkArguments(1, arguments, identifier)) {
                 try {
                     return SourceMapping.getJSObjectForIID(convertIID(arguments[0]));
@@ -127,7 +159,7 @@ public class JalangiAdapter implements TruffleObject {
                     throw UnsupportedTypeException.create(new Object[]{arguments[0]});
                 }
             }
-        } else if (identifier.equals("nativeLog")) {
+        } else if (ApiMember.NATIVE_LOG.equalsString(identifier)) {
             Logger.Level level = Logger.Level.INFO;
             if (arguments.length >= 2) {
                 int i = convertIID(arguments[1]);
@@ -140,9 +172,9 @@ public class JalangiAdapter implements TruffleObject {
                 Logger.log(arguments[0], level);
                 return 0;
             }
-        } else if (identifier.equals("valueOf")) {
+        } else if (ApiMember.VALUE_OF.equalsString(identifier)) {
             return "jalangi-adapter";
-        } else if (identifier.equals("onReady")) {
+        } else if (ApiMember.ON_READY.equalsString(identifier)) {
             if (arguments.length == 1) {
                 this.getNodeProfJalangi().onReady(arguments[0]);
             } else if (arguments.length == 2) {
@@ -154,9 +186,9 @@ public class JalangiAdapter implements TruffleObject {
             } else {
                 Logger.warning("onReady should take 1 or 2 arguments");
             }
-        } else if (identifier.equals("registerCallback")) {
+        } else if (ApiMember.REGISTER_CALLBACK.equalsString(identifier)) {
             this.getNodeProfJalangi().registerCallback(arguments[0], arguments[1], arguments[2]);
-        } else if (identifier.equals("instrumentationSwitch")) {
+        } else if (ApiMember.INSTRUMENTATION_SWITCH.equalsString(identifier)) {
             // update instrumentation using the first argument given and return the updated
             // status of the instrumentation (true for enabled and false for disabled)
             if (arguments.length >= 1) {
@@ -166,7 +198,7 @@ public class JalangiAdapter implements TruffleObject {
                 }
             }
             return ProfilerExecutionEventNode.getEnabled();
-        } else if (identifier.equals("getConfig")) {
+        } else if (ApiMember.GET_CONFIG.equalsString(identifier)) {
             JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
             DynamicObject obj = JSUserObject.create(ctx);
             OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();

@@ -28,6 +28,8 @@
     this.functionEnter = function (iid, f, dis, args) {
       if (f.name !== 'foo')
         return;
+      console.log('this is global:', this === global);
+      console.log(this.__jalangiAdapter);
       var locObj = J$.iidToSourceObject(iid);
       console.log('num props:', Object.getOwnPropertyNames(locObj).length);
       console.log('name:', locObj.name);

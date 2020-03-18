@@ -2,6 +2,17 @@
 [i] info
 [i] neg level
 [i] string level
+this is global: true
+[Object: null prototype] {
+  iidToLocation: undefined,
+  iidToSourceObject: undefined,
+  nativeLog: undefined,
+  valueOf: undefined,
+  onReady: undefined,
+  registerCallback: undefined,
+  instrumentationSwitch: undefined,
+  getConfig: undefined
+}
 num props: 4
 name: src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js
 src length from range: 18
