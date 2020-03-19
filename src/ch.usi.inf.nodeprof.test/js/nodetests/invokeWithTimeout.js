@@ -14,7 +14,7 @@
  * limitations under the License.
  *******************************************************************************/
 
-function foo(){
+function foo(){ return 'bar';
 }
 
 foo(1);

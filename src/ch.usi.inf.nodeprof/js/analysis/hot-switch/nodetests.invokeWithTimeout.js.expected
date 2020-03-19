@@ -1,5 +1,10 @@
+functionEnter:  / (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:{{:program}}) / 4
+functionEnter:  / (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:{{module}}) / 4
 invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:20:1:20:7)
 [ 1 ]
+functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:17:1:18:2) / 4
+return (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:17:17:17:30) val returns bar
+functionEnter:  / (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:24:12:24:31) / 4
 invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:24:23:24:29)
 [ 3 ]
 invokeFun @ undefined function (src/ch.usi.inf.nodeprof.test/js/nodetests/invokeWithTimeout.js:24:23:24:29)

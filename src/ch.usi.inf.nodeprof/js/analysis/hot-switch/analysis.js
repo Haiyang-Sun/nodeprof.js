@@ -15,14 +15,7 @@
  *******************************************************************************/
 //DO NOT INSTRUMENT
 (function (sandbox) {
-    function getLocation(sid, iid) {
-        if (typeof Graal === 'object')
-            // Truffle-Jalangi has unique IIDs
-            return  J$.iidToLocation(iid);
-        else
-            // Jalangi on V8/Node needs sid
-            return J$.iidToLocation(sid, iid);
-    }
+    const assert = require("assert");
 
     function argsToString(args) {
         console.log(args);
@@ -32,20 +25,44 @@
 
     function MyAnalysis() {
         this.invokeFunPre = function (iid, f, base, args, isConstructor, isMethod, functionIid, functionSid) {
-            console.log("invokeFunPre @ " + typeof(base) + " " + typeof(f) + " " + getLocation(J$.sid, iid));
+            console.log("invokeFunPre @ " + typeof(base) + " " + typeof(f) + " " + J$.iidToLocation(iid));
             argsToString(args);
-            if(!flag) {
-              sandbox.disableAnalysis();
-              process.nextTick(function(){
-                sandbox.enableAnalysis();
-              });
-              flag = true;
-            }
         };
 
         this.invokeFun = function (iid, f, base, args, result, isConstructor, isMethod, functionIid, functionSid) {
-            console.log("invokeFun @ " + typeof(base) + " " + typeof(f) + " " + getLocation(J$.sid, iid));
+            console.log("invokeFun @ " + typeof(base) + " " + typeof(f) + " " + J$.iidToLocation(iid));
             argsToString(args);
+        };
+
+        this._return = function(iid, val) {
+            console.log('return', J$.iidToLocation(iid), 'val returns', val);
+
+            // only one return in test thus _return executes once
+            assert(flag === false, "_return must only execute once");
+            flag = true;
+
+            // disable Nodeprof until nextTick
+            sandbox.disableAnalysis();
+            process.nextTick(function(){
+                sandbox.enableAnalysis();
+            });
+
+            // deactivate return upon first execution
+            return { deactivate: true };
+        }
+
+        this.functionEnter = function (iid, f, dis, args) {
+            console.log("functionEnter: %s / %s / %d", f.name, J$.iidToLocation(iid), arguments.length);
+
+            // we expect a single enter for function foo
+            if (f.name === 'foo') {
+                return { deactivate: true };
+            }
+        };
+
+        this.functionExit = function (iid, returnVal, wrappedExceptionVal) {
+            // should never reach the exit foo and observe its return value
+            assert(returnVal !== 'bar');
         };
     }
 

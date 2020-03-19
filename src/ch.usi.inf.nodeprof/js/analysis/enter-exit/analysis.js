@@ -19,7 +19,7 @@
   function MyAnalysis() {
 
     var allFuncs = new Set();
-    const funcNameFilter = new Set(['foo', 'Object.create']);
+    const funcNameFilter = new Set(['foo', 'Object.create', 'Error']);
     function formatException(e) {
       if (e instanceof Error) {
         return `${e.name}: ${e.message}`;
@@ -56,6 +56,7 @@
       if (funcNameFilter.has(name))
         console.log("builtinExit: %s / %d", name, arguments.length);
       allFuncs.add(name);
+      return { deactivate: true }
     };
 
     this._return = function(iid, val) {
