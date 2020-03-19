@@ -27,6 +27,7 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
+import com.oracle.truffle.js.runtime.UserScriptException;
 
 public class ProfilerExecutionEventNode extends ExecutionEventNode {
     protected final EventContext context;
@@ -82,6 +83,8 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
             this.cb.preHitCount++;
             try {
                 this.child.executePre(frame, child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null);
+            } catch (UserScriptException e) {
+                throw e;
             } catch (Throwable e) {
                 reportError(null, e);
             }
@@ -102,6 +105,8 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 this.child.executePre(frame, null);
 
             }
+        } catch (UserScriptException e) {
+            throw e;
         } catch (Throwable e) {
             reportError(null, e);
         }
@@ -120,6 +125,8 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 inputs = child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null;
                 this.child.executePost(frame, result, inputs);
             }
+        } catch (UserScriptException e) {
+            throw e;
         } catch (Throwable e) {
             reportError(inputs, e);
         }
@@ -160,6 +167,8 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 }
 
             }
+        } catch (UserScriptException e) {
+            throw e;
         } catch (Throwable e) {
             reportError(inputs, e);
         }
