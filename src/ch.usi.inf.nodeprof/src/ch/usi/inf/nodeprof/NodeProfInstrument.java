@@ -39,10 +39,10 @@ import ch.usi.inf.nodeprof.utils.RawEventsTracingSupport;
 public class NodeProfInstrument extends TruffleInstrument implements ContextsListener {
     public static final String ID = "nodeprof";
     private Instrumenter instrumenter;
-    private Env env;
+    private Env instrumentEnv;
 
     public Env getEnv() {
-        return env;
+        return instrumentEnv;
     }
 
     private boolean readyToLoad = false;
@@ -60,7 +60,7 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
 
     @Override
     protected void onCreate(final Env env) {
-        this.env = env;
+        this.instrumentEnv = env;
         GlobalConfiguration.setup(env);
         Logger.debug("NodeProf has been enabled");
         instrumenter = env.getInstrumenter();
@@ -127,7 +127,7 @@ public class NodeProfInstrument extends TruffleInstrument implements ContextsLis
                     if (GlobalConfiguration.DEBUG) {
                         Logger.debug("loading " + name + " for analysis");
                     }
-                    NodeProfAnalysis.enableAnalysis(this.instrumenter, env, name);
+                    NodeProfAnalysis.enableAnalysis(this.instrumenter, instrumentEnv, name);
                 }
             }
             loaded = true;

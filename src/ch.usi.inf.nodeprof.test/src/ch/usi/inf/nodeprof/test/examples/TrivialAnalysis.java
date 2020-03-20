@@ -63,14 +63,11 @@ public class TrivialAnalysis extends TestableNodeProfAnalysis {
                                     }
                                 }
 
-                                void consume(Object[] inputs) {
-                                }
-
                                 @Override
                                 protected void onReturnValue(VirtualFrame frame, Object result) {
                                     if (useInput && tag.getExpectedNumInputs() != 0) {
                                         Object[] inputs = getSavedInputValues(frame);
-                                        this.consume(inputs);
+                                        assert inputs.length < 100 : "avoid warning: unused inputs";
                                     }
                                 }
                             };
@@ -112,13 +109,10 @@ public class TrivialAnalysis extends TestableNodeProfAnalysis {
                                     }
                                 }
 
-                                void consume(Object[] inputs) {
-                                }
-
                                 @Override
                                 protected void onReturnValue(VirtualFrame frame, Object result) {
                                     if (useInput && tag.getExpectedNumInputs() != 0) {
-                                        this.consume(inputs);
+                                        assert inputs.length < 100 : "avoid warning: unused inputs";
                                     }
                                 }
                             };

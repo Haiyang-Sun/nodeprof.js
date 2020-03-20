@@ -30,12 +30,12 @@ public class Logger {
         ERROR    // 3
     }
 
-    private static PrintStream out = System.out;
-    private static PrintStream err = System.err;
+    private static PrintStream outStream = System.out;
+    private static PrintStream errStream = System.err;
 
     public static void init(PrintStream out, PrintStream err) {
-        out = out;
-        err = err;
+        outStream = out;
+        errStream = err;
     }
 
     @TruffleBoundary
@@ -70,11 +70,11 @@ public class Logger {
     }
 
     public static void info(Object msg) {
-        print(out, "i", msg);
+        print(outStream, "i", msg);
     }
 
     public static void info(SourceSection sourceSection, Object msg) {
-        print(out, "i", sourceSection, msg);
+        print(outStream, "i", sourceSection, msg);
     }
 
     public static void info(int iid, Object msg) {
@@ -83,7 +83,7 @@ public class Logger {
 
     public static void debug(SourceSection sourceSection, Object msg) {
         if (GlobalConfiguration.DEBUG) {
-            print(out, "d", sourceSection, msg);
+            print(outStream, "d", sourceSection, msg);
         }
     }
 
@@ -93,12 +93,12 @@ public class Logger {
 
     public static void debug(Object msg) {
         if (GlobalConfiguration.DEBUG) {
-            print(out, "d", msg);
+            print(outStream, "d", msg);
         }
     }
 
     public static void warning(SourceSection sourceSection, Object msg) {
-        print(out, "w", sourceSection, msg);
+        print(outStream, "w", sourceSection, msg);
     }
 
     public static void warning(int iid, Object msg) {
@@ -106,11 +106,11 @@ public class Logger {
     }
 
     public static void warning(Object msg) {
-        print(err, "w", msg);
+        print(errStream, "w", msg);
     }
 
     public static void error(SourceSection sourceSection, Object msg) {
-        print(err, "e", sourceSection, msg);
+        print(errStream, "e", sourceSection, msg);
     }
 
     public static void error(int iid, Object msg) {
@@ -121,7 +121,7 @@ public class Logger {
         if (iidOrObject instanceof Integer) {
             error((int) iidOrObject, msg);
         } else {
-            print(err, "e", iidOrObject.toString(), msg);
+            print(errStream, "e", iidOrObject.toString(), msg);
         }
     }
 
@@ -131,7 +131,7 @@ public class Logger {
     }
 
     public static void error(Object msg) {
-        print(err, "e", msg);
+        print(errStream, "e", msg);
     }
 
     /**

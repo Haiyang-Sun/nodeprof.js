@@ -49,11 +49,6 @@ import com.oracle.truffle.js.runtime.objects.JSObject;
 public class DebugInstrument extends TruffleInstrument {
     public static final String ID = "debugi";
     private Instrumenter instrumenter;
-    private Env env;
-
-    public Env getEnv() {
-        return env;
-    }
 
     public DebugInstrument() {
         super();
@@ -82,7 +77,6 @@ public class DebugInstrument extends TruffleInstrument {
 
     @Override
     protected void onCreate(final Env env) {
-        this.env = env;
         instrumenter = env.getInstrumenter();
         env.registerService(this);
         SourceSectionFilter sourceSectionFilter = SourceSectionFilter.newBuilder().tagIs(JSTags.ALL).build();
