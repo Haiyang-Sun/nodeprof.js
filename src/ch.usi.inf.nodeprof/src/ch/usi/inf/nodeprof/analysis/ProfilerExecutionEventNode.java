@@ -22,12 +22,12 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.ExecutionEventNode;
 import com.oracle.truffle.api.nodes.ControlFlowException;
+import com.oracle.truffle.js.runtime.UserScriptException;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
-import com.oracle.truffle.js.runtime.UserScriptException;
 
 public class ProfilerExecutionEventNode extends ExecutionEventNode {
     protected final EventContext context;
@@ -84,7 +84,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
             try {
                 this.child.executePre(frame, child.expectedNumInputs() != 0 ? getSavedInputValues(frame) : null);
             } catch (UserScriptException e) {
-                throw e;
+                reportError(e);
             } catch (Throwable e) {
                 reportError(null, e);
             }
@@ -106,7 +106,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
             }
         } catch (UserScriptException e) {
-            throw e;
+            reportError(e);
         } catch (Throwable e) {
             reportError(null, e);
         }
@@ -126,10 +126,19 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 this.child.executePost(frame, result, inputs);
             }
         } catch (UserScriptException e) {
-            throw e;
+            reportError(e);
         } catch (Throwable e) {
             reportError(inputs, e);
         }
+    }
+
+    @TruffleBoundary
+    private void reportError(UserScriptException e) {
+        if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
+            throw e;
+        }
+        Logger.error(context.getInstrumentedSourceSection(), "Ignoring JS exception in callback");
+        Logger.error(e.getMessage());
     }
 
     @TruffleBoundary
@@ -168,7 +177,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
             }
         } catch (UserScriptException e) {
-            throw e;
+            reportError(e);
         } catch (Throwable e) {
             reportError(inputs, e);
         }
