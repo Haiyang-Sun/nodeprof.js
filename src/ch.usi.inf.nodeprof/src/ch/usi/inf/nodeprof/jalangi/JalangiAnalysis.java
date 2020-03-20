@@ -63,7 +63,7 @@ import ch.usi.inf.nodeprof.jalangi.factory.GetFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.InvokeFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.LiteralFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.LoopFactory;
-import ch.usi.inf.nodeprof.jalangi.factory.NewSourceFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.InitialRootFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutElementFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.PutFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ReadFactory;
@@ -255,6 +255,9 @@ public class JalangiAnalysis {
                             new ConditionalFactory(this.jsAnalysis, callbacks.get("conditional"), true));
         }
 
+        /*
+         * functionEnter/Exit callback: instruments root nodes of functions
+         */
         if (this.callbacks.containsKey("functionEnter") || this.callbacks.containsKey("functionExit")) {
             this.instrument.onCallback(
                             ProfiledTagEnum.ROOT,
@@ -278,7 +281,7 @@ public class JalangiAnalysis {
                                             callbacks.get("builtinEnter"), callbacks.get("builtinExit"), null));
         }
 
-        /**
+        /*
          * TODO
          *
          * Eval not tested
@@ -289,7 +292,7 @@ public class JalangiAnalysis {
                             new EvalFactory(this.jsAnalysis, callbacks.get("evalPre"), callbacks.get("evalPost")));
         }
 
-        /**
+        /*
          *
          * new Function("XXX"); not tested
          */
@@ -305,7 +308,7 @@ public class JalangiAnalysis {
                             new ForObjectFactory(this.jsAnalysis, callbacks.get("forObject")));
         }
 
-        /**
+        /*
          * async function
          */
         if (this.callbacks.containsKey("asyncFunctionEnter") || this.callbacks.containsKey("asyncFunctionExit")) {
@@ -313,7 +316,7 @@ public class JalangiAnalysis {
                             ProfiledTagEnum.CF_ROOT,
                             new AsyncRootFactory(this.jsAnalysis, callbacks.get("asyncFunctionEnter"), callbacks.get("asyncFunctionExit")));
         }
-        /**
+        /*
          * await callback
          */
         if (this.callbacks.containsKey("awaitPre") || this.callbacks.containsKey("awaitPost")) {
@@ -322,7 +325,7 @@ public class JalangiAnalysis {
                             new AwaitFactory(this.jsAnalysis, callbacks.get("awaitPre"), callbacks.get("awaitPost")));
         }
 
-        /**
+        /*
          * TODO
          *
          * Loop not tested
@@ -333,7 +336,7 @@ public class JalangiAnalysis {
                             new LoopFactory(this.jsAnalysis, callbacks.get("loopEnter"), callbacks.get("loopExit")));
         }
 
-        /**
+        /*
          * _return callback
          */
         if (this.callbacks.containsKey("_return")) {
@@ -342,13 +345,14 @@ public class JalangiAnalysis {
                             new ReturnFactory(this.jsAnalysis, callbacks.get("_return")));
         }
 
-        /**
-         * New source code callback
+        /*
+         * Initial function root handler: collects information special functions (e.g. modules) and
+         * provides newSource callback. This instrumentation is always enabled but deactivates after
+         * its first execution.
          */
-        // always enabled but deactivates after first execution
         this.instrument.onCallback(
                         ProfiledTagEnum.ROOT,
-                        new NewSourceFactory(this.jsAnalysis, callbacks.get("newSource")));
+                        new InitialRootFactory(this.jsAnalysis, callbacks.get("newSource")));
     }
 
     /**

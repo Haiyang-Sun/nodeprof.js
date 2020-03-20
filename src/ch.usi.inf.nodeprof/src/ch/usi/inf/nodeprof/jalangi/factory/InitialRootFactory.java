@@ -32,9 +32,9 @@ import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
 
-public class NewSourceFactory extends AbstractFactory {
+public class InitialRootFactory extends AbstractFactory {
 
-    public NewSourceFactory(Object jalangiAnalysis, DynamicObject post) {
+    public InitialRootFactory(Object jalangiAnalysis, DynamicObject post) {
         super("newSource", jalangiAnalysis, null, post);
     }
 
