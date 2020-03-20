@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.ListIterator;
 
 import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 
@@ -30,6 +31,7 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
 public class MultiEventHandler extends BaseSingleTagEventHandler {
 
     @Children final BaseEventHandlerNode[] handlers;
+    @CompilationFinal boolean noChildHandlerUpdate = true;
 
     /**
      *
@@ -53,12 +55,17 @@ public class MultiEventHandler extends BaseSingleTagEventHandler {
     public void executePre(VirtualFrame frame, Object[] inputs) throws Exception {
         for (BaseEventHandlerNode handler : handlers) {
             handler.executePre(frame, inputs);
+            noChildHandlerUpdate = noChildHandlerUpdate && (handler.wantsToUpdateHandler() == handler);
         }
     }
 
     // TODO: optimize into single loop and annotate with ExplodeLoop
     @Override
     public BaseEventHandlerNode wantsToUpdateHandler() {
+        if (noChildHandlerUpdate) {
+            return this;
+        }
+
         ArrayList<BaseEventHandlerNode> newHandlers = new ArrayList<>(Arrays.asList(handlers));
 
         // 1st iteration: remove deactivated handlers
@@ -75,21 +82,19 @@ public class MultiEventHandler extends BaseSingleTagEventHandler {
             }
         }
 
-        if (modified) {
-            if (newHandlers.size() > 1) {
-                // return new MultiEventHandler
-                CompilerDirectives.transferToInterpreterAndInvalidate();
-                return new MultiEventHandler(this.tag, newHandlers.toArray(new BaseEventHandlerNode[0]));
-            } else if (newHandlers.size() == 1) {
-                // optimize to SingleEventHandler
-                return newHandlers.get(0);
-            } else {
-                // remove ourselves
-                return null;
-            }
-        }
+        assert modified : "noChildHandlerUpdate has lied to us";
 
-        return this;
+        if (newHandlers.size() > 1) {
+            // return new MultiEventHandler
+            CompilerDirectives.transferToInterpreterAndInvalidate();
+            return new MultiEventHandler(this.tag, newHandlers.toArray(new BaseEventHandlerNode[0]));
+        } else if (newHandlers.size() == 1) {
+            // optimize to SingleEventHandler
+            return newHandlers.get(0);
+        } else {
+            // remove ourselves
+            return null;
+        }
     }
 
     @Override
@@ -97,6 +102,7 @@ public class MultiEventHandler extends BaseSingleTagEventHandler {
     public void executePost(VirtualFrame frame, Object result, Object[] inputs) throws Exception {
         for (BaseEventHandlerNode handler : handlers) {
             handler.executePost(frame, result, inputs);
+            noChildHandlerUpdate = noChildHandlerUpdate && (handler.wantsToUpdateHandler() == handler);
         }
     }
 
