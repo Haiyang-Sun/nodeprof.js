@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ListIterator;
 
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 
@@ -77,6 +78,7 @@ public class MultiEventHandler extends BaseSingleTagEventHandler {
         if (modified) {
             if (newHandlers.size() > 1) {
                 // return new MultiEventHandler
+                CompilerDirectives.transferToInterpreterAndInvalidate();
                 return new MultiEventHandler(this.tag, newHandlers.toArray(new BaseEventHandlerNode[0]));
             } else if (newHandlers.size() == 1) {
                 // optimize to SingleEventHandler
