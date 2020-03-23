@@ -252,6 +252,18 @@ def test(args):
     unitTests(args)
     testJalangi(args +["--all"]);
 
+def checkCopyrightHeaders(args):
+    # create list of Java sources to check
+    with open('files_to_check', 'w') as f:
+        mx.run(['git', 'ls-files', '--', '*.java'], out=f)
+    
+    # create an overrides file so that NodeProf copyright can be checked
+    with open(join(_suite.dir, 'mx.nodeprof/copyrights/overrides'), 'w') as f:
+        mx.run(['awk', '{print $0",nodeprof.copyright"}', 'files_to_check'], out=f)
+
+    # run the actual check (overrodes file needs to be passed explicitly)
+    return mx.checkcopyrights(['--primary', '--', '--file-list', 'files_to_check'])
+
 @contextmanager
 def _import_substratevm():
     try:
@@ -286,4 +298,5 @@ mx.update_commands(_suite, {
     'test-npm': [testNpm, ''],
     'jalangi': [runJalangi, ''],
     'jnode': [runJNode, ''],
+    'checkcopyrights-nodeprof': [checkCopyrightHeaders, ''],
 })
