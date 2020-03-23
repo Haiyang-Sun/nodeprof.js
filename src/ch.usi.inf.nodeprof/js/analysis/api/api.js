@@ -26,17 +26,23 @@
 
   function SourceObjTest() {
     this.functionEnter = function (iid, f, dis, args) {
+      var locObj = J$.iidToSourceObject(iid);
+      if (locObj.symbolic) {
+        console.log(`symbolic location '${locObj.symbolic}':`, J$.iidToLocation(iid));
+      }
+
       if (f.name !== 'foo')
         return;
+
       console.log('this is global:', this === global);
       console.log(this.__jalangiAdapter);
-      var locObj = J$.iidToSourceObject(iid);
       console.log('num props:', Object.getOwnPropertyNames(locObj).length);
       console.log('name:', locObj.name);
       // do not log the range directly, it includes the Node.js module wrapper function as a prefix
       console.log('src length from range:', locObj.range[1] - locObj.range[0]);
       console.log('loc.start:', locObj.loc.start);
       console.log('loc.end:', locObj.loc.end);
+      console.log('symbolic:', !!locObj.symbolic);
     };
   }
 

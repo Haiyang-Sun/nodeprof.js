@@ -2,6 +2,8 @@
 [i] info
 [i] neg level
 [i] string level
+symbolic location ':program': (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:{{:program}})
+symbolic location 'module': (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:{{module}})
 this is global: true
 [Object: null prototype] {
   iidToLocation: undefined,
@@ -18,3 +20,4 @@ name: src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js
 src length from range: 18
 loc.start: { line: 16, column: 1 }
 loc.end: { line: 16, column: 18 }
+symbolic: false

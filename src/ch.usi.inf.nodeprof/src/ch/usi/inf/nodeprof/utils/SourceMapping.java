@@ -114,6 +114,9 @@ public abstract class SourceMapping {
         JSObject.set(loc, "start", start);
         JSObject.set(loc, "end", end);
         JSObject.set(o, "loc", loc);
+        if (syntheticLocations != null && syntheticLocations.containsKey(section)) {
+            JSObject.set(o, "symbolic", syntheticLocations.get(section));
+        }
         return o;
     }
 
