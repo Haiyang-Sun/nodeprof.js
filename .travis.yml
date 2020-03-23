@@ -37,6 +37,7 @@ script:
   - mx sforceimports
   - mx sversions
   - mx checkstyle --primary
+  - mx checkcopyrights-nodeprof
   - mx build
   - mx test-all
     #  - cd ../graal/vm
