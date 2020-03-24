@@ -23,6 +23,7 @@ import java.util.ListIterator;
 
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 
@@ -59,12 +60,17 @@ public class MultiEventHandler extends BaseSingleTagEventHandler {
         }
     }
 
-    // TODO: optimize into single loop and annotate with ExplodeLoop
     @Override
     public BaseEventHandlerNode wantsToUpdateHandler() {
         if (noChildHandlerUpdate) {
             return this;
         }
+        return wantsToUpdateHandlerSlow();
+    }
+
+    // TODO: could optimize into single loop and annotate with ExplodeLoop?
+    @TruffleBoundary
+    private BaseEventHandlerNode wantsToUpdateHandlerSlow() {
 
         ArrayList<BaseEventHandlerNode> newHandlers = new ArrayList<>(Arrays.asList(handlers));
 

@@ -207,7 +207,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
     private void updateChild(BaseEventHandlerNode newChild) {
         CompilerDirectives.transferToInterpreterAndInvalidate();
-        this.child = newChild;
+        this.child = insert(newChild);
     }
 
     private void removeInstrumentation() {
