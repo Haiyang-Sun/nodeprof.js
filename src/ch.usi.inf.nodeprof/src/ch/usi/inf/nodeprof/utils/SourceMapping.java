@@ -47,9 +47,7 @@ public abstract class SourceMapping {
         iidToLocationCache = new HashMap<>();
         sourceSet = new HashMap<>();
         idToSource = new HashMap<>();
-        if (GlobalConfiguration.SYMBOLIC_LOCATIONS) {
-            syntheticLocations = new HashMap<>();
-        }
+        syntheticLocations = new HashMap<>();
     }
 
     static {
@@ -114,7 +112,7 @@ public abstract class SourceMapping {
         JSObject.set(loc, "start", start);
         JSObject.set(loc, "end", end);
         JSObject.set(o, "loc", loc);
-        if (syntheticLocations != null && syntheticLocations.containsKey(section)) {
+        if (syntheticLocations.containsKey(section)) {
             JSObject.set(o, "symbolic", syntheticLocations.get(section));
         }
         return o;
@@ -177,7 +175,7 @@ public abstract class SourceMapping {
 
     private static StringBuilder makeSectionString(SourceSection sourceSection) {
         StringBuilder b = new StringBuilder();
-        if (syntheticLocations != null && syntheticLocations.containsKey(sourceSection)) {
+        if (GlobalConfiguration.SYMBOLIC_LOCATIONS && syntheticLocations.containsKey(sourceSection)) {
             b.append("{{");
             b.append(syntheticLocations.get(sourceSection));
             return b.append("}}");
@@ -202,7 +200,7 @@ public abstract class SourceMapping {
     }
 
     public static void addSyntheticLocation(SourceSection sourceSection, String name) {
-        assert syntheticLocations != null : "SYMBOLIC_LOCATIONS not enabled";
+        assert GlobalConfiguration.SYMBOLIC_LOCATIONS : "SYMBOLIC_LOCATIONS not enabled";
         boolean added = syntheticLocations.put(sourceSection, name) != null;
         if (added) {
             // invalidate cache
