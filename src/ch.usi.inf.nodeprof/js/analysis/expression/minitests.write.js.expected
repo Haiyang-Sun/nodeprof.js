@@ -2,8 +2,8 @@ expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:9:16:1
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:9:16:10) type: JSConstantInteger
 write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:1:16:10) a
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSAdd
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:10) type: JSConstantInteger
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:10) type: JSConstantInteger
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSConstantInteger
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSConstantInteger
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:13:17:14) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:13:17:14) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSAdd

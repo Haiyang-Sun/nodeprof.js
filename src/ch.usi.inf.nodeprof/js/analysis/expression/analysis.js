@@ -29,6 +29,9 @@
             if (skipModule(iid)) return;
             console.log("expression finishes:", J$.iidToLocation(iid), "type:", type);
         };
+        // empty callbacks used to materialize nodes in the Graal.js AST
+        this.binaryPre = function() {};
+        this.unaryPre = function() {};
         this.write = function(iid, name) {
             console.log("write", J$.iidToLocation(iid), name);
         };
