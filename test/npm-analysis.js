@@ -162,8 +162,8 @@
             /**
              * This callback is called when new source code is encountered during instrumentation.
              **/
-            this.newSource = function(name, source) {
-                console.log(`${++sourceCount} source(s) loaded, last: ${name}`);
+            this.newSource = function(sourceInfo, source) {
+                console.log(`${++sourceCount} source(s) loaded, last: ${sourceInfo.name}`);
             };
 
             /**

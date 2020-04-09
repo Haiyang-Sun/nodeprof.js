@@ -265,10 +265,13 @@ function loadAnalysis(){
 }
 
 loadAnalysis();
-Promise.all(J$.startupPromises).then( () => {
+if (J$.startupPromises.length === 0) {
   require('module').runMain();
-}, error => {
-  console.log('Analysis startup promise failed:', error);
-  process.exit(-1);
-});
-
+} else {
+  Promise.all(J$.startupPromises).then( () => {
+    require('module').runMain();
+  }, error => {
+    console.log('Analysis startup promise failed:', error);
+    process.exit(-1);
+  });
+}
