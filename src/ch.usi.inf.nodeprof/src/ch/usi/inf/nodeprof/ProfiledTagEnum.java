@@ -25,7 +25,7 @@ import ch.usi.inf.nodeprof.utils.Logger;
 
 public enum ProfiledTagEnum {
     UNARY(JSTags.UnaryOperationTag.class, -1), // have multiple case
-    BINARY(JSTags.BinaryOperationTag.class, 2),
+    BINARY(JSTags.BinaryOperationTag.class, -1), // logical binaries might not have two inputs
     CF_BRANCH(JSTags.ControlFlowBranchTag.class, -1), // to be checked
     CF_BLOCK(JSTags.ControlFlowBlockTag.class, -1), // to be checked
     CF_ROOT(JSTags.ControlFlowRootTag.class, 0), // to be checked
@@ -52,6 +52,9 @@ public enum ProfiledTagEnum {
     // -1 means unknown
     private final int expectedNumInputs;
 
+    /**
+     * @return the default number of expected inputs
+     */
     public int getExpectedNumInputs() {
         return expectedNumInputs;
     }

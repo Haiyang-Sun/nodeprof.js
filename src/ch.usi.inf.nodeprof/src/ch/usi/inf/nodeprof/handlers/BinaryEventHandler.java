@@ -73,4 +73,15 @@ public abstract class BinaryEventHandler extends BaseSingleTagEventHandler {
     public boolean isLogic() {
         return this.isLogic;
     }
+
+    /**
+     * @return 0 for logical operations and 2 for others
+     */
+    @Override
+    public int expectedNumInputs() {
+        if (isLogic()) {
+            return 0;
+        }
+        return 2;
+    }
 }
