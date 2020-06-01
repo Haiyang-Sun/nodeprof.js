@@ -3,4 +3,5 @@ newSource matches: 1
 pre var a = 0;
 newSource: src/ch.usi.inf.nodeprof.test/js/minitests/eval.js / internal: false / eval: true / 2
 newSource matches: 1
+invoking func: eval
 post var a = 0;
