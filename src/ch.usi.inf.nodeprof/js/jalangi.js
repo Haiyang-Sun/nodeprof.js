@@ -52,6 +52,9 @@ J$={};
     sandbox.iidToSourceObject = function(iid) {
       return sandbox.adapter.iidToSourceObject(iid);
     }
+    sandbox.iidToCode = function(iid) {
+      return sandbox.adapter.iidToCode(iid);
+    }
     sandbox.getGlobalIID = function(iid) {
       return iid;
     };

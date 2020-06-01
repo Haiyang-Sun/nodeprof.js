@@ -37,6 +37,7 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 public abstract class SourceMapping {
     private static int iidGen = 0;
     @CompilationFinal private static HashMap<Integer, String> iidToLocationCache;
+    @CompilationFinal private static HashMap<Integer, String> iidToCodeCache;
     @CompilationFinal private static HashMap<SourceSection, Integer> sourceSet;
     @CompilationFinal private static HashMap<Integer, SourceSection> idToSource;
     @CompilationFinal private static HashMap<SourceSection, String> syntheticLocations;
@@ -48,6 +49,7 @@ public abstract class SourceMapping {
         sourceSet = new HashMap<>();
         idToSource = new HashMap<>();
         syntheticLocations = new HashMap<>();
+        iidToCodeCache = new HashMap<>();
     }
 
     static {
@@ -73,6 +75,19 @@ public abstract class SourceMapping {
         } else if (idToSource.containsKey(iid)) {
             String res = makeLocationString(idToSource.get(iid)).toString();
             iidToLocationCache.put(iid, res);
+            return res;
+        } else {
+            return null;
+        }
+    }
+
+    @TruffleBoundary
+    public static String getCodeForIID(int iid) {
+        if (iidToCodeCache.containsKey(iid)) {
+            return iidToCodeCache.get(iid);
+        } else if (idToSource.containsKey(iid)) {
+            String res = idToSource.get(iid).getCharacters().toString();
+            iidToCodeCache.put(iid, res);
             return res;
         } else {
             return null;
@@ -153,6 +168,7 @@ public abstract class SourceMapping {
     @TruffleBoundary
     public static synchronized void reset() {
         iidGen = 0;
+        iidToCodeCache.clear();
         iidToLocationCache.clear();
         sourceSet.clear();
         idToSource.clear();

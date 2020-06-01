@@ -57,6 +57,7 @@ public class JalangiAdapter implements TruffleObject {
 
     public enum ApiMember {
         IID_TO_LOCATION("iidToLocation"),
+        IID_TO_CODE("iidToCode"),
         IID_TO_SOURCE_OBJECT("iidToSourceObject"),
         NATIVE_LOG("nativeLog"),
         VALUE_OF("valueOf"),
@@ -82,7 +83,6 @@ public class JalangiAdapter implements TruffleObject {
     }
 
     String[] members = Arrays.stream(ApiMember.values()).map(ApiMember::toString).toArray(String[]::new);
-
 
     @SuppressWarnings("static-method")
     @ExportMessage
@@ -144,6 +144,18 @@ public class JalangiAdapter implements TruffleObject {
                     result = SourceMapping.getLocationForIID(convertIID(arguments[0]));
                 } catch (Exception e) {
                     Logger.error("iidToLocation failed for argument type " + arguments[0].getClass().getName());
+                    CompilerDirectives.transferToInterpreterAndInvalidate();
+                    throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+                }
+                return result == null ? Undefined.instance : result;
+            }
+        } else if (ApiMember.IID_TO_CODE.equalsString(identifier)) {
+            if (checkArguments(1, arguments, identifier)) {
+                Object result = null;
+                try {
+                    result = SourceMapping.getCodeForIID(convertIID(arguments[0]));
+                } catch (Exception e) {
+                    Logger.error("iidToCode failed for argument type " + arguments[0].getClass().getName());
                     CompilerDirectives.transferToInterpreterAndInvalidate();
                     throw UnsupportedTypeException.create(new Object[]{arguments[0]});
                 }
