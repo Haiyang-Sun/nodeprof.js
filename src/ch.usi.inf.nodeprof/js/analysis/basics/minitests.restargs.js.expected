@@ -1,4 +1,4 @@
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/restargs.js:22:1:22:12)  base type: object  offset type: string  val type: function
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/restargs.js:22:1:22:12)  base type: object  offset type: string  val type: function false console.log
 invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/restargs.js:22:13:22:23)
 [ 'bar' ]
 invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/restargs.js:17:10:17:22)
@@ -9,7 +9,7 @@ invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/restar
 [ [Arguments] { '0': 'bar' } ]
 [Arguments] { '0': 'bar' }
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/restargs.js:22:1:22:24)
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/restargs.js:23:1:23:12)  base type: object  offset type: string  val type: function
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/restargs.js:23:1:23:12)  base type: object  offset type: string  val type: function false console.log
 invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/restargs.js:23:13:23:27)
 [ 42, 'baz' ]
 invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/restargs.js:17:10:17:22)

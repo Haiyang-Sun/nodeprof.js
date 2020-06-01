@@ -1,4 +1,4 @@
 invokeFunPre @ object function (src/ch.usi.inf.nodeprof.test/js/minitests/element.js:17:1:17:10) isMethod
 []
-getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element.js:17:1:17:8)  base type: object  offset type: number  val type: function
+getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element.js:17:1:17:8)  base type: object  offset type: number  val type: function true fArr[0]
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element.js:17:1:17:10)
