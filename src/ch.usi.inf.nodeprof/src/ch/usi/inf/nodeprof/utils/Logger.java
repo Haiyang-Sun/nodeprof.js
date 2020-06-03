@@ -162,7 +162,7 @@ public class Logger {
     }
 
     @TruffleBoundary
-    public static void dumpException(GraalJSException e) {
+    public static void reportJSException(GraalJSException e) {
         Logger.error(e.getMessage());
         GraalJSException.JSStackTraceElement[] trace = e.getJSStackTrace();
         if (GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {

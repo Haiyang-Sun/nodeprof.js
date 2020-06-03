@@ -38,7 +38,7 @@ public class InitialRootFactory extends AbstractFactory {
         super("newSource", jalangiAnalysis, null, post);
     }
 
-    private Set<Source> seenSources = new HashSet<>();
+    private final Set<Source> seenSources = new HashSet<>();
 
     @TruffleBoundary
     private boolean isNewSource(Source source) {
@@ -79,8 +79,9 @@ public class InitialRootFactory extends AbstractFactory {
 
                 if (isNewSource(source)) {
                     wrappedDispatchExecution(this, postDispatch, post,
-                            SourceMapping.getJSObjectForSource(source), // arg 1: source object
-                            source.getCharacters().toString()); // arg 2: source code
+                                    SourceMapping.getJSObjectForSource(source), // arg 1: source
+                                                                                // object
+                                    source.getCharacters().toString()); // arg 2: source code
                 }
             }
         };

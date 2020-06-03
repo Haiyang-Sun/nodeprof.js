@@ -23,7 +23,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.ExecutionEventNode;
 import com.oracle.truffle.api.nodes.ControlFlowException;
-import com.oracle.truffle.js.runtime.UserScriptException;
+import com.oracle.truffle.js.runtime.GraalJSException;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -87,8 +87,6 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
 
                 // allow for handler changes after executePre/Post
                 checkHandlerChanges();
-            } catch (UserScriptException e) {
-                reportError(e);
             } catch (Throwable e) {
                 reportError(null, e);
             }
@@ -111,8 +109,6 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 // allow for handler changes after executePre/Post
                 checkHandlerChanges();
             }
-        } catch (UserScriptException e) {
-            reportError(e);
         } catch (Throwable e) {
             reportError(null, e);
         }
@@ -134,24 +130,23 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 // allow for handler changes after executePre/Post
                 checkHandlerChanges();
             }
-        } catch (UserScriptException e) {
-            reportError(e);
         } catch (Throwable e) {
             reportError(inputs, e);
         }
     }
 
     @TruffleBoundary
-    private void reportError(UserScriptException e) {
-        if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
-            throw e;
-        }
-        Logger.error(context.getInstrumentedSourceSection(), "Ignoring JS exception in callback");
-        Logger.error(e.getMessage());
-    }
-
-    @TruffleBoundary
     private void reportError(Object[] inputs, Throwable e) {
+        if (e instanceof GraalJSException) {
+            /*
+             * Dump JS exception messages in the analysis callback and avoid dumping full Graal.js stack
+             * trace. This helps to avoid showing the Graal.js internals when debugging a new dynamic
+             * analysis.
+             */
+            Logger.reportJSException((GraalJSException) e);
+            return;
+        }
+
         Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + (inputs == null ? "null" : inputs.length) + " " + e.getMessage());
         if (inputs != null) {
             for (int i = 0; i < inputs.length; i++) {
@@ -185,8 +180,6 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
                 }
 
             }
-        } catch (UserScriptException e) {
-            reportError(e);
         } catch (Throwable e) {
             reportError(inputs, e);
         }

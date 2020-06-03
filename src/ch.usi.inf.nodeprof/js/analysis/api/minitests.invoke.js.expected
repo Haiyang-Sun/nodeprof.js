@@ -7,6 +7,7 @@ symbolic location 'module': (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js
 this is global: true
 [Object: null prototype] {
   iidToLocation: undefined,
+  iidToCode: undefined,
   iidToSourceObject: undefined,
   nativeLog: undefined,
   valueOf: undefined,

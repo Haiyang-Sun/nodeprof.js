@@ -16,6 +16,8 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
+import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
@@ -29,7 +31,8 @@ import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
  */
 public abstract class MakeArgumentArrayNode extends Node {
     private final JSContext jsContext;
-    private Object[] arguments;
+
+    @CompilationFinal(dimensions = 0) private Object[] arguments;
 
     /**
      * offset marks where the first argument is in the inputs
@@ -37,7 +40,7 @@ public abstract class MakeArgumentArrayNode extends Node {
     private final int offset;
 
     /**
-     * expected number of arguments
+     * expected not used slots in the tail of the inputs array
      */
     private final int tillEnd;
 
@@ -87,6 +90,7 @@ public abstract class MakeArgumentArrayNode extends Node {
 
     @Specialization
     public Object executeOther(Object[] input) {
+        CompilerDirectives.transferToInterpreterAndInvalidate();
         this.arguments = new Object[input.length - offset - tillEnd];
         copy(input);
         return toJSArray();

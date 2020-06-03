@@ -80,6 +80,15 @@ public abstract class SourceMapping {
     }
 
     @TruffleBoundary
+    public static String getCodeForIID(int iid) {
+        if (idToSource.containsKey(iid)) {
+            return idToSource.get(iid).getCharacters().toString();
+        } else {
+            return null;
+        }
+    }
+
+    @TruffleBoundary
     public static SourceSection getSourceSectionForIID(int iid) {
         return idToSource.get(iid);
     }

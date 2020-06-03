@@ -9,7 +9,9 @@ newSource matches: 1
 1
 invoking func: bound log
 invoking func: bar
+invoking func: eval
 post var y = 1; function bar(a){console.log(a);}; bar(x);
 invoking func: foo
 location inside eval on line: 17
+invoking func: eval
 post var x = 1; function foo(a){eval("var y = 1; function bar(a){console.log(a);}; bar(x);");}; foo(x);

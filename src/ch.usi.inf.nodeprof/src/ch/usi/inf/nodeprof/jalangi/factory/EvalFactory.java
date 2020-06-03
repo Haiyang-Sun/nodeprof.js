@@ -22,15 +22,19 @@ import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.EvalEventHandler;
 
 public class EvalFactory extends AbstractFactory {
 
+    private final boolean isInvoke;
+
     public EvalFactory(Object jalangiAnalysis, DynamicObject pre,
-                    DynamicObject post) {
+                    DynamicObject post, boolean isInvoke) {
         super("eval", jalangiAnalysis, pre, post);
+        this.isInvoke = isInvoke;
     }
 
     @Override
@@ -38,11 +42,17 @@ public class EvalFactory extends AbstractFactory {
         return new EvalEventHandler(context) {
             @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
             @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Node.Child MakeArgumentArrayNode makeArgs = isInvoke ? (MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 1, 0)) : null;
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getCode(inputs));
+                    if (!isInvoke) {
+                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getCode(inputs));
+                    } else {
+                        inputs[1] = getCode(inputs);
+                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), inputs[0], Undefined.instance, makeArgs.executeArguments(inputs), false, false, 0, 0);
+                    }
                 }
             }
 
@@ -50,7 +60,12 @@ public class EvalFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
-                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getCode(inputs), convertResult(result));
+                    if (!isInvoke) {
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getCode(inputs), convertResult(result));
+                    } else {
+                        inputs[1] = getCode(inputs);
+                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), inputs[0], Undefined.instance, makeArgs.executeArguments(inputs), convertResult(result), false, false, 0, 0);
+                    }
                 }
             }
         };

@@ -26,10 +26,10 @@
         return J$.iidToLocation(sid, iid);
     }
     this.getField = function(iid, base, offset, val, isComputed, isOpAssign, isMethodCall) {
-      console.log("getField @ ", getLocation(J$.sid, iid), " base type:",typeof(base), " offset type:", typeof(offset), " val type:", typeof(val) );
+      console.log("getField @ ", getLocation(J$.sid, iid), " base type:",typeof(base), " offset type:", typeof(offset), " val type:", typeof(val), isComputed, J$.iidToCode(iid));
     };
     this.putField = function (iid, base, offset, val, isComputed, isOpAssign) {
-      console.log("putField @ ", getLocation(J$.sid, iid)," base type:",typeof(base), " offset type:", typeof(offset), " val type:", typeof(val) );
+      console.log("putField @ ", getLocation(J$.sid, iid)," base type:",typeof(base), " offset type:", typeof(offset), " val type:", typeof(val), isComputed, J$.iidToCode(iid));
     };
   }
   sandbox.analysis = new FieldTest();
