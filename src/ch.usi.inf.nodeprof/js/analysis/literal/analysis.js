@@ -20,8 +20,10 @@ function Literal(){
     var locObj = J$.iidToSourceObject(iid);
     return (locObj.loc.start.line === 1 && locObj.loc.start.column === 1);
   }
-  this.literal = function(iid, val, hasGetterSetter, type, fields){
+  this.literal = function(iid, val, fakeHasGetterSetter, type){
     if (skipModule(iid)) return;
+    let hasGetterSetter = J$.adapter.hasGetterSetter(J$.iidToCode(iid));
+    let fields = J$.adapter.getObjectLiteralMembers(J$.iidToCode(iid));
     console.log(J$.iidToLocation(iid), typeof(val), hasGetterSetter, type, fields);
   }
 }

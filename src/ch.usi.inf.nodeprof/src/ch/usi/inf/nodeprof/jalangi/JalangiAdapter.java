@@ -16,12 +16,16 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import org.graalvm.options.OptionDescriptor;
 import org.graalvm.options.OptionValues;
 
+import com.oracle.js.parser.ParserException;
+import com.oracle.js.parser.ir.Expression;
+import com.oracle.js.parser.ir.ObjectNode;
+import com.oracle.js.parser.ir.PropertyNode;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.ArityException;
@@ -32,6 +36,7 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.JSEngine;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSUserObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
@@ -51,38 +56,24 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
 public class JalangiAdapter implements TruffleObject {
     private final NodeProfJalangi nodeprofJalangi;
 
+    final String[] members = new String[]{
+                    "iidToLocation",
+                    "iidToCode",
+                    "iidToSourceObject",
+                    "nativeLog",
+                    "valueOf",
+                    "onReady",
+                    "registerCallback",
+                    "instrumentationSwitch",
+                    "getConfig",
+                    "hasGetterSetter",
+                    "getObjectLiteralMembers"
+    };
+
+    @TruffleBoundary
     public JalangiAdapter(NodeProfJalangi nodeprofJalangi) {
         this.nodeprofJalangi = nodeprofJalangi;
     }
-
-    public enum ApiMember {
-        IID_TO_LOCATION("iidToLocation"),
-        IID_TO_CODE("iidToCode"),
-        IID_TO_SOURCE_OBJECT("iidToSourceObject"),
-        NATIVE_LOG("nativeLog"),
-        VALUE_OF("valueOf"),
-        ON_READY("onReady"),
-        REGISTER_CALLBACK("registerCallback"),
-        INSTRUMENTATION_SWITCH("instrumentationSwitch"),
-        GET_CONFIG("getConfig");
-
-        private final String name;
-
-        ApiMember(String name) {
-            this.name = name;
-        }
-
-        public boolean equalsString(String otherName) {
-            return name.equals(otherName);
-        }
-
-        @Override
-        public String toString() {
-            return this.name;
-        }
-    }
-
-    String[] members = Arrays.stream(ApiMember.values()).map(ApiMember::toString).toArray(String[]::new);
 
     @SuppressWarnings("static-method")
     @ExportMessage
@@ -137,93 +128,173 @@ public class JalangiAdapter implements TruffleObject {
     @TruffleBoundary
     @ExportMessage
     final Object invokeMember(String identifier, Object[] arguments) throws ArityException, UnsupportedTypeException {
-        if (ApiMember.IID_TO_LOCATION.equalsString(identifier)) {
-            if (checkArguments(1, arguments, identifier)) {
-                Object result = null;
-                try {
-                    result = SourceMapping.getLocationForIID(convertIID(arguments[0]));
-                } catch (Exception e) {
-                    Logger.error("iidToLocation failed for argument type " + arguments[0].getClass().getName());
-                    CompilerDirectives.transferToInterpreterAndInvalidate();
-                    throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+        switch (identifier) {
+            case "iidToLocation": {
+                if (checkArguments(1, arguments, identifier)) {
+                    Object result = null;
+                    try {
+                        result = SourceMapping.getLocationForIID(convertIID(arguments[0]));
+                    } catch (Exception e) {
+                        Logger.error("iidToLocation failed for argument type " + arguments[0].getClass().getName());
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+                    }
+                    return result == null ? Undefined.instance : result;
                 }
-                return result == null ? Undefined.instance : result;
+                break;
             }
-        } else if (ApiMember.IID_TO_CODE.equalsString(identifier)) {
-            if (checkArguments(1, arguments, identifier)) {
-                Object result = null;
-                try {
-                    result = SourceMapping.getCodeForIID(convertIID(arguments[0]));
-                } catch (Exception e) {
-                    Logger.error("iidToCode failed for argument type " + arguments[0].getClass().getName());
-                    CompilerDirectives.transferToInterpreterAndInvalidate();
-                    throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+            case "iidToCode": {
+                if (checkArguments(1, arguments, identifier)) {
+                    Object result = null;
+                    try {
+                        result = SourceMapping.getCodeForIID(convertIID(arguments[0]));
+                    } catch (Exception e) {
+                        Logger.error("iidToCode failed for argument type " + arguments[0].getClass().getName());
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+                    }
+                    return result == null ? Undefined.instance : result;
                 }
-                return result == null ? Undefined.instance : result;
+                break;
             }
-        } else if (ApiMember.IID_TO_SOURCE_OBJECT.equalsString(identifier)) {
-            if (checkArguments(1, arguments, identifier)) {
-                try {
-                    return SourceMapping.getJSObjectForIID(convertIID(arguments[0]));
-                } catch (Exception e) {
-                    Logger.error("iidToSourceObject failed for argument type " + arguments[0].getClass().getName());
-                    CompilerDirectives.transferToInterpreterAndInvalidate();
-                    throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+            case "iidToSourceObject": {
+                if (checkArguments(1, arguments, identifier)) {
+                    try {
+                        return SourceMapping.getJSObjectForIID(convertIID(arguments[0]));
+                    } catch (Exception e) {
+                        Logger.error("iidToSourceObject failed for argument type " + arguments[0].getClass().getName());
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+                    }
                 }
+                break;
             }
-        } else if (ApiMember.NATIVE_LOG.equalsString(identifier)) {
-            Logger.Level level = Logger.Level.INFO;
-            if (arguments.length >= 2) {
-                int i = convertIID(arguments[1]);
-                Logger.Level[] enumValues = Logger.Level.values();
-                if (i >= 0 && i < enumValues.length) {
-                    level = enumValues[i];
+            case "nativeLog": {
+                Logger.Level level = Logger.Level.INFO;
+                if (arguments.length >= 2) {
+                    int i = convertIID(arguments[1]);
+                    Logger.Level[] enumValues = Logger.Level.values();
+                    if (i >= 0 && i < enumValues.length) {
+                        level = enumValues[i];
+                    }
                 }
+                if (arguments.length > 0) {
+                    Logger.log(arguments[0], level);
+                }
+                break;
             }
-            if (arguments.length > 0) {
-                Logger.log(arguments[0], level);
-                return 0;
+            case "valueOf": {
+                return "jalangi-adapter";
             }
-        } else if (ApiMember.VALUE_OF.equalsString(identifier)) {
-            return "jalangi-adapter";
-        } else if (ApiMember.ON_READY.equalsString(identifier)) {
-            if (arguments.length == 1) {
-                this.getNodeProfJalangi().onReady(arguments[0]);
-            } else if (arguments.length == 2) {
-                if (!(arguments[1] instanceof TruffleObject)) {
-                    Logger.warning("The second argument for onReady should be an object");
+            case "onReady": {
+                if (arguments.length == 1) {
+                    this.getNodeProfJalangi().onReady(arguments[0]);
+                } else if (arguments.length == 2) {
+                    if (!(arguments[1] instanceof TruffleObject)) {
+                        Logger.warning("The second argument for onReady should be an object");
+                    } else {
+                        this.getNodeProfJalangi().onReady(arguments[0], (TruffleObject) arguments[1]);
+                    }
                 } else {
-                    this.getNodeProfJalangi().onReady(arguments[0], (TruffleObject) arguments[1]);
+                    Logger.warning("onReady should take 1 or 2 arguments");
                 }
-            } else {
-                Logger.warning("onReady should take 1 or 2 arguments");
+                break;
             }
-        } else if (ApiMember.REGISTER_CALLBACK.equalsString(identifier)) {
-            this.getNodeProfJalangi().registerCallback(arguments[0], arguments[1], arguments[2]);
-        } else if (ApiMember.INSTRUMENTATION_SWITCH.equalsString(identifier)) {
-            // update instrumentation using the first argument given and return the updated
-            // status of the instrumentation (true for enabled and false for disabled)
-            if (arguments.length >= 1) {
-                if (arguments[0] != null) {
-                    boolean value = JSRuntime.toBoolean(arguments[0]);
-                    ProfilerExecutionEventNode.updateEnabled(value);
+            case "registerCallback": {
+                this.getNodeProfJalangi().registerCallback(arguments[0], arguments[1], arguments[2]);
+                break;
+            }
+            case "instrumentationSwitch": {
+                if (arguments.length >= 1) {
+                    if (arguments[0] != null) {
+                        boolean value = JSRuntime.toBoolean(arguments[0]);
+                        ProfilerExecutionEventNode.updateEnabled(value);
+                    }
+                }
+                return ProfilerExecutionEventNode.getEnabled();
+            }
+            case "getConfig": {
+                JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
+                DynamicObject obj = JSUserObject.create(ctx);
+                OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
+                for (OptionDescriptor o : NodeProfCLI.ods) {
+                    String shortKey = o.getName().replace("nodeprof.", "");
+                    JSObject.set(obj, shortKey, opts.get(o.getKey()));
+                }
+                return obj;
+            }
+            case "hasGetterSetter": {
+                if (checkArguments(1, arguments, identifier)) {
+                    return hasGetterSetter(arguments[0].toString());
+                } else {
+                    return Undefined.instance;
                 }
             }
-            return ProfilerExecutionEventNode.getEnabled();
-        } else if (ApiMember.GET_CONFIG.equalsString(identifier)) {
-            JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
-            DynamicObject obj = JSUserObject.create(ctx);
-            OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
-            for (OptionDescriptor o : NodeProfCLI.ods) {
-                String shortKey = o.getName().replace("nodeprof.", "");
-                JSObject.set(obj, shortKey, opts.get(o.getKey()));
+            case "getObjectLiteralMembers": {
+                if (checkArguments(1, arguments, identifier)) {
+                    return getObjectLiteralMembers(arguments[0].toString());
+                } else {
+                    return Undefined.instance;
+                }
             }
-            return obj;
-        } else {
-            // unknown API
-            Logger.warning("Unsupported NodeProf-Jalangi operation " + identifier);
+            default: {
+                Logger.warning("Unsupported NodeProf-Jalangi operation " + identifier);
+            }
         }
         return 0;
+    }
+
+    @TruffleBoundary
+    public Object getObjectLiteralMembers(String code) {
+        try {
+            JSContext jsContext = GlobalObjectCache.getInstance().getJSContext();
+            Expression expression = JSEngine.getInstance().getParser().parseExpression(jsContext, code);
+            ArrayList<Object> keys = new ArrayList<>();
+            if (expression instanceof ObjectNode) {
+                ObjectNode objExpr = (ObjectNode) expression;
+                for (PropertyNode element : objExpr.getElements()) {
+                    String flag = "";
+                    if (element.getGetter() != null) {
+                        flag += "getter";
+                    }
+                    if (element.getSetter() != null) {
+                        flag += "setter";
+                    }
+                    String keyName = element.getKeyName();
+                    keys.add(flag + "-" + keyName);
+                }
+                return JSArray.createConstant(jsContext, keys.toArray());
+            } else {
+                return Undefined.instance;
+            }
+        } catch (ParserException e) {
+            // TODO: currently Graal.js parser cannot parse literals depending on the enclosing
+            // context, this feature could be replaced with some other parser in future.
+            return Undefined.instance;
+        }
+    }
+
+    @TruffleBoundary
+    public Object hasGetterSetter(String code) {
+        try {
+            JSContext jsContext = GlobalObjectCache.getInstance().getJSContext();
+            Expression expression = JSEngine.getInstance().getParser().parseExpression(jsContext, code);
+            if (expression instanceof ObjectNode) {
+                ObjectNode objExpr = (ObjectNode) expression;
+                for (PropertyNode element : objExpr.getElements()) {
+                    if (element.getGetter() != null) {
+                        return true;
+                    }
+                    if (element.getSetter() != null) {
+                        return true;
+                    }
+                }
+            }
+        } catch (ParserException e) {
+            // TODO: currently Graal.js parser cannot parse literals depending on the enclosing
+            // context, this feature could be replaced with some other parser in future.
+        }
+        return false;
     }
 
     public NodeProfJalangi getNodeProfJalangi() {

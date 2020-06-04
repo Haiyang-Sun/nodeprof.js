@@ -32,14 +32,18 @@
          * literal, an object literal, an array literal, a number, a string, a boolean, a regular
          * expression, null, NaN, Infinity, or undefined.
          *
-         * literalType is a new argument provided by NodeProf showing the type of literal
+         * @param fakeHasGetterSetter is a placeholder to be consistent with Jalangi. 
+         * The value provided in the callback is always undefined while
+         * the actual value should be computed lazily via J$.adapter.hasGetterSetter(code)
          *
-         * memberNames: an array of member fields' names, each name in form of [getter/setter]-name
+         * @param literalType is a new argument provided by NodeProf showing the type of literal
+         *
+         * @param memberNames (deprecated): an array of member fields' names, each name in form of [getter/setter]-name
          *  e.g, setter-x => setter for member field x 
          *  -y => a normal member field y
          *  Please be noted that the name can include a '-' as well, so always use the first '-' as the delimiter for the flag
          **/
-        this.literal = function (iid, val, hasGetterSetter, literalType, memberNames) {
+        this.literal = function (iid, val, /* hasGetterSetter should be computed lazily */ fakeHasGetterSetter, literalType, /* @deprecated memberNames should be computed lazily */ memberNames) {
             return {result: val};
         };
         // optional literal type filter: by specifying the types in an array, only given types of literals will be instrumented

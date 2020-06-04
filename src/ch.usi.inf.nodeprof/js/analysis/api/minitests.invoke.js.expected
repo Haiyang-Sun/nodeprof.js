@@ -14,7 +14,9 @@ this is global: true
   onReady: undefined,
   registerCallback: undefined,
   instrumentationSwitch: undefined,
-  getConfig: undefined
+  getConfig: undefined,
+  hasGetterSetter: undefined,
+  getObjectLiteralMembers: undefined
 }
 num props: 4
 name: src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js
