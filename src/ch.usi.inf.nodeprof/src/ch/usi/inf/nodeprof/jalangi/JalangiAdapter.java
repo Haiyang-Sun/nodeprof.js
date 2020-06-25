@@ -16,16 +16,10 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import java.util.ArrayList;
-
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import org.graalvm.options.OptionDescriptor;
 import org.graalvm.options.OptionValues;
 
-import com.oracle.js.parser.ParserException;
-import com.oracle.js.parser.ir.Expression;
-import com.oracle.js.parser.ir.ObjectNode;
-import com.oracle.js.parser.ir.PropertyNode;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.ArityException;
@@ -36,7 +30,6 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
-import com.oracle.truffle.js.runtime.JSEngine;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSUserObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
@@ -223,78 +216,12 @@ public class JalangiAdapter implements TruffleObject {
                 }
                 return obj;
             }
-            case "hasGetterSetter": {
-                if (checkArguments(1, arguments, identifier)) {
-                    return hasGetterSetter(arguments[0].toString());
-                } else {
-                    return Undefined.instance;
-                }
-            }
-            case "getObjectLiteralMembers": {
-                if (checkArguments(1, arguments, identifier)) {
-                    return getObjectLiteralMembers(arguments[0].toString());
-                } else {
-                    return Undefined.instance;
-                }
-            }
+
             default: {
                 Logger.warning("Unsupported NodeProf-Jalangi operation " + identifier);
             }
         }
         return 0;
-    }
-
-    @TruffleBoundary
-    public Object getObjectLiteralMembers(String code) {
-        try {
-            JSContext jsContext = GlobalObjectCache.getInstance().getJSContext();
-            Expression expression = JSEngine.getInstance().getParser().parseExpression(jsContext, code);
-            ArrayList<Object> keys = new ArrayList<>();
-            if (expression instanceof ObjectNode) {
-                ObjectNode objExpr = (ObjectNode) expression;
-                for (PropertyNode element : objExpr.getElements()) {
-                    String flag = "";
-                    if (element.getGetter() != null) {
-                        flag += "getter";
-                    }
-                    if (element.getSetter() != null) {
-                        flag += "setter";
-                    }
-                    String keyName = element.getKeyName();
-                    keys.add(flag + "-" + keyName);
-                }
-                return JSArray.createConstant(jsContext, keys.toArray());
-            } else {
-                return Undefined.instance;
-            }
-        } catch (ParserException e) {
-            // TODO: currently Graal.js parser cannot parse literals depending on the enclosing
-            // context, this feature could be replaced with some other parser in future.
-            return Undefined.instance;
-        }
-    }
-
-    @TruffleBoundary
-    public Object hasGetterSetter(String code) {
-        try {
-            JSContext jsContext = GlobalObjectCache.getInstance().getJSContext();
-            Expression expression = JSEngine.getInstance().getParser().parseExpression(jsContext, code);
-            if (expression instanceof ObjectNode) {
-                ObjectNode objExpr = (ObjectNode) expression;
-                for (PropertyNode element : objExpr.getElements()) {
-                    if (element.getGetter() != null) {
-                        return true;
-                    }
-                    if (element.getSetter() != null) {
-                        return true;
-                    }
-                }
-            }
-        } catch (ParserException e) {
-            // TODO: currently Graal.js parser cannot parse literals depending on the enclosing
-            // context, this feature could be replaced with some other parser in future.
-        }
-        return false;
     }
 
     public NodeProfJalangi getNodeProfJalangi() {
