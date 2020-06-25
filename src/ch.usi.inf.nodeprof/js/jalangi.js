@@ -124,8 +124,7 @@ J$={};
   sandbox.getAstHelper = function() {
     const assert = require('assert');
     const util = require('util');
-    const esprima = require('esprima');
-    const estraverse = require('estraverse');
+    const { esprima, estraverse } = require('./bundle.js');
 
     const helperObject = {
       logObjectLiteral(iid) {
