@@ -17,6 +17,9 @@
 package ch.usi.inf.nodeprof.jalangi;
 
 import com.oracle.truffle.js.runtime.builtins.JSArray;
+
+import java.util.Arrays;
+
 import org.graalvm.options.OptionDescriptor;
 import org.graalvm.options.OptionValues;
 
@@ -49,19 +52,36 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
 public class JalangiAdapter implements TruffleObject {
     private final NodeProfJalangi nodeprofJalangi;
 
-    final String[] members = new String[]{
-                    "iidToLocation",
-                    "iidToCode",
-                    "iidToSourceObject",
-                    "nativeLog",
-                    "valueOf",
-                    "onReady",
-                    "registerCallback",
-                    "instrumentationSwitch",
-                    "getConfig",
-                    "hasGetterSetter",
-                    "getObjectLiteralMembers"
-    };
+    enum ApiMember {
+        IIDTOLOCATION("iidToLocation"),
+        IIDTOCODE("iidToCode"),
+        IIDTOSOURCEOBJECT("iidToSourceObject"),
+        NATIVELOG("nativeLog"),
+        VALUEOF("valueOf"),
+        ONREADY("onReady"),
+        REGISTERCALLBACK("registerCallback"),
+        INSTRUMENTATIONSWITCH("instrumentationSwitch"),
+        GETCONFIG("getConfig");
+
+        final String name;
+
+        ApiMember(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+
+    }
+
+    @TruffleBoundary
+    private static String[] getApiMembers() {
+        return Arrays.stream(ApiMember.values()).map(ApiMember::toString).toArray(String[]::new);
+    }
+
+    final String[] members = getApiMembers();
 
     @TruffleBoundary
     public JalangiAdapter(NodeProfJalangi nodeprofJalangi) {
@@ -121,8 +141,15 @@ public class JalangiAdapter implements TruffleObject {
     @TruffleBoundary
     @ExportMessage
     final Object invokeMember(String identifier, Object[] arguments) throws ArityException, UnsupportedTypeException {
-        switch (identifier) {
-            case "iidToLocation": {
+        ApiMember api;
+        try {
+            api = ApiMember.valueOf(identifier.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            Logger.warning("Unsupported NodeProf-Jalangi operation " + identifier);
+            return 0;
+        }
+        switch (api) {
+            case IIDTOLOCATION: {
                 if (checkArguments(1, arguments, identifier)) {
                     Object result = null;
                     try {
@@ -136,7 +163,7 @@ public class JalangiAdapter implements TruffleObject {
                 }
                 break;
             }
-            case "iidToCode": {
+            case IIDTOCODE: {
                 if (checkArguments(1, arguments, identifier)) {
                     Object result = null;
                     try {
@@ -150,7 +177,7 @@ public class JalangiAdapter implements TruffleObject {
                 }
                 break;
             }
-            case "iidToSourceObject": {
+            case IIDTOSOURCEOBJECT: {
                 if (checkArguments(1, arguments, identifier)) {
                     try {
                         return SourceMapping.getJSObjectForIID(convertIID(arguments[0]));
@@ -162,7 +189,7 @@ public class JalangiAdapter implements TruffleObject {
                 }
                 break;
             }
-            case "nativeLog": {
+            case NATIVELOG: {
                 Logger.Level level = Logger.Level.INFO;
                 if (arguments.length >= 2) {
                     int i = convertIID(arguments[1]);
@@ -176,10 +203,10 @@ public class JalangiAdapter implements TruffleObject {
                 }
                 break;
             }
-            case "valueOf": {
+            case VALUEOF: {
                 return "jalangi-adapter";
             }
-            case "onReady": {
+            case ONREADY: {
                 if (arguments.length == 1) {
                     this.getNodeProfJalangi().onReady(arguments[0]);
                 } else if (arguments.length == 2) {
@@ -193,11 +220,11 @@ public class JalangiAdapter implements TruffleObject {
                 }
                 break;
             }
-            case "registerCallback": {
+            case REGISTERCALLBACK: {
                 this.getNodeProfJalangi().registerCallback(arguments[0], arguments[1], arguments[2]);
                 break;
             }
-            case "instrumentationSwitch": {
+            case INSTRUMENTATIONSWITCH: {
                 if (arguments.length >= 1) {
                     if (arguments[0] != null) {
                         boolean value = JSRuntime.toBoolean(arguments[0]);
@@ -206,7 +233,7 @@ public class JalangiAdapter implements TruffleObject {
                 }
                 return ProfilerExecutionEventNode.getEnabled();
             }
-            case "getConfig": {
+            case GETCONFIG: {
                 JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
                 DynamicObject obj = JSUserObject.create(ctx);
                 OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
