@@ -264,6 +264,9 @@ def checkCopyrightHeaders(args):
     # run the actual check (overrodes file needs to be passed explicitly)
     return mx.checkcopyrights(['--primary', '--', '--file-list', 'files_to_check'])
 
+def installNpmDeps(args):
+    npm(['install'], cwd=join(_suite.dir, 'src/ch.usi.inf.nodeprof/js'))
+
 @contextmanager
 def _import_substratevm():
     try:
@@ -299,4 +302,5 @@ mx.update_commands(_suite, {
     'jalangi': [runJalangi, ''],
     'jnode': [runJNode, ''],
     'checkcopyrights-nodeprof': [checkCopyrightHeaders, ''],
+    'install-npm-deps': [installNpmDeps, ''],
 })
