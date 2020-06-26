@@ -147,7 +147,7 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
             return;
         }
 
-        Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + (inputs == null ? "null" : inputs.length) + " " + e.getMessage());
+        Logger.error(context.getInstrumentedSourceSection(), this.cb + " inputs: " + (inputs == null ? "null" : inputs.length) + " exception: " + e.getMessage());
         if (inputs != null) {
             for (int i = 0; i < inputs.length; i++) {
                 Logger.error(context.getInstrumentedSourceSection(),
@@ -156,7 +156,6 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
         }
         if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
             e.printStackTrace();
-            Thread.dumpStack();
             System.exit(-1);
         }
     }
