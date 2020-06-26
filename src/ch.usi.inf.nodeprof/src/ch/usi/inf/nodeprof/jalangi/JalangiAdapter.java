@@ -16,9 +16,10 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
+import com.oracle.truffle.js.runtime.builtins.JSArray;
+
 import java.util.Arrays;
 
-import com.oracle.truffle.js.runtime.builtins.JSArray;
 import org.graalvm.options.OptionDescriptor;
 import org.graalvm.options.OptionValues;
 
@@ -51,38 +52,41 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
 public class JalangiAdapter implements TruffleObject {
     private final NodeProfJalangi nodeprofJalangi;
 
-    public JalangiAdapter(NodeProfJalangi nodeprofJalangi) {
-        this.nodeprofJalangi = nodeprofJalangi;
-    }
+    enum ApiMember {
+        IIDTOLOCATION("iidToLocation"),
+        IIDTOCODE("iidToCode"),
+        IIDTOSOURCEOBJECT("iidToSourceObject"),
+        NATIVELOG("nativeLog"),
+        VALUEOF("valueOf"),
+        ONREADY("onReady"),
+        REGISTERCALLBACK("registerCallback"),
+        INSTRUMENTATIONSWITCH("instrumentationSwitch"),
+        GETCONFIG("getConfig");
 
-    public enum ApiMember {
-        IID_TO_LOCATION("iidToLocation"),
-        IID_TO_CODE("iidToCode"),
-        IID_TO_SOURCE_OBJECT("iidToSourceObject"),
-        NATIVE_LOG("nativeLog"),
-        VALUE_OF("valueOf"),
-        ON_READY("onReady"),
-        REGISTER_CALLBACK("registerCallback"),
-        INSTRUMENTATION_SWITCH("instrumentationSwitch"),
-        GET_CONFIG("getConfig");
-
-        private final String name;
+        final String name;
 
         ApiMember(String name) {
             this.name = name;
-        }
-
-        public boolean equalsString(String otherName) {
-            return name.equals(otherName);
         }
 
         @Override
         public String toString() {
             return this.name;
         }
+
     }
 
-    String[] members = Arrays.stream(ApiMember.values()).map(ApiMember::toString).toArray(String[]::new);
+    @TruffleBoundary
+    private static String[] getApiMembers() {
+        return Arrays.stream(ApiMember.values()).map(ApiMember::toString).toArray(String[]::new);
+    }
+
+    final String[] members = getApiMembers();
+
+    @TruffleBoundary
+    public JalangiAdapter(NodeProfJalangi nodeprofJalangi) {
+        this.nodeprofJalangi = nodeprofJalangi;
+    }
 
     @SuppressWarnings("static-method")
     @ExportMessage
@@ -137,91 +141,112 @@ public class JalangiAdapter implements TruffleObject {
     @TruffleBoundary
     @ExportMessage
     final Object invokeMember(String identifier, Object[] arguments) throws ArityException, UnsupportedTypeException {
-        if (ApiMember.IID_TO_LOCATION.equalsString(identifier)) {
-            if (checkArguments(1, arguments, identifier)) {
-                Object result = null;
-                try {
-                    result = SourceMapping.getLocationForIID(convertIID(arguments[0]));
-                } catch (Exception e) {
-                    Logger.error("iidToLocation failed for argument type " + arguments[0].getClass().getName());
-                    CompilerDirectives.transferToInterpreterAndInvalidate();
-                    throw UnsupportedTypeException.create(new Object[]{arguments[0]});
-                }
-                return result == null ? Undefined.instance : result;
-            }
-        } else if (ApiMember.IID_TO_CODE.equalsString(identifier)) {
-            if (checkArguments(1, arguments, identifier)) {
-                Object result = null;
-                try {
-                    result = SourceMapping.getCodeForIID(convertIID(arguments[0]));
-                } catch (Exception e) {
-                    Logger.error("iidToCode failed for argument type " + arguments[0].getClass().getName());
-                    CompilerDirectives.transferToInterpreterAndInvalidate();
-                    throw UnsupportedTypeException.create(new Object[]{arguments[0]});
-                }
-                return result == null ? Undefined.instance : result;
-            }
-        } else if (ApiMember.IID_TO_SOURCE_OBJECT.equalsString(identifier)) {
-            if (checkArguments(1, arguments, identifier)) {
-                try {
-                    return SourceMapping.getJSObjectForIID(convertIID(arguments[0]));
-                } catch (Exception e) {
-                    Logger.error("iidToSourceObject failed for argument type " + arguments[0].getClass().getName());
-                    CompilerDirectives.transferToInterpreterAndInvalidate();
-                    throw UnsupportedTypeException.create(new Object[]{arguments[0]});
-                }
-            }
-        } else if (ApiMember.NATIVE_LOG.equalsString(identifier)) {
-            Logger.Level level = Logger.Level.INFO;
-            if (arguments.length >= 2) {
-                int i = convertIID(arguments[1]);
-                Logger.Level[] enumValues = Logger.Level.values();
-                if (i >= 0 && i < enumValues.length) {
-                    level = enumValues[i];
-                }
-            }
-            if (arguments.length > 0) {
-                Logger.log(arguments[0], level);
-                return 0;
-            }
-        } else if (ApiMember.VALUE_OF.equalsString(identifier)) {
-            return "jalangi-adapter";
-        } else if (ApiMember.ON_READY.equalsString(identifier)) {
-            if (arguments.length == 1) {
-                this.getNodeProfJalangi().onReady(arguments[0]);
-            } else if (arguments.length == 2) {
-                if (!(arguments[1] instanceof TruffleObject)) {
-                    Logger.warning("The second argument for onReady should be an object");
-                } else {
-                    this.getNodeProfJalangi().onReady(arguments[0], (TruffleObject) arguments[1]);
-                }
-            } else {
-                Logger.warning("onReady should take 1 or 2 arguments");
-            }
-        } else if (ApiMember.REGISTER_CALLBACK.equalsString(identifier)) {
-            this.getNodeProfJalangi().registerCallback(arguments[0], arguments[1], arguments[2]);
-        } else if (ApiMember.INSTRUMENTATION_SWITCH.equalsString(identifier)) {
-            // update instrumentation using the first argument given and return the updated
-            // status of the instrumentation (true for enabled and false for disabled)
-            if (arguments.length >= 1) {
-                if (arguments[0] != null) {
-                    boolean value = JSRuntime.toBoolean(arguments[0]);
-                    ProfilerExecutionEventNode.updateEnabled(value);
-                }
-            }
-            return ProfilerExecutionEventNode.getEnabled();
-        } else if (ApiMember.GET_CONFIG.equalsString(identifier)) {
-            JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
-            DynamicObject obj = JSUserObject.create(ctx);
-            OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
-            for (OptionDescriptor o : NodeProfCLI.ods) {
-                String shortKey = o.getName().replace("nodeprof.", "");
-                JSObject.set(obj, shortKey, opts.get(o.getKey()));
-            }
-            return obj;
-        } else {
-            // unknown API
+        ApiMember api;
+        try {
+            api = ApiMember.valueOf(identifier.toUpperCase());
+        } catch (IllegalArgumentException e) {
             Logger.warning("Unsupported NodeProf-Jalangi operation " + identifier);
+            return 0;
+        }
+        switch (api) {
+            case IIDTOLOCATION: {
+                if (checkArguments(1, arguments, identifier)) {
+                    Object result = null;
+                    try {
+                        result = SourceMapping.getLocationForIID(convertIID(arguments[0]));
+                    } catch (Exception e) {
+                        Logger.error("iidToLocation failed for argument type " + arguments[0].getClass().getName());
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+                    }
+                    return result == null ? Undefined.instance : result;
+                }
+                break;
+            }
+            case IIDTOCODE: {
+                if (checkArguments(1, arguments, identifier)) {
+                    Object result = null;
+                    try {
+                        result = SourceMapping.getCodeForIID(convertIID(arguments[0]));
+                    } catch (Exception e) {
+                        Logger.error("iidToCode failed for argument type " + arguments[0].getClass().getName());
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+                    }
+                    return result == null ? Undefined.instance : result;
+                }
+                break;
+            }
+            case IIDTOSOURCEOBJECT: {
+                if (checkArguments(1, arguments, identifier)) {
+                    try {
+                        return SourceMapping.getJSObjectForIID(convertIID(arguments[0]));
+                    } catch (Exception e) {
+                        Logger.error("iidToSourceObject failed for argument type " + arguments[0].getClass().getName());
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        throw UnsupportedTypeException.create(new Object[]{arguments[0]});
+                    }
+                }
+                break;
+            }
+            case NATIVELOG: {
+                Logger.Level level = Logger.Level.INFO;
+                if (arguments.length >= 2) {
+                    int i = convertIID(arguments[1]);
+                    Logger.Level[] enumValues = Logger.Level.values();
+                    if (i >= 0 && i < enumValues.length) {
+                        level = enumValues[i];
+                    }
+                }
+                if (arguments.length > 0) {
+                    Logger.log(arguments[0], level);
+                }
+                break;
+            }
+            case VALUEOF: {
+                return "jalangi-adapter";
+            }
+            case ONREADY: {
+                if (arguments.length == 1) {
+                    this.getNodeProfJalangi().onReady(arguments[0]);
+                } else if (arguments.length == 2) {
+                    if (!(arguments[1] instanceof TruffleObject)) {
+                        Logger.warning("The second argument for onReady should be an object");
+                    } else {
+                        this.getNodeProfJalangi().onReady(arguments[0], (TruffleObject) arguments[1]);
+                    }
+                } else {
+                    Logger.warning("onReady should take 1 or 2 arguments");
+                }
+                break;
+            }
+            case REGISTERCALLBACK: {
+                this.getNodeProfJalangi().registerCallback(arguments[0], arguments[1], arguments[2]);
+                break;
+            }
+            case INSTRUMENTATIONSWITCH: {
+                if (arguments.length >= 1) {
+                    if (arguments[0] != null) {
+                        boolean value = JSRuntime.toBoolean(arguments[0]);
+                        ProfilerExecutionEventNode.updateEnabled(value);
+                    }
+                }
+                return ProfilerExecutionEventNode.getEnabled();
+            }
+            case GETCONFIG: {
+                JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
+                DynamicObject obj = JSUserObject.create(ctx);
+                OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
+                for (OptionDescriptor o : NodeProfCLI.ods) {
+                    String shortKey = o.getName().replace("nodeprof.", "");
+                    JSObject.set(obj, shortKey, opts.get(o.getKey()));
+                }
+                return obj;
+            }
+
+            default: {
+                Logger.warning("Unsupported NodeProf-Jalangi operation " + identifier);
+            }
         }
         return 0;
     }

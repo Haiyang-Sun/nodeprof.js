@@ -121,6 +121,55 @@ J$={};
     }
   }
 
+  sandbox.getAstHelper = function() {
+    const assert = require('assert');
+    const util = require('util');
+    const { esprima, estraverse } = require('./bundle.js');
+
+    const helperObject = {
+      logObjectLiteral(iid) {
+        console.error('parsed ObjectLiteral:',
+          util.inspect(
+            esprima.parseScript(`(${J$.iidToCode(iid)})`),
+            false, // showHidden
+            8 // depth
+          ));
+      },
+      parseObjectLiteral(iid) {
+        // assumed to be ObjectLiteral, parse as expression wrapped in `(...)`
+        const ast = esprima.parseScript(`(${J$.iidToCode(iid)})`);
+
+        let gs = false;
+        let f = [];
+
+        estraverse.traverse(ast, {
+          enter: function(node) {
+            if (node.type === 'Property') {
+              if (node.computed) {
+                f.push('computed');
+              } else {
+                let prefix = '';
+                if (node.kind === 'get' || node.kind === 'set') {
+                  gs = true;
+                  prefix = node.kind + 'ter';
+                } else {
+                  assert(node.kind === 'init');
+                }
+                assert(node.key.type === 'Literal' || node.key.type == 'Identifier');
+                const name = node.key.type === 'Literal' ? node.key.value : node.key.name;
+                f.push(`${prefix}-${name}`);
+              }
+              // don't parse any child nodes below this
+              this.skip();
+            }
+          }
+        });
+        return { hasGetterSetter: gs, fields: f};
+      }
+    }
+
+    return helperObject;
+  }
 }(J$));
 
 /**

@@ -1,0 +1,29 @@
+{
+  "name": "nodeprof-jalangi",
+  "version": "0.2.0",
+  "description": "JS dependencies for NodeProf",
+  "main": "jalangi.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bundle": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Haiyang-Sun/nodeprof.js.git"
+  },
+  "author": "Haiyang Sun",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Haiyang-Sun/nodeprof.js/issues"
+  },
+  "homepage": "https://github.com/Haiyang-Sun/nodeprof.js#readme",
+  "dependencies": {
+    "esprima": "^4.0.1",
+    "estraverse": "^5.1.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-node-resolve": "^8.1.0",
+    "rollup": "^2.18.0"
+  }
+}

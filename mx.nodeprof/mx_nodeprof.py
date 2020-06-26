@@ -180,6 +180,9 @@ def runJalangi(args, excl="", outFile=None, tracable=True):
     """run jalangi"""
     jalangiArgs = [join(_suite.dir, "src/ch.usi.inf.nodeprof/js/jalangi.js")]
 
+    if not os.path.exists(join(_suite.dir, "src/ch.usi.inf.nodeprof/js/bundle.js")):
+        npmDeps(args);
+
     # jalangi arg parser (accepts GraalVM '--nodeprof.' options for convenience)
     parser = ArgumentParser(prog="mx jalangi", description="Run NodeProf-Jalangi")
     # analysis (multiple arguments allowed)
@@ -264,6 +267,10 @@ def checkCopyrightHeaders(args):
     # run the actual check (overrodes file needs to be passed explicitly)
     return mx.checkcopyrights(['--primary', '--', '--file-list', 'files_to_check'])
 
+def npmDeps(args):
+    npm(['install'], cwd=join(_suite.dir, 'src/ch.usi.inf.nodeprof/js/npm-deps'))
+    npm(['run', 'bundle'], cwd=join(_suite.dir, 'src/ch.usi.inf.nodeprof/js/npm-deps'))
+
 @contextmanager
 def _import_substratevm():
     try:
@@ -299,4 +306,5 @@ mx.update_commands(_suite, {
     'jalangi': [runJalangi, ''],
     'jnode': [runJNode, ''],
     'checkcopyrights-nodeprof': [checkCopyrightHeaders, ''],
+    'npm-deps': [npmDeps, ''],
 })

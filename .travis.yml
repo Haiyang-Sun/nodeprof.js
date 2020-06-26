@@ -39,6 +39,7 @@ script:
   - mx checkstyle --primary
   - mx checkcopyrights-nodeprof
   - mx build
+  - mx npm-deps
   - mx test-all
     #  - cd ../graal/vm
     #  - mx --dy nodeprof,/compiler --force-bash-launchers=true --disable-polyglot build
