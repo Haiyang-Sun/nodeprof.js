@@ -66,3 +66,4 @@ coverage
 workingsets.xml
 .attach_pid*
 **/jitprof/*.js
+node_modules/
