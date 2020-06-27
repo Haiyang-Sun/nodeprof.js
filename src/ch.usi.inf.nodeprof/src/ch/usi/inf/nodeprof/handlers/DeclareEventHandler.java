@@ -18,6 +18,7 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.DeclareTag;
+import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralTag;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 
@@ -27,11 +28,13 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
 public abstract class DeclareEventHandler extends BaseSingleTagEventHandler {
     private final String declareType;
     private final String declareName;
+    private final boolean isFunctionDeclaration;
 
     public DeclareEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.DECLARE);
         this.declareType = (String) getAttribute(DeclareTag.TYPE);
         this.declareName = (String) getAttribute(DeclareTag.NAME);
+        this.isFunctionDeclaration = LiteralTag.Type.FunctionLiteral.name().equals(getAttributeOrNull(LiteralTag.TYPE));
     }
 
     /**
@@ -46,5 +49,9 @@ public abstract class DeclareEventHandler extends BaseSingleTagEventHandler {
      */
     public String getDeclareName() {
         return this.declareName;
+    }
+
+    public boolean isFunctionDeclaration() {
+        return this.isFunctionDeclaration;
     }
 }

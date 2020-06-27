@@ -16,6 +16,7 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
+import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
@@ -36,7 +37,7 @@ public class ExpressionFactory extends AbstractFactory {
 
     @Override
     public BaseEventHandlerNode create(EventContext context) {
-        return new ExpressionEventHandler(context) {
+        return new ExpressionEventHandler(context, ProfiledTagEnum.EXPRESSION) {
             @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
             @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
 

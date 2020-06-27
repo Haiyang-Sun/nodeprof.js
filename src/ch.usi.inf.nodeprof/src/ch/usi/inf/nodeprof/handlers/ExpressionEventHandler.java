@@ -28,8 +28,8 @@ public abstract class ExpressionEventHandler extends BaseSingleTagEventHandler {
     final String expressionType;
 
     @TruffleBoundary
-    public ExpressionEventHandler(EventContext context) {
-        super(context, ProfiledTagEnum.EXPRESSION);
+    public ExpressionEventHandler(EventContext context, ProfiledTagEnum tag) {
+        super(context, tag);
         String nodeName = context.getInstrumentedNode().getClass().getSimpleName();
         // TODO, use more abstract types instead in future, e.g., similar to ESTree
         // currently, use the instrumented node's type (slightly trimmed)

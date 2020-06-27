@@ -31,6 +31,7 @@ import static ch.usi.inf.nodeprof.ProfiledTagEnum.NEW;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.PROPERTY_READ;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.PROPERTY_WRITE;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.ROOT;
+import static ch.usi.inf.nodeprof.ProfiledTagEnum.STATEMENT;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.UNARY;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_READ;
 import static ch.usi.inf.nodeprof.ProfiledTagEnum.VAR_WRITE;
@@ -69,6 +70,7 @@ import ch.usi.inf.nodeprof.jalangi.factory.PutFieldFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ReadFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.ReturnFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.RootFactory;
+import ch.usi.inf.nodeprof.jalangi.factory.StatementFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.UnaryFactory;
 import ch.usi.inf.nodeprof.jalangi.factory.WriteFactory;
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
@@ -111,6 +113,7 @@ public class JalangiAnalysis {
 
             // literals
             put("literal", EnumSet.of(LITERAL));
+            put("declarePre", EnumSet.of(DECLARE));
             put("declare", EnumSet.of(DECLARE));
 
             // reads and writes
@@ -152,6 +155,8 @@ public class JalangiAnalysis {
 
             put("startExpression", EnumSet.of(EXPRESSION));
             put("endExpression", EnumSet.of(EXPRESSION));
+            put("startStatement", EnumSet.of(STATEMENT));
+            put("endStatement", EnumSet.of(STATEMENT));
 
             put("newSource", EnumSet.of(ROOT));
         }
@@ -239,9 +244,9 @@ public class JalangiAnalysis {
                             this.jsAnalysis, callbacks.get("literal")));
         }
 
-        if (this.callbacks.containsKey("declare")) {
+        if (this.callbacks.containsKey("declarePre") || this.callbacks.containsKey("declare")) {
             this.instrument.onCallback(ProfiledTagEnum.DECLARE, new DeclareFactory(
-                            this.jsAnalysis, callbacks.get("declare")));
+                            this.jsAnalysis, callbacks.get("declarePre"), callbacks.get("declare")));
         }
 
         if (this.callbacks.containsKey("unaryPre") || this.callbacks.containsKey("unary")) {
@@ -275,6 +280,13 @@ public class JalangiAnalysis {
                             ProfiledTagEnum.EXPRESSION,
                             new ExpressionFactory(this.jsAnalysis,
                                             callbacks.get("startExpression"), callbacks.get("endExpression")));
+        }
+
+        if (this.callbacks.containsKey("startStatement") || this.callbacks.containsKey("endStatement")) {
+            this.instrument.onCallback(
+                    ProfiledTagEnum.STATEMENT,
+                    new StatementFactory(this.jsAnalysis,
+                            callbacks.get("startStatement"), callbacks.get("endStatement")));
         }
 
         if (this.callbacks.containsKey("builtinEnter") || this.callbacks.containsKey("builtinExit")) {

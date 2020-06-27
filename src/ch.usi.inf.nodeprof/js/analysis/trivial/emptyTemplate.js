@@ -168,10 +168,12 @@
             };
 
             /**
-             *  Declaration of a symbol, type can be `const, let, var`
+             *  Declaration of a symbol, type can be `'const', 'let', 'var'`, kind is `'FunctionDeclaration'` or `undefined`.
              *  Jalangi version: this.declare = function (iid, name, val, isArgument, argumentIndex, isCatchParam) {
              **/
-            this.declare = function (iid, name, type) {
+            this.declarePre = function (iid, name, type, kind) {
+            };
+            this.declare = function (iid, name, type, kind) {
             };
 
             /**
