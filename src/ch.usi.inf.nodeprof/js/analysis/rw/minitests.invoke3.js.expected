@@ -1,0 +1,12 @@
+write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:1:16:23) foo function
+write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:1:26:2) o object
+read (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:27:1:27:2) o object
+functionEnter (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:18:10:25:4) oFunc { oFunc: [Function: oFunc] } []
+write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:19:5:19:23) func function
+write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:5:22:6) arrow function
+read (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:23:5:23:9) func function
+functionEnter (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:19:5:19:23) func [object global] []
+read (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:24:5:24:10) arrow function
+functionEnter (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:17:22:6) arrow { oFunc: [Function: oFunc] } []
+read (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:21:7:21:13) escape function
+read (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:21:14:21:18) this object

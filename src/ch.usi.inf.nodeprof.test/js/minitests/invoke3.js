@@ -17,7 +17,9 @@ var foo = function(){};
 var o = {
   oFunc: function() {
     function func() {};
-    var arrow = () => { escape(this); };
+    var arrow = () => {
+      escape(this);
+    };
     func();
     arrow();
   }
