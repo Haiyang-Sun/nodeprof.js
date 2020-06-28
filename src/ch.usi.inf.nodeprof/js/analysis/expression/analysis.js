@@ -19,6 +19,7 @@
         const assert = require('assert');
         const stmts = new Set();
         let declareIIDs = [];
+        const analysis = this;
 
         function filter(iid, type) {
             // ignore the IIFE call wrappers in expressions.js
@@ -70,7 +71,7 @@
         this.declare = function (iid, name, type, kind) {
             declareIIDs.pop();
             if (kind === 'FunctionDeclaration') {
-                this.endStatement(iid, kind);
+                analysis.endStatement(iid, kind);
             }
         };
 
