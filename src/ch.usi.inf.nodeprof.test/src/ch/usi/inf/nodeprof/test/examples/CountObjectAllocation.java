@@ -102,7 +102,7 @@ public class CountObjectAllocation extends TestableNodeProfAnalysis {
                     @Override
                     public void executePost(VirtualFrame frame, Object result,
                                     Object[] inputs) {
-                        if (this.getLiteralType().equals("ArrayLiteral") || this.equals("ObjectLiteral")) {
+                        if (this.getLiteralType().equals("ArrayLiteral") || this.getLiteralType().equals("ObjectLiteral")) {
                             addDebugEvent("OBJ-LIT", getSourceIID(), ProfiledTagEnum.LITERAL);
                             SimpleCounterReport report = (SimpleCounterReport) (getReport.execute(this.getSourceIID()));
                             report.incre();
