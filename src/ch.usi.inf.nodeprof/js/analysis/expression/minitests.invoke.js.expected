@@ -1,3 +1,6 @@
+declarePre name=foo, type=var
+literal: literalType=FunctionLiteral
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:16:1:16:19) stmt: FunctionDeclaration
 write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:16:1:16:19) foo
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:15) type: CallN
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:4) type: JSReadCurrentFrameSlot

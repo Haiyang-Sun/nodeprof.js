@@ -1,16 +1,19 @@
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:9:16:10) type: JSConstantInteger
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:9:16:10) type: JSConstantInteger
 write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:1:16:10) a
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:16:1:16:10) stmt: JSWriteCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSAdd
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSConstantInteger
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSConstantInteger
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:10) type: JSConstantInteger
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:10) type: JSConstantInteger
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:13:17:14) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:13:17:14) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:9:17:14) type: JSAdd
 write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:1:17:14) b
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:17:1:17:14) stmt: JSWriteCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:18:9:18:10) type: JSConstantInteger
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:18:9:18:10) type: JSConstantInteger
 write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:18:1:18:10) c
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:18:1:18:10) stmt: JSWriteCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:1:19:10) type: JSWriteCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:5:19:10) type: JSWriteCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:9:19:10) type: JSReadCurrentFrameSlot
@@ -19,3 +22,5 @@ write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:5:19:10) b
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:5:19:10) type: JSWriteCurrentFrameSlot
 write (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:1:19:10) a
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:1:19:10) type: JSWriteCurrentFrameSlot
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/write.js:19:1:19:10) stmt: JSWriteCurrentFrameSlot
+Statements in lines: [ 16, 17, 18, 19 ]
