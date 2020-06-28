@@ -10,3 +10,5 @@ expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:5:1
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:9:17:14) type: JSConstantString
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:9:17:14) type: JSConstantString
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:15) type: CallN
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:17:1:17:15) stmt: CallN
+Statements in lines: [ 16, 17 ]
