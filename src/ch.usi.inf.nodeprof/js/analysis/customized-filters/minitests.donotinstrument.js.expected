@@ -1,20 +1,40 @@
+node-module: functionEnter: get / (*internal/modules/esm/module_map.js) / 4
+node-module: functionEnter: set / (*internal/modules/esm/module_map.js) / 4
 node-module: functionEnter: require / (*internal/modules/cjs/helpers.js) / 4
 node-module: functionEnter: loadNativeModule / (*internal/modules/cjs/helpers.js) / 4
-node-module: functionEnter: resolveExports / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: executeUserEntryPoint / (*internal/modules/run_main.js) / 4
+node-module: functionEnter: resolveMainPath / (*internal/modules/run_main.js) / 4
 node-module: functionEnter: stat / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: shouldUseESMLoader / (*internal/modules/run_main.js) / 4
+node-module: functionEnter: readPackageScope / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: loadNativeModule / (*internal/modules/cjs/helpers.js) / 4
 node-module: functionEnter: Module / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: updateChildren / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: findLongestRegisteredExtension / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: readPackageScope / (*internal/modules/cjs/loader.js) / 4
-node-module: functionEnter: stripBOM / (*internal/modules/cjs/helpers.js) / 4
-node-module: functionEnter: stripShebang / (*internal/modules/cjs/helpers.js) / 4
+node-module: functionEnter: wrapSafe / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: makeRequireFunction / (*internal/modules/cjs/helpers.js) / 4
+node-module: functionEnter: get / (*internal/modules/esm/module_map.js) / 4
+node-module: functionEnter: set / (*internal/modules/esm/module_map.js) / 4
+node-module: functionEnter: get / (*internal/modules/esm/module_map.js) / 4
+node-module: functionEnter: set / (*internal/modules/esm/module_map.js) / 4
 Set {
   'internal/main/run_main_module.js',
   'internal/modules/cjs/loader.js',
   'internal/modules/cjs/helpers.js',
+  'internal/modules/esm/loader.js',
+  'internal/modules/esm/module_map.js',
+  'internal/modules/esm/module_job.js',
+  'internal/modules/esm/resolve.js',
+  'internal/modules/esm/get_format.js',
+  'internal/modules/esm/get_source.js',
+  'internal/modules/esm/transform_source.js',
+  'internal/modules/esm/create_dynamic_module.js',
+  'internal/modules/esm/translators.js',
+  'internal/vm/module.js',
+  'internal/modules/run_main.js',
   'module.js'
 }
 [ 'Object.create' ]

@@ -20,7 +20,6 @@
   var internals = new Set();
   var builtins = new Set();
   var mute = false;
-  var entered = false;
 
   function NodeInternal() {
     const analysis = 'node-module';
@@ -28,21 +27,22 @@
       if (f.name == '' || f.name == 'readPackage' || mute)
         return;
       console.log("%s: functionEnter: %s / %s / %d", analysis, f.name, J$.iidToLocation(iid).replace(/:.*[0-9]/,''), arguments.length);
-      entered = true;
     };
     this.endExecution = function () {
-      if (!entered)
-        return;
       mute = true;
       console.log(internals);
     };
   }
-  sandbox.addAnalysis(new NodeInternal(), function filter(source) {
-    if (source.internal && source.name.includes('module')) {
-      internals.add(source.name);
-      return true;
-    }
-  });
+
+  // run NodeInternal analysis only with one test
+  if (process.argv[process.argv.length - 1].endsWith('donotinstrument.js')) {
+    sandbox.addAnalysis(new NodeInternal(), function filter(source) {
+      if (source.internal && source.name.includes('module')) {
+        internals.add(source.name);
+        return true;
+      }
+    });
+  }
 
   function BI() {
     const analysis = 'builtin';
@@ -52,8 +52,6 @@
       }
     }
     this.endExecution = function () {
-      if (!entered)
-        return;
       mute = true;
       console.log([...builtins].filter(x => x.includes('create')));
     };

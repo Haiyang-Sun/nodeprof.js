@@ -1,21 +1,2 @@
-node-module: functionEnter: require / (*internal/modules/cjs/helpers.js) / 4
-node-module: functionEnter: loadNativeModule / (*internal/modules/cjs/helpers.js) / 4
-node-module: functionEnter: resolveExports / (*internal/modules/cjs/loader.js) / 4
-node-module: functionEnter: stat / (*internal/modules/cjs/loader.js) / 4
-node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js) / 4
-node-module: functionEnter: loadNativeModule / (*internal/modules/cjs/helpers.js) / 4
-node-module: functionEnter: Module / (*internal/modules/cjs/loader.js) / 4
-node-module: functionEnter: updateChildren / (*internal/modules/cjs/loader.js) / 4
-node-module: functionEnter: findLongestRegisteredExtension / (*internal/modules/cjs/loader.js) / 4
-node-module: functionEnter: readPackageScope / (*internal/modules/cjs/loader.js) / 4
-node-module: functionEnter: stripBOM / (*internal/modules/cjs/helpers.js) / 4
-node-module: functionEnter: stripShebang / (*internal/modules/cjs/helpers.js) / 4
-node-module: functionEnter: makeRequireFunction / (*internal/modules/cjs/helpers.js) / 4
 getField (src/ch.usi.inf.nodeprof.test/js/minitests/testFilter.js:19:7:19:10) in inclusion.js
-Set {
-  'internal/main/run_main_module.js',
-  'internal/modules/cjs/loader.js',
-  'internal/modules/cjs/helpers.js',
-  'module.js'
-}
 [ 'Object.create' ]
