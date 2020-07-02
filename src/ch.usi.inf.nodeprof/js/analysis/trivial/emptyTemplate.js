@@ -177,6 +177,32 @@
             };
 
             /**
+             * Callbacks triggered before and after an expression.
+             * Note that callback behavior may depend on Graal.js internals and NodeProf cannot guarantee that type values will
+             * remain stable over time.
+             *
+             * @param iid {integer} source code location id 
+             * @param type {string} Graal.js internal AST type of the expression
+             **/
+            this.startExpression = function (iid, type) {
+            };
+            this.endExpression = function (iid, type) {
+            };
+
+            /**
+             * Callbacks triggered before and after a statement.
+             * Note that callback behavior may depend on Graal.js internals and NodeProf cannot guarantee that type values will
+             * remain stable over time.
+             *
+             * @param iid {integer} source code location id 
+             * @param type {string} Graal.js internal AST type of the stamenent
+             **/
+            this.startStatement = function (iid, type) {
+            };
+            this.endStatement = function (iid, type) {
+            };
+
+            /**
              *  forin or forof support
              *  the object being iterated can be known by checking the last expression's result (via endExpression)
              **/
