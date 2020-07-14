@@ -24,18 +24,16 @@ before_install:
         exit
       }
     fi
-  - wget https://github.com/graalvm/openjdk8-jvmci-builder/releases/download/jvmci-20.1-b02/openjdk-8u252+09-jvmci-20.1-b02-linux-amd64.tar.gz
-  - mkdir openjdk1.8.0-jvmci
-  - tar --strip 1 -C openjdk1.8.0-jvmci -xvf openjdk-*.tar.gz
   - git clone https://github.com/graalvm/mx.git
 
 before_script:
-  - export JAVA_HOME=$TRAVIS_BUILD_DIR/openjdk1.8.0-jvmci
   - export PATH=$TRAVIS_BUILD_DIR/mx:$JAVA_HOME/bin:$PATH
 
 script:
   - mx sforceimports
   - mx sversions
+  - mx fetch-jdk --java-distribution openjdk8 --config ../graal/common.json --to $TRAVIS_BUILD_DIR --alias openjdk1.8.0-jvmci
+  - export JAVA_HOME=$TRAVIS_BUILD_DIR/openjdk1.8.0-jvmci
   - mx checkstyle --primary
   - mx checkcopyrights-nodeprof
   - mx build
