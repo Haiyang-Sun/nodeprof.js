@@ -1,6 +1,6 @@
 newSource: src/ch.usi.inf.nodeprof.test/js/minitests/eval2.js / internal: false / eval: false / 2
 newSource matches: 4
-pre var x = 1; function foo(a){eval("var y = 1; function bar(a){console.log(a);}; bar(x);");}; foo(x);
+pre var x = 1; function foo(a){eval("var y = 1; function bar(a){console.log(a);}; bar(x);"); return 42;}; foo(x);
 newSource: src/ch.usi.inf.nodeprof.test/js/minitests/eval2.js / internal: false / eval: true / 2
 newSource matches: 4
 pre var y = 1; function bar(a){console.log(a);}; bar(x);
@@ -14,4 +14,5 @@ post var y = 1; function bar(a){console.log(a);}; bar(x);
 invoking func: foo
 location inside eval on line: 17
 invoking func: eval
-post var x = 1; function foo(a){eval("var y = 1; function bar(a){console.log(a);}; bar(x);");}; foo(x);
+post var x = 1; function foo(a){eval("var y = 1; function bar(a){console.log(a);}; bar(x);"); return 42;}; foo(x);
+post implicit ret: 42

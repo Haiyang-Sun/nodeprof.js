@@ -147,7 +147,7 @@
              **/
             this.evalPre = function (iid, str) {
             };
-            this.evalPost = function (iid, str) {
+            this.evalPost = function (iid, str, ret) {
             };
 
             /**
