@@ -36,7 +36,6 @@ import com.oracle.truffle.js.lang.JavaScriptLanguage;
 import com.oracle.truffle.js.nodes.JSTypes;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
-import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Null;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -148,7 +147,7 @@ public class NodeProfJalangi extends NodeProfAnalysis {
                 excludeFilter = false;
             } else {
                 if (getProperty(configObj, "includes") != null) {
-                    Logger.error("Filter config must not define 'include' and 'exclude' at the same time (config: " + JSObject.safeToString((DynamicObject) configObj, 3) + ")");
+                    Logger.error("Filter config must not define 'include' and 'exclude' at the same time (config: " + JSRuntime.safeToString(configObj) + ")");
                     System.exit(-1);
                 }
                 filters = excludes.toString();
