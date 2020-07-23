@@ -23,8 +23,11 @@ const path = require('path');
     this.evalPre = function (iid, str) {
       console.log("pre "+str);
     }
-    this.evalPost = function (iid, str) {
+    this.evalPost = function (iid, str, ret) {
       console.log("post "+str);
+      if (ret) {
+        console.log("post implicit ret: "+ret);
+      }
     }
     this.evalFunctionPost = function(args, ret){
       console.log("new Function body "+args[0]);
