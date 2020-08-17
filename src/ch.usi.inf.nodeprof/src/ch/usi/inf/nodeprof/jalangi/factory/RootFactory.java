@@ -20,8 +20,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.ReturnException;
 import com.oracle.truffle.js.nodes.control.YieldException;
@@ -44,8 +42,7 @@ public class RootFactory extends AbstractFactory {
     public BaseEventHandlerNode create(EventContext context) {
         return new FunctionRootEventHandler(context) {
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 2, 0);
-            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
-            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
@@ -54,7 +51,7 @@ public class RootFactory extends AbstractFactory {
                 }
 
                 if (!this.isBuiltin && pre != null) {
-                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getFunction(frame), getReceiver(frame, env), makeArgs.executeArguments(getArguments(frame)));
+                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getFunction(frame), getReceiver(frame, env), makeArgs.executeArguments(getArguments(frame)));
                 }
             }
 
@@ -66,7 +63,7 @@ public class RootFactory extends AbstractFactory {
                 }
 
                 if (!this.isBuiltin && post != null) {
-                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), convertResult(result), createWrappedException(null));
+                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), convertResult(result), createWrappedException(null));
                 }
             }
 
@@ -77,7 +74,7 @@ public class RootFactory extends AbstractFactory {
                 }
 
                 if (!this.isBuiltin && post != null) {
-                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
+                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), Undefined.instance, createWrappedException(exception));
                 }
             }
 

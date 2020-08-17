@@ -19,8 +19,6 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -41,26 +39,26 @@ public class ReadFactory extends AbstractFactory {
     public BaseEventHandlerNode create(EventContext context) {
         if (!isProperty) {
             return new VarReadEventHandler(context) {
-                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+                @Child CallbackNode cbNode = new CallbackNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) throws InteropException {
                     if (post != null) {
                         // TODO, isScriptLocal is set true here
-                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getName(), convertResult(result), false, true);
+                        cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getName(), convertResult(result), false, true);
                     }
                 }
             };
         } else {
             return new PropertyReadEventHandler(context) {
-                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+                @Child CallbackNode cbNode = new CallbackNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
                                 Object[] inputs) throws InteropException {
                     if (post != null && this.isGlobal(inputs)) {
-                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getProperty(), convertResult(result), true, true);
+                        cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getProperty(), convertResult(result), true, true);
                     }
                 }
 

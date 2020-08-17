@@ -19,8 +19,6 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -42,7 +40,7 @@ public class WriteFactory extends AbstractFactory {
     public BaseEventHandlerNode create(EventContext context) {
         if (!isProperty) {
             return new VarWriteEventHandler(context) {
-                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+                @Child CallbackNode cbNode = new CallbackNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
@@ -52,12 +50,12 @@ public class WriteFactory extends AbstractFactory {
                     }
                     // TODO: the value before write is set to be Undefined and isScriptLocal is
                     // always true
-                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getName(), getValue(inputs), Undefined.instance, false, true);
+                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getName(), getValue(inputs), Undefined.instance, false, true);
                 }
             };
         } else {
             return new PropertyWriteEventHandler(context) {
-                @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+                @Child CallbackNode cbNode = new CallbackNode();
 
                 @Override
                 public void executePost(VirtualFrame frame, Object result,
@@ -68,7 +66,7 @@ public class WriteFactory extends AbstractFactory {
                     if (isGlobal(inputs)) {
                         // TODO: the value before write is set to be Undefined and isScriptLocal is
                         // always true
-                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getProperty(), getValue(inputs), Undefined.instance, true, true);
+                        cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getProperty(), getValue(inputs), Undefined.instance, true, true);
                     }
                 }
             };

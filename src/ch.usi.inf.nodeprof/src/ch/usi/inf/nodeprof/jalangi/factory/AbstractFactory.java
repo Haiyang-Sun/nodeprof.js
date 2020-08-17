@@ -16,13 +16,14 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
-import ch.usi.inf.nodeprof.utils.Logger;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.interop.InteropException;
+import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
+import com.oracle.truffle.api.nodes.DirectCallNode;
+import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.YieldException;
 import com.oracle.truffle.js.runtime.GraalJSException;
@@ -30,6 +31,7 @@ import com.oracle.truffle.js.runtime.JSCancelledExecutionException;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
+import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.builtins.JSUserObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Null;
@@ -38,6 +40,7 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 import ch.usi.inf.nodeprof.analysis.AnalysisFactory;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
+import ch.usi.inf.nodeprof.utils.Logger;
 
 // a factory corresponds to a callback defined in Jalangi-like analysis
 public abstract class AbstractFactory implements
@@ -152,36 +155,67 @@ public abstract class AbstractFactory implements
     private static boolean nestedControl = false;
 
     /**
-     * call from Java to Jalangi JavaScript using Interop
      *
-     * @param lib interop library object
-     * @param receiver the receiver of the call
-     * @param arguments the arguments of the call
+     * @return true to proceed with the call or false to skip the call
      */
-    public void wrappedDispatchExecution(BaseEventHandlerNode handler, InteropLibrary lib, Object receiver, Object... arguments) throws InteropException {
-        if (!nestedControl) {
-            nestedControl = true;
-
-            try {
-                Object ret = lib.execute(receiver, arguments);
-                if (ret != Undefined.instance && JSObject.isJSObject(ret)) {
-                    Object prop = JSObject.get((DynamicObject) ret, "deactivate");
-                    if (prop.equals(true)) {
-                        CompilerDirectives.transferToInterpreterAndInvalidate();
-                        handler.deactivate();
-                    }
-                }
-            } catch (JSCancelledExecutionException e) {
-                Logger.error(arguments[0], "execution cancelled probably due to timeout");
-            } catch (InteropException e) {
-                throw e;
-            } finally {
-                nestedControl = false;
-            }
+    private static boolean beforeCall() {
+        if (nestedControl) {
+            return false;
         }
+        nestedControl = true;
+        return true;
     }
 
-    public InteropLibrary createDispatchNode() {
-        return InteropLibrary.getFactory().create(this.jalangiAnalysis);
+    /**
+     * afterCall to reset nestedControl
+     */
+    private static void afterCall() {
+        nestedControl = false;
+        return;
+    }
+
+    public class CallbackNode extends Node {
+        @Node.Child DirectCallNode preCall = pre == null ? null : Truffle.getRuntime().createDirectCallNode(JSFunction.getCallTarget(pre));
+        @Node.Child DirectCallNode postCall = post == null ? null : Truffle.getRuntime().createDirectCallNode(JSFunction.getCallTarget(post));
+
+        private void checkDeactivate(Object ret, BaseEventHandlerNode handler) {
+            if (ret != null && ret != Undefined.instance && JSObject.isJSObject(ret)) {
+                Object prop = JSObject.get((DynamicObject) ret, "deactivate");
+                if (prop.equals(true)) {
+                    CompilerDirectives.transferToInterpreterAndInvalidate();
+                    handler.deactivate();
+                }
+            }
+        }
+
+        public void preCall(BaseEventHandlerNode handler, Object... args) {
+            if (pre != null) {
+                if (beforeCall()) {
+                    try {
+                        Object ret = preCall.call(args);
+                        checkDeactivate(ret, handler);
+                    } catch (JSCancelledExecutionException e) {
+                        Logger.error("execution cancelled probably due to timeout");
+                    } finally {
+                        afterCall();
+                    }
+                }
+            }
+        }
+
+        public void postCall(BaseEventHandlerNode handler, Object... args) {
+            if (post != null) {
+                if (beforeCall()) {
+                    try {
+                        Object ret = postCall.call(args);
+                        checkDeactivate(ret, handler);
+                    } catch (JSCancelledExecutionException e) {
+                        Logger.error("execution cancelled probably due to timeout");
+                    } finally {
+                        afterCall();
+                    }
+                }
+            }
+        }
     }
 }

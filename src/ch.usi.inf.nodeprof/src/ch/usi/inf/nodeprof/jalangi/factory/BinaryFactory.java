@@ -19,8 +19,6 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -36,14 +34,12 @@ public class BinaryFactory extends AbstractFactory {
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new BinaryEventHandler(context) {
-            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
-            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null && !isLogic()) {
-                    wrappedDispatchExecution(this, preDispatch, pre,
-                                    getSourceIID(), getOp(), getLeft(inputs), getRight(inputs));
+                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getOp(), getLeft(inputs), getRight(inputs));
                 }
             }
 
@@ -51,8 +47,7 @@ public class BinaryFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null && !isLogic()) {
-                    wrappedDispatchExecution(this, postDispatch, post,
-                                    getSourceIID(), getOp(), getLeft(inputs), getRight(inputs), convertResult(result));
+                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getOp(), getLeft(inputs), getRight(inputs), convertResult(result));
                 }
             }
         };

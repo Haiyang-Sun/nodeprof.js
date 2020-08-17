@@ -22,8 +22,6 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralTag;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -61,13 +59,13 @@ public class LiteralFactory extends AbstractFactory {
     public BaseEventHandlerNode create(EventContext context) {
         return new LiteralEventHandler(context) {
             private final boolean skip = !types.contains(LiteralTag.Type.valueOf(getLiteralType()));
-            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null && !skip) {
-                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), convertResult(result), Undefined.instance, getLiteralType());
+                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), convertResult(result), Undefined.instance, getLiteralType());
                 }
             }
 

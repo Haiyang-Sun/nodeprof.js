@@ -23,8 +23,6 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 
@@ -51,7 +49,7 @@ public class InitialRootFactory extends AbstractFactory {
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new FunctionRootEventHandler(context) {
-            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
             public int getPriority() {
@@ -78,7 +76,9 @@ public class InitialRootFactory extends AbstractFactory {
                 }
 
                 if (isNewSource(source)) {
-                    wrappedDispatchExecution(this, postDispatch, post,
+                    cbNode.postCall(this,
+                                    jalangiAnalysis,
+                                    post,
                                     SourceMapping.getJSObjectForSource(source), // arg 1: source
                                                                                 // object
                                     source.getCharacters().toString()); // arg 2: source code

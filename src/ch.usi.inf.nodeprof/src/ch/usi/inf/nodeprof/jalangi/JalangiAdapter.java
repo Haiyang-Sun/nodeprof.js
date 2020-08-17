@@ -16,8 +16,6 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi;
 
-import com.oracle.truffle.js.runtime.builtins.JSArray;
-
 import java.util.Arrays;
 
 import org.graalvm.options.OptionDescriptor;
@@ -34,6 +32,7 @@ import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRuntime;
+import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSUserObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
