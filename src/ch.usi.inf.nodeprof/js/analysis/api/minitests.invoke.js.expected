@@ -4,7 +4,7 @@
 [i] string level
 symbolic location ':program': (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:{{:program}})
 symbolic location 'module': (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:{{module}})
-this is global: true
+this is global: false
 [Object: null prototype] {
   iidToLocation: undefined,
   iidToCode: undefined,
