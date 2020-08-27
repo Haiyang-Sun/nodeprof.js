@@ -91,5 +91,4 @@ expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:37:17:
 -1
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:37:5:37:21) type: Invoke1
 statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:37:5:37:21) stmt: Invoke1
-statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:35:8:35:9) stmt: If
-Statements in lines: [ 17, 20, 24, 26, 32, 34, 35, 36, 37 ]
+Statements in lines: [ 17, 20, 24, 26, 32, 34, 36, 37 ]
