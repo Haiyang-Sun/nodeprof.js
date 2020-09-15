@@ -35,7 +35,7 @@
         return;
 
       console.log('this is global:', this === global);
-      console.log(global.__jalangiAdapter);
+      console.log(this.__jalangiAdapter);
       console.log('num props:', Object.getOwnPropertyNames(locObj).length);
       console.log('name:', locObj.name);
       // do not log the range directly, it includes the Node.js module wrapper function as a prefix
