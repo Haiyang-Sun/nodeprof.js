@@ -4,7 +4,7 @@
 [i] string level
 symbolic location ':program': (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:{{:program}})
 symbolic location 'module': (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:{{module}})
-this is global: true
+callback this arg is global: true
 [Object: null prototype] {
   iidToLocation: undefined,
   iidToCode: undefined,
@@ -16,6 +16,7 @@ this is global: true
   instrumentationSwitch: undefined,
   getConfig: undefined
 }
+analysis this.prop 42
 num props: 4
 name: src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js
 src length from range: 18

@@ -25,6 +25,7 @@
   J$.nativeLog('string level', "1");
 
   function SourceObjTest() {
+    this.prop = 42;
     this.functionEnter = function (iid, f, dis, args) {
       var locObj = J$.iidToSourceObject(iid);
       if (locObj.symbolic) {
@@ -34,8 +35,9 @@
       if (f.name !== 'foo')
         return;
 
-      console.log('this is global:', this === global);
-      console.log(this.__jalangiAdapter);
+      console.log('callback this arg is global:', dis === global);
+      console.log(dis.__jalangiAdapter);
+      console.log('analysis this.prop', this.prop);
       console.log('num props:', Object.getOwnPropertyNames(locObj).length);
       console.log('name:', locObj.name);
       // do not log the range directly, it includes the Node.js module wrapper function as a prefix
