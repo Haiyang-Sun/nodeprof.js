@@ -33,7 +33,7 @@ import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
-import com.oracle.truffle.js.runtime.builtins.JSUserObject;
+import com.oracle.truffle.js.runtime.builtins.JSOrdinary;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -140,7 +140,7 @@ public class JalangiAdapter implements TruffleObject {
     @TruffleBoundary
     private Object getConfig() {
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
-        DynamicObject obj = JSUserObject.create(ctx);
+        DynamicObject obj = JSOrdinary.create(ctx);
         OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
         for (OptionDescriptor o: NodeProfCLI.ods) {
             String shortKey = o.getName().replace("nodeprof.", "");
