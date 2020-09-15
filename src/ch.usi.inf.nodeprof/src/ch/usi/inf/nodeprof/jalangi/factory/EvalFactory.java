@@ -19,7 +19,6 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -40,18 +39,17 @@ public class EvalFactory extends AbstractFactory {
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new EvalEventHandler(context) {
-            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
-            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
             @Node.Child MakeArgumentArrayNode makeArgs = isInvoke ? (MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 1, 0)) : null;
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
                     if (!isInvoke) {
-                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getCode(inputs));
+                        cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getCode(inputs));
                     } else {
                         inputs[1] = getCode(inputs);
-                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), inputs[0], Undefined.instance, makeArgs.executeArguments(inputs), false, false, 0, 0);
+                        cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), inputs[0], Undefined.instance, makeArgs.executeArguments(inputs), false, false, 0, 0);
                     }
                 }
             }
@@ -61,10 +59,10 @@ public class EvalFactory extends AbstractFactory {
                             Object[] inputs) throws InteropException {
                 if (post != null) {
                     if (!isInvoke) {
-                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getCode(inputs), convertResult(result));
+                        cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getCode(inputs), convertResult(result));
                     } else {
                         inputs[1] = getCode(inputs);
-                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), inputs[0], Undefined.instance, makeArgs.executeArguments(inputs), convertResult(result), false, false, 0, 0);
+                        cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), inputs[0], Undefined.instance, makeArgs.executeArguments(inputs), convertResult(result), false, false, 0, 0);
                     }
                 }
             }

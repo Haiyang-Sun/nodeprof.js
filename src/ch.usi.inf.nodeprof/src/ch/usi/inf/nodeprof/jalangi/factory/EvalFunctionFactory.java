@@ -19,8 +19,6 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -37,8 +35,7 @@ public class EvalFunctionFactory extends AbstractFactory {
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new BuiltinRootEventHandler(context) {
-            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
-            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 2, 0);
 
             final boolean isTarget = getBuiltinName().equals("Function");
@@ -46,7 +43,7 @@ public class EvalFunctionFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (isTarget && pre != null) {
-                    wrappedDispatchExecution(this, preDispatch, pre, makeArgs.executeArguments(getArguments(frame)));
+                    cbNode.preCall(this, jalangiAnalysis, pre, makeArgs.executeArguments(getArguments(frame)));
                 }
             }
 
@@ -54,7 +51,7 @@ public class EvalFunctionFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (isTarget && post != null) {
-                    wrappedDispatchExecution(this, postDispatch, post, makeArgs.executeArguments(getArguments(frame)), convertResult(result), createWrappedException(null));
+                    cbNode.postCall(this, jalangiAnalysis, post, makeArgs.executeArguments(getArguments(frame)), convertResult(result), createWrappedException(null));
 
                 }
             }
@@ -62,7 +59,7 @@ public class EvalFunctionFactory extends AbstractFactory {
             @Override
             public void executeExceptional(VirtualFrame frame, Throwable exception) throws InteropException {
                 if (isTarget && post != null) {
-                    wrappedDispatchExecution(this, postDispatch, post, makeArgs.executeArguments(getArguments(frame)), Undefined.instance, createWrappedException(exception));
+                    cbNode.postCall(this, jalangiAnalysis, post, makeArgs.executeArguments(getArguments(frame)), Undefined.instance, createWrappedException(exception));
 
                 }
             }

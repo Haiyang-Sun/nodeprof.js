@@ -19,8 +19,6 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -36,13 +34,12 @@ public class UnaryFactory extends AbstractFactory {
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new UnaryEventHandler(context) {
-            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
-            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getOp(), getValue(inputs));
+                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getOp(), getValue(inputs));
                 }
             }
 
@@ -50,7 +47,7 @@ public class UnaryFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
-                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getOp(), getValue(inputs), convertResult(result));
+                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getOp(), getValue(inputs), convertResult(result));
                 }
             }
         };

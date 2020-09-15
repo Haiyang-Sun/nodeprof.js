@@ -19,8 +19,6 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.builtins.JSPromise;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -37,8 +35,7 @@ public class AwaitFactory extends AbstractFactory {
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new CFBranchEventHandler(context) {
-            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
-            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
 
@@ -52,21 +49,21 @@ public class AwaitFactory extends AbstractFactory {
                 if (pre != null) {
                     if (inputs[0] == inputs[1] && JSPromise.isJSPromise(inputs[0])) {
                         // await some promise
-                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                        cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
                     } else if (inputs[0] != inputs[1] && JSPromise.isJSPromise(inputs[1])) {
                         // await some value, and inputs[1] is the internal promise
-                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                        cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
                     }
                 }
                 if (post != null) {
                     if (inputs[0] != inputs[1] && !JSPromise.isJSPromise((inputs[1]))) {
-                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(),
+                        cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(),
                                         inputs[0] == null ? Undefined.instance : inputs[0],
                                         assertGetInput(1, inputs, "awaited ret"),
                                         inputs[0] != null && JSPromise.isJSPromise(inputs[0]) && JSPromise.isRejected((DynamicObject) inputs[0]));
                     } else if (inputs[0] == inputs[1] && !JSPromise.isJSPromise(inputs[0])) {
                         // await some value
-                        wrappedDispatchExecution(this, postDispatch, post, getSourceIID(),
+                        cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(),
                                         assertGetInput(0, inputs, "awaited val"),
                                         assertGetInput(0, inputs, "awaited ret"),
                                         false);

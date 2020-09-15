@@ -19,8 +19,6 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.ReturnException;
 import com.oracle.truffle.js.runtime.objects.Undefined;
@@ -36,13 +34,13 @@ public class ReturnFactory extends AbstractFactory {
     @Override
     public BaseEventHandlerNode create(EventContext context) {
         return new CFBranchEventHandler(context) {
-            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
             public void executePre(VirtualFrame frame,
                             Object[] inputs) throws InteropException {
                 if (pre != null && isReturnNode()) {
-                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), (inputs == null || inputs.length == 0) ? Undefined.instance : inputs[0]);
+                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), (inputs == null || inputs.length == 0) ? Undefined.instance : inputs[0]);
                 }
             }
 
@@ -52,7 +50,8 @@ public class ReturnFactory extends AbstractFactory {
                     // TODO trigger for ConstantReturnNode which does not have input only?
                     if (inputs.length == 0) {
                         Object returnExceptionValue = ((ReturnException) exception).getResult();
-                        wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), (returnExceptionValue == null) ? getReturnValueFromFrameOrDefault(frame, Undefined.instance) : ((ReturnException) exception).getResult());
+                        cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(),
+                                        (returnExceptionValue == null) ? getReturnValueFromFrameOrDefault(frame, Undefined.instance) : ((ReturnException) exception).getResult());
 
                     }
                 }

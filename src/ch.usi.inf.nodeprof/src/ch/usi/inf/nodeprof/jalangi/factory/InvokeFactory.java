@@ -19,8 +19,6 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
@@ -41,14 +39,13 @@ public class InvokeFactory extends AbstractFactory {
         return new FunctionCallEventHandler(context, tag) {
 
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, getOffSet(), 0);
-            @Node.Child private InteropLibrary preDispatch = (pre == null) ? null : createDispatchNode();
-            @Node.Child private InteropLibrary postDispatch = (post == null) ? null : createDispatchNode();
+            @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
                     // TODO Jalangi's function iid/sid are set to be 0/0
-                    wrappedDispatchExecution(this, preDispatch, pre, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), isNew(), isInvoke(), 0, 0);
+                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), isNew(), isInvoke(), 0, 0);
                 }
             }
 
@@ -57,7 +54,8 @@ public class InvokeFactory extends AbstractFactory {
                             Object[] inputs) throws InteropException {
                 if (post != null) {
                     // TODO Jalangi's function iid/sid are set to be 0/0
-                    wrappedDispatchExecution(this, postDispatch, post, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), convertResult(result), isNew(), isInvoke(), 0, 0);
+                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getFunction(inputs), getReceiver(inputs), makeArgs.executeArguments(inputs), convertResult(result), isNew(),
+                                    isInvoke(), 0, 0);
                 }
             }
         };
