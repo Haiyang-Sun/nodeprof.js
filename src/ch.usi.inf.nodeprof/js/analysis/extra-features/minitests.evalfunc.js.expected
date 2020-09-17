@@ -6,7 +6,7 @@ new Function body (function foo() { console.log("abc") })(); return 42;
 result function: anonymous
 invoking func: Function
 abc
-invoking func: bound log
+invoking func: log
 invoking func: foo
 location inside eval on line: 16
 invoking func: anonymous

@@ -7,7 +7,7 @@ pre var y = 1; function bar(a){console.log(a);}; bar(x);
 newSource: src/ch.usi.inf.nodeprof.test/js/minitests/eval2.js / internal: false / eval: true / 2
 newSource matches: 1
 1
-invoking func: bound log
+invoking func: log
 invoking func: bar
 invoking func: eval
 post var y = 1; function bar(a){console.log(a);}; bar(x);
