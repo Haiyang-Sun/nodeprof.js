@@ -30,7 +30,7 @@ import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.runtime.Evaluator;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
-import com.oracle.truffle.js.runtime.builtins.JSUserObject;
+import com.oracle.truffle.js.runtime.builtins.JSOrdinary;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -111,9 +111,9 @@ public abstract class SourceMapping {
         DynamicObject range = JSArray.createConstant(ctx, new Object[]{section.getCharIndex(), section.getCharEndIndex()});
         JSObject.set(o, "range", range);
 
-        DynamicObject loc = JSUserObject.create(ctx);
-        DynamicObject start = JSUserObject.create(ctx);
-        DynamicObject end = JSUserObject.create(ctx);
+        DynamicObject loc = JSOrdinary.create(ctx);
+        DynamicObject start = JSOrdinary.create(ctx);
+        DynamicObject end = JSOrdinary.create(ctx);
         JSObject.set(start, "line", section.getStartLine());
         JSObject.set(start, "column", section.getStartColumn());
         JSObject.set(end, "line", section.getEndLine());
@@ -133,7 +133,7 @@ public abstract class SourceMapping {
             return Undefined.instance;
         }
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
-        DynamicObject o = JSUserObject.create(ctx);
+        DynamicObject o = JSOrdinary.create(ctx);
         String srcName = source.getName();
         if (isEval(source)) {
             String evalSrc = innerMostEvalSource(source.getName());
