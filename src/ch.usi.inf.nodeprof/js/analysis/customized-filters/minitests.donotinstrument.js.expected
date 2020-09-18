@@ -9,6 +9,9 @@ node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: toRealPath / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: shouldUseESMLoader / (*internal/modules/run_main.js) / 4
 node-module: functionEnter: readPackageScope / (*internal/modules/cjs/loader.js) / 4
+node-module: functionEnter: read / (*internal/modules/package_json_reader.js) / 4
+node-module: functionEnter: read / (*internal/modules/package_json_reader.js) / 4
+node-module: functionEnter: read / (*internal/modules/package_json_reader.js) / 4
 node-module: functionEnter: loadNativeModule / (*internal/modules/cjs/helpers.js) / 4
 node-module: functionEnter: Module / (*internal/modules/cjs/loader.js) / 4
 node-module: functionEnter: updateChildren / (*internal/modules/cjs/loader.js) / 4
@@ -24,6 +27,7 @@ Set {
   'internal/main/run_main_module.js',
   'internal/modules/cjs/loader.js',
   'internal/modules/cjs/helpers.js',
+  'internal/modules/package_json_reader.js',
   'internal/modules/esm/loader.js',
   'internal/modules/esm/module_map.js',
   'internal/modules/esm/module_job.js',

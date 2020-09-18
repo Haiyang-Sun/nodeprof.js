@@ -4,5 +4,5 @@
 [i] invoking (src/ch.usi.inf.nodeprof.test/js/minitests/builtin.js:22:1:22:28) then
 [i] builtin used Promise.prototype.then
 [i] builtin used Promise
-[i] invoking (src/ch.usi.inf.nodeprof.test/js/minitests/builtin.js:22:13:22:27) bound log
+[i] invoking (src/ch.usi.inf.nodeprof.test/js/minitests/builtin.js:22:13:22:27) log
 10
