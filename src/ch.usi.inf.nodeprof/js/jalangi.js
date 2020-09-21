@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -267,17 +267,27 @@ function loadAnalysis(){
   var arg0 = process.argv[0];
   var i = 2; // start from 3rd arg: 0 => node, 1 => jalangi.js
   var analyses = [];
+  var execPath;
   var length = process.argv.length;
   
-  // read analyses
-  for (; i < length && process.argv[i] == '--analysis'; i++) {
+  // read global options
+  const optStrings = ['--analysis', '--exec-path'];
+  for (; i < length && optStrings.includes(process.argv[i]); i++) {
+    const optString = process.argv[i];
     if (++i >= length)
-      throw 'missing analysis';
+      throw 'missing option argument';
     
-    analyses.push(process.argv[i]);
+    switch (optString) {
+      case '--analysis':
+        analyses.push(process.argv[i]);
+        break;
+      case '--exec-path':
+        execPath = process.argv[i];
+        break;
+    }
   }
   
-  // read args
+  // read initParam args
   J$.initParams = {};
   for (; i < length && process.argv[i] == '--initParam'; ++i) {
     if (++i >= length)
@@ -311,6 +321,12 @@ function loadAnalysis(){
 
   // remove the analysis part in the argv
   process.argv = process.argv.slice(i);
+
+  // override with --exec-path
+  if (execPath) {
+    process.execPath = execPath;
+    arg0 = execPath;
+  }
 
   // put back the entry program
   process.argv.unshift(arg0);
