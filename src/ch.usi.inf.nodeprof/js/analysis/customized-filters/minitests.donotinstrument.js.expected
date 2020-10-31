@@ -34,7 +34,6 @@ Set {
   'internal/modules/esm/resolve.js',
   'internal/modules/esm/get_format.js',
   'internal/modules/esm/get_source.js',
-  'internal/modules/esm/transform_source.js',
   'internal/modules/esm/create_dynamic_module.js',
   'internal/modules/esm/translators.js',
   'internal/vm/module.js',
