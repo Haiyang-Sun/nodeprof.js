@@ -16,23 +16,30 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import ch.usi.inf.nodeprof.utils.Logger;
+import com.oracle.truffle.api.CompilerDirectives;
+import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
+import com.oracle.truffle.api.frame.FrameSlot;
+import com.oracle.truffle.api.frame.MaterializedFrame;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.interop.NodeLibrary;
+import com.oracle.truffle.api.interop.UnknownIdentifierException;
+import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.nodes.function.FunctionBodyNode;
 import com.oracle.truffle.js.nodes.function.JSBuiltinNode;
+import com.oracle.truffle.js.runtime.JSFrameUtil;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 import com.oracle.truffle.regex.RegexBodyNode;
 import com.oracle.truffle.regex.RegexRootNode;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
-import com.oracle.truffle.api.interop.InteropLibrary;
-import com.oracle.truffle.api.interop.NodeLibrary;
-import com.oracle.truffle.api.interop.UnknownIdentifierException;
-import com.oracle.truffle.api.interop.UnsupportedMessageException;
 
 /**
  * Abstract event handler for function roots
@@ -44,7 +51,11 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
 
     protected final String builtinName;
 
-    private static final NodeLibrary NODE_LIBRARY = NodeLibrary.getUncached();
+    @CompilationFinal private FrameSlot thisSlot;
+
+    @CompilationFinal private boolean thisSlotInitialized = false;
+
+    @Child private NodeLibrary nodeLibrary;
     private static final InteropLibrary INTEROP = InteropLibrary.getUncached();
 
     public FunctionRootEventHandler(EventContext context) {
@@ -62,12 +73,43 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
     }
 
     public Object getReceiver(VirtualFrame frame, TruffleInstrument.Env env) {
-        try {
-            Object scope = findLocalScope(this.context.getInstrumentedNode(), frame);
-            return INTEROP.readMember(scope, "this");
-        } catch (UnknownIdentifierException | UnsupportedMessageException e) {
-            return Undefined.instance;
+        // cache the frame slot for `this`
+        if (!thisSlotInitialized) {
+            CompilerDirectives.transferToInterpreterAndInvalidate();
+            thisSlot = JSFrameUtil.getThisSlot(frame.getFrameDescriptor());
+            thisSlotInitialized = true;
         }
+        // if function has a <this> slot and its value is not undefined, we have a shortcut to
+        // `this`
+        if (thisSlot != null) {
+            Object maybeThis = frame.getValue(thisSlot);
+            if (maybeThis != null && maybeThis != Undefined.instance) {
+                return maybeThis;
+            }
+        }
+
+        // otherwise, retrieve the current scope to look up this
+        return getReceiverFromScope(frame.materialize(), env);
+    }
+
+    @TruffleBoundary
+    private Object getReceiverFromScope(MaterializedFrame frame, TruffleInstrument.Env env) {
+        if (nodeLibrary == null) {
+            CompilerDirectives.transferToInterpreterAndInvalidate();
+            nodeLibrary = NodeLibrary.getFactory().create(context.getInstrumentedNode());
+            adoptChildren();
+        }
+
+        Object receiver = null;
+        try {
+            Object scope = nodeLibrary.getScope(context.getInstrumentedNode(), frame, true);
+            receiver = INTEROP.readMember(scope, "this");
+        } catch (UnknownIdentifierException | UnsupportedMessageException e) {
+            Logger.error(e.getMessage());
+            Logger.error(e.getStackTrace());
+        }
+        assert receiver != null;
+        return receiver;
     }
 
     public boolean isRegularExpression() {
@@ -122,9 +164,4 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
 
         return n.getSourceSection().getSource();
     }
-
-    private static Object findLocalScope(Node node, VirtualFrame frame) throws UnsupportedMessageException {
-        return NODE_LIBRARY.getScope(node, frame, true);
-    }
-
 }
