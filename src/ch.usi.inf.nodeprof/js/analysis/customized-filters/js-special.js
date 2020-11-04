@@ -38,7 +38,11 @@
   if (process.argv[process.argv.length - 1].endsWith('donotinstrument.js')) {
     sandbox.addAnalysis(new NodeInternal(), function filter(source) {
       if (source.internal && source.name.includes('module')) {
-        internals.add(source.name);
+        if (source.name.endsWith('transform_source.js')) {
+          // XXX this source shows up only sometimes, is this a callback bug? exclude for now
+        } else {
+          internals.add(source.name);
+        }
         return true;
       }
     });

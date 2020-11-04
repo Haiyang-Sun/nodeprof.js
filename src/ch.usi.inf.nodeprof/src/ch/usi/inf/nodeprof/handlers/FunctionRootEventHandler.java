@@ -16,15 +16,19 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import ch.usi.inf.nodeprof.utils.Logger;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.Scope;
 import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.MaterializedFrame;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument;
+import com.oracle.truffle.api.interop.InteropLibrary;
+import com.oracle.truffle.api.interop.NodeLibrary;
+import com.oracle.truffle.api.interop.UnknownIdentifierException;
+import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
@@ -50,6 +54,9 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
     @CompilationFinal private FrameSlot thisSlot;
 
     @CompilationFinal private boolean thisSlotInitialized = false;
+
+    @Child private NodeLibrary nodeLibrary;
+    private static final InteropLibrary INTEROP = InteropLibrary.getUncached();
 
     public FunctionRootEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.ROOT);
@@ -87,9 +94,20 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
 
     @TruffleBoundary
     private Object getReceiverFromScope(MaterializedFrame frame, TruffleInstrument.Env env) {
-        Iterable<Scope> scopes = env.findLocalScopes(context.getInstrumentedNode(), frame);
-        assert scopes.iterator().hasNext();
-        Object receiver = scopes.iterator().next().getReceiver();
+        if (nodeLibrary == null) {
+            CompilerDirectives.transferToInterpreterAndInvalidate();
+            nodeLibrary = NodeLibrary.getFactory().create(context.getInstrumentedNode());
+            adoptChildren();
+        }
+
+        Object receiver = null;
+        try {
+            Object scope = nodeLibrary.getScope(context.getInstrumentedNode(), frame, true);
+            receiver = INTEROP.readMember(scope, "this");
+        } catch (UnknownIdentifierException | UnsupportedMessageException e) {
+            Logger.error(e.getMessage());
+            Logger.error(e.getStackTrace());
+        }
         assert receiver != null;
         return receiver;
     }
