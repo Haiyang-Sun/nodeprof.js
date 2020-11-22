@@ -37,12 +37,10 @@ expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:28:5:3
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: LocalVarPostfixIncMaterialized
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSWriteScopeFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: TemporalDeadZoneCheck
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSSubtract
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSAddSubNumericUnit
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSReadScopeFrameSlotWithTDZ
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSReadScopeFrameSlotWithTDZ
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSConstantInteger
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSConstantInteger
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSSubtract
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSAddSubNumericUnit
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: TemporalDeadZoneCheck
 write (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) bar
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:24:7:24:12) type: JSWriteScopeFrameSlot
@@ -71,12 +69,10 @@ expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:35:3:3
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:35:3:38:11) type: JSIdentical
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: LocalVarPostfixIncMaterialized
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSWriteScopeFrameSlot
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSSubtract
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSAddSubNumericUnit
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSReadScopeFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSReadScopeFrameSlot
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSConstantInteger
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSConstantInteger
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSSubtract
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSAddSubNumericUnit
 write (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) bar
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: JSWriteScopeFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:36:5:36:10) type: LocalVarPostfixIncMaterialized
