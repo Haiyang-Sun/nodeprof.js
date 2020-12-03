@@ -17,7 +17,9 @@
  //DO NOT INSTRUMENT
 ((function(sandbox){
 
+  var assert = require("assert");
   var internals = new Set();
+  var internalCalls = new Set();
   var builtins = new Set();
   var mute = false;
 
@@ -26,11 +28,14 @@
     this.functionEnter = function (iid, f, dis, args) {
       if (f.name == '' || f.name == 'readPackage' || mute)
         return;
-      console.log("%s: functionEnter: %s / %s / %d", analysis, f.name, J$.iidToLocation(iid).replace(/:.*[0-9]/,''), arguments.length);
+      // Do not log Node.js internals in test output
+      // console.log("%s: functionEnter: %s / %s / %d", analysis, f.name, J$.iidToLocation(iid).replace(/:.*[0-9]/,''), arguments.length);
+      internalCalls.add(J$.iidToSourceObject(iid).name);
     };
     this.endExecution = function () {
       mute = true;
-      console.log(internals);
+      console.log(analysis + ': internal source', internals);
+      assert(internalCalls.size >= 3, 'missing calls to internal functions');
     };
   }
 
