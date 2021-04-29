@@ -42,7 +42,7 @@ jobs:
     - name: set up jdk
       run: |
         mx fetch-jdk --java-distribution openjdk8 --config ../graal/common.json --to $GITHUB_WORKSPACE --alias openjdk1.8.0-jvmci
-        echo "JAVA_HOME=$GITHUB_WORKSPACE/openjdk1.8.0-jvmci" >> GITHUB_ENV
+        echo "JAVA_HOME=$GITHUB_WORKSPACE/openjdk1.8.0-jvmci" >> $GITHUB_ENV
     - name: style checks
       run: |
         mx checkstyle --primary
