@@ -54,3 +54,7 @@ jobs:
         mx npm-deps
         mx test-all
 
+    - name: build compiler import
+      run: mx --dy /compiler build
+    - name: test NPM (with compiler)
+      run: mx --dy /compiler --jdk jvmci test-npm
