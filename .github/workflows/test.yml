@@ -1,0 +1,20 @@
+name: NodeProf Test Action
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up mx
+      run: |
+        git clone --depth 1 https://github.com/graalvm/mx.git
+        echo `pwd`/mx >> $GITHUB_PATH
+    - name: fetch imports
+      run: mx sforceimports
