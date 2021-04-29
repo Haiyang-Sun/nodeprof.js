@@ -3,15 +3,38 @@ name: NodeProf Test Action
 on: [push, pull_request]
 
 jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          concurrent_skipping: same_content
+          paths_ignore: '["**/README.md", "**/docs/**"]'
+          do_not_skip: '["pull_request", "workflow_dispatch", "schedule"]'
+
   build_and_test:
+    needs: pre_job
+    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: actions/checkout@v2
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # required by checkstyle copyright check
+
+    - name: checkout mx
+      uses: actions/checkout@v2
+      with:
+        repository: graalvm/mx
+        path: mx
     - name: set up mx
-      run: |
-        git clone --depth 1 https://github.com/graalvm/mx.git
-        echo `pwd`/mx >> $GITHUB_PATH
+      run: echo $GITHUB_WORKSPACE/mx >> $GITHUB_PATH
+
     - name: fetch imports
       run: mx sforceimports
     - name: log versions
@@ -20,10 +43,10 @@ jobs:
       run: |
         mx fetch-jdk --java-distribution openjdk8 --config ../graal/common.json --to $GITHUB_WORKSPACE --alias openjdk1.8.0-jvmci
         echo "JAVA_HOME=$GITHUB_WORKSPACE/openjdk1.8.0-jvmci" >> GITHUB_ENV
-    #- name: style checks
-    #  run: |
-    #    mx checkstyle --primary
-    #    mx checkcopyrights-nodeprof
+    - name: style checks
+      run: |
+        mx checkstyle --primary
+        mx checkcopyrights-nodeprof
     - name: build
       run: mx build
     - name: test
