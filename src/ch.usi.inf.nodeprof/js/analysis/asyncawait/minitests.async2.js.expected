@@ -1,5 +1,5 @@
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:{{:program}})
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:{{:program}}) [Function] {}
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:{{:program}}) [Function (anonymous)] {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:{{module}})
 write (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:17:1:19:2) bar [AsyncFunction: bar]
 asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/async2.js:22:5:26:6)

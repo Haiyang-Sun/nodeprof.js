@@ -1,5 +1,5 @@
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:{{:program}})
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:{{:program}}) [Function] {}
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:{{:program}}) [Function (anonymous)] {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:{{module}})
 write (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:1:1:11:2) foo [AsyncFunction: foo]
 asyncEnter (src/ch.usi.inf.nodeprof.test/js/minitests/await.js:13:12:13:18)

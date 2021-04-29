@@ -1,3 +1,4 @@
+[i] builtin used Promise
 [i] invoking (src/ch.usi.inf.nodeprof.test/js/minitests/builtin.js:16:9:21:2) Promise
 [i] builtin used Promise
 [i] invoking (src/ch.usi.inf.nodeprof.test/js/minitests/builtin.js:19:5:19:16) 
