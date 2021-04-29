@@ -1,10 +1,6 @@
 name: NodeProf Test Action
 
-on:
-  push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+on: [push, pull_request]
 
 jobs:
   build_and_test:
@@ -18,3 +14,20 @@ jobs:
         echo `pwd`/mx >> $GITHUB_PATH
     - name: fetch imports
       run: mx sforceimports
+    - name: log versions
+      run: mx sversions
+    - name: set up jdk
+      run: |
+        mx fetch-jdk --java-distribution openjdk8 --config ../graal/common.json --to $GITHUB_WORKSPACE --alias openjdk1.8.0-jvmci
+        echo "JAVA_HOME=$GITHUB_WORKSPACE/openjdk1.8.0-jvmci" >> GITHUB_ENV
+    #- name: style checks
+    #  run: |
+    #    mx checkstyle --primary
+    #    mx checkcopyrights-nodeprof
+    - name: build
+      run: mx build
+    - name: test
+      run: |
+        mx npm-deps
+        mx test-all
+
