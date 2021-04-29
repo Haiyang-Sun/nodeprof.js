@@ -1,0 +1,57 @@
+name: NodeProf Test Action
+
+on: [push, pull_request]
+
+jobs:
+  pre_job:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          paths_ignore: '["**/README.md", "**/docs/**"]'
+
+  build_and_test:
+    needs: pre_job
+    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # required by checkstyle copyright check
+
+    - name: checkout mx
+      uses: actions/checkout@v2
+      with:
+        repository: graalvm/mx
+        path: mx
+    - name: set up mx
+      run: echo $GITHUB_WORKSPACE/mx >> $GITHUB_PATH
+
+    - name: fetch imports
+      run: mx sforceimports
+    - name: log versions
+      run: mx sversions
+    - name: set up jdk
+      run: |
+        mx fetch-jdk --java-distribution openjdk8 --config ../graal/common.json --to $GITHUB_WORKSPACE --alias openjdk1.8.0-jvmci
+        echo "JAVA_HOME=$GITHUB_WORKSPACE/openjdk1.8.0-jvmci" >> $GITHUB_ENV
+    - name: style checks
+      run: |
+        mx checkstyle --primary
+        mx checkcopyrights-nodeprof
+    - name: build
+      run: mx build
+    - name: test
+      run: |
+        mx npm-deps
+        mx test-all
+
+    - name: build compiler import
+      run: mx --dy /compiler build
+    - name: test NPM (with compiler)
+      run: mx --dy /compiler --jdk jvmci test-npm
