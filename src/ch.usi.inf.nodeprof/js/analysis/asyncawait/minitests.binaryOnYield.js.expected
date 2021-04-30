@@ -1,5 +1,5 @@
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:{{:program}})
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:{{:program}}) [Function] {}
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:{{:program}}) [Function (anonymous)] {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:{{module}})
 write (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2) binaryOnYield [GeneratorFunction: binaryOnYield]
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2)
