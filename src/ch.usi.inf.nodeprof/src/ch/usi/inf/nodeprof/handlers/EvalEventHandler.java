@@ -29,7 +29,7 @@ public abstract class EvalEventHandler extends BaseSingleTagEventHandler {
     }
 
     protected String getCode(Object[] inputs) {
-        return assertGetInput(1, inputs, "code").toString();
+        return assertGetStringInput(1, inputs, "code");
     }
 
 }
