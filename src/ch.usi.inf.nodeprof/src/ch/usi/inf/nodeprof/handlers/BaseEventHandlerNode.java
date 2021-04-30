@@ -137,6 +137,7 @@ public abstract class BaseEventHandlerNode extends Node {
      * @param key of the current InstrumentableNode
      * @return the value of this key
      */
+    @TruffleBoundary
     public Object getAttribute(String key) {
         Object result = null;
         try {
@@ -290,6 +291,7 @@ public abstract class BaseEventHandlerNode extends Node {
         return false;
     }
 
+    @TruffleBoundary
     protected static void checkForSymbolicLocation(Node node, Object[] args) {
         if (GlobalConfiguration.SYMBOLIC_LOCATIONS) {
             RootNode root = node.getRootNode();

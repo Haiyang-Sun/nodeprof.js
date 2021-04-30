@@ -150,6 +150,7 @@ public class JalangiAdapter implements TruffleObject {
     }
 
     @ExportMessage
+    @TruffleBoundary
     final Object invokeMember(String identifier, Object[] arguments) throws ArityException, UnsupportedTypeException {
         ApiMember api;
         try {

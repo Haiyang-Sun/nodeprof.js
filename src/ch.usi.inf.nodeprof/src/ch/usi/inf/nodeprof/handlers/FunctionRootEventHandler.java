@@ -144,6 +144,7 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
      * @return the source of the instrumented node (or its closest parent), or null if no source is
      *         available
      */
+    @TruffleBoundary
     public Source getSource() {
         if (isRegularExpression() || this.isBuiltin) {
             return null;
