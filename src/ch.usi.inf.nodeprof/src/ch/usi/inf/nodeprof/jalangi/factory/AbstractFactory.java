@@ -177,13 +177,18 @@ public abstract class AbstractFactory implements
     public class CallbackNode extends Node {
         @Node.Child DirectCallNode preCall = pre == null ? null : Truffle.getRuntime().createDirectCallNode(JSFunction.getCallTarget(pre));
         @Node.Child DirectCallNode postCall = post == null ? null : Truffle.getRuntime().createDirectCallNode(JSFunction.getCallTarget(post));
+        @Child private InteropLibrary interopLibrary = InteropLibrary.getFactory().createDispatched(3);
 
         private void checkDeactivate(Object ret, BaseEventHandlerNode handler) {
             if (ret != null && ret != Undefined.instance && JSObject.isJSObject(ret)) {
-                Object prop = JSObject.get((DynamicObject) ret, "deactivate");
-                if (prop.equals(true)) {
-                    CompilerDirectives.transferToInterpreterAndInvalidate();
-                    handler.deactivate();
+                try {
+                    Object prop = interopLibrary.readMember(ret, "deactivate");
+                    if (interopLibrary.asBoolean(prop)) {
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        handler.deactivate();
+                    }
+                } catch (UnsupportedMessageException | UnknownIdentifierException ignored) {
+                    // ignore, don't deactivate
                 }
             }
         }
