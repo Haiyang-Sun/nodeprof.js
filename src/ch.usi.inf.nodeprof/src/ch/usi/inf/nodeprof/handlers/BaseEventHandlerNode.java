@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2019, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2021, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
+import com.oracle.truffle.js.runtime.objects.JSLazyString;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
@@ -136,6 +137,7 @@ public abstract class BaseEventHandlerNode extends Node {
      * @param key of the current InstrumentableNode
      * @return the value of this key
      */
+    @TruffleBoundary
     public Object getAttribute(String key) {
         Object result = null;
         try {
@@ -181,34 +183,45 @@ public abstract class BaseEventHandlerNode extends Node {
      *
      * @param index
      * @param inputs
-     * @param inputName
+     * @param inputHint
      * @return the value of inputs[index]
      */
-    protected Object assertGetInput(int index, Object[] inputs, String inputName) {
+    protected Object assertGetInput(int index, Object[] inputs, String inputHint) {
         if (inputs == null) {
-            reportInputsError(index, inputs, "InputsArrayNull");
+            reportInputsError(index, null, "InputsArrayNull", inputHint);
             return Undefined.instance;
         }
         if (index < inputs.length) {
             Object result = inputs[index];
             if (result == null) {
                 result = Undefined.instance;
-                reportInputsError(index, inputs, "InputElementNull " + index);
+                reportInputsError(index, inputs, "InputElementNull", inputHint);
             }
             return result;
         } else {
             /**
              * if the inputs are not there, report the detail and stop the engine.
              */
-            reportInputsError(index, inputs, "MissingInput");
+            reportInputsError(index, inputs, "MissingInput", inputHint);
         }
         return Undefined.instance;
     }
 
+    protected String assertGetStringInput(int index, Object[] inputs, String inputHint) {
+        Object input = assertGetInput(index, inputs, inputHint);
+        if (input instanceof String) {
+            return (String) input;
+        } else if (input instanceof JSLazyString) {
+            return ((JSLazyString) input).toString();
+        }
+        reportInputsError(1, inputs, "ExpectedStringLike", inputHint);
+        return null;
+    }
+
     @TruffleBoundary
-    private void reportInputsError(int index, Object[] inputs, String info) {
+    private void reportInputsError(int index, Object[] inputs, String info, String inputHint) {
         Logger.error(context.getInstrumentedSourceSection(),
-                        "Error[" + info + "] getting inputs at index '" + index + "' from " +
+                        "Error[" + info + "] getting input (" + inputHint + ") at index '" + index + "' from " +
                                         context.getInstrumentedNode().getClass().getSimpleName() + " (has " + (inputs == null ? 0 : inputs.length) + " input(s))");
 
         if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
@@ -278,6 +291,7 @@ public abstract class BaseEventHandlerNode extends Node {
         return false;
     }
 
+    @TruffleBoundary
     protected static void checkForSymbolicLocation(Node node, Object[] args) {
         if (GlobalConfiguration.SYMBOLIC_LOCATIONS) {
             RootNode root = node.getRootNode();

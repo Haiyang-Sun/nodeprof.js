@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,12 +38,22 @@ public class InitialRootFactory extends AbstractFactory {
 
     private final Set<Source> seenSources = new HashSet<>();
 
+    /**
+     * Returns the code for source as a string if source has not been seen yet.
+     *
+     * @param source source object
+     * @return source as String or null
+     */
     @TruffleBoundary
-    private boolean isNewSource(Source source) {
+    private String sourceStringIfNew(Source source) {
         if (source == null) {
-            return false;
+            return null;
         }
-        return seenSources.add(source);
+        if (seenSources.add(source)) {
+            // getCharacters() needs to be behind boundary
+            return source.getCharacters().toString();
+        }
+        return null;
     }
 
     @Override
@@ -75,13 +85,15 @@ public class InitialRootFactory extends AbstractFactory {
                     return;
                 }
 
-                if (isNewSource(source)) {
+                String sourceAsString = sourceStringIfNew(source);
+
+                if (sourceAsString != null) {
                     cbNode.postCall(this,
                                     jalangiAnalysis,
                                     post,
                                     SourceMapping.getJSObjectForSource(source), // arg 1: source
                                                                                 // object
-                                    source.getCharacters().toString()); // arg 2: source code
+                                    sourceAsString); // arg 2: source code
                 }
             }
         };

@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,13 +177,18 @@ public abstract class AbstractFactory implements
     public class CallbackNode extends Node {
         @Node.Child DirectCallNode preCall = pre == null ? null : Truffle.getRuntime().createDirectCallNode(JSFunction.getCallTarget(pre));
         @Node.Child DirectCallNode postCall = post == null ? null : Truffle.getRuntime().createDirectCallNode(JSFunction.getCallTarget(post));
+        @Child private InteropLibrary interopLibrary = InteropLibrary.getFactory().createDispatched(3);
 
         private void checkDeactivate(Object ret, BaseEventHandlerNode handler) {
             if (ret != null && ret != Undefined.instance && JSObject.isJSObject(ret)) {
-                Object prop = JSObject.get((DynamicObject) ret, "deactivate");
-                if (prop.equals(true)) {
-                    CompilerDirectives.transferToInterpreterAndInvalidate();
-                    handler.deactivate();
+                try {
+                    Object prop = interopLibrary.readMember(ret, "deactivate");
+                    if (interopLibrary.asBoolean(prop)) {
+                        CompilerDirectives.transferToInterpreterAndInvalidate();
+                        handler.deactivate();
+                    }
+                } catch (UnsupportedMessageException | UnknownIdentifierException ignored) {
+                    // ignore, don't deactivate
                 }
             }
         }

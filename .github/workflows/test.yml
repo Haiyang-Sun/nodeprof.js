@@ -55,3 +55,11 @@ jobs:
       run: mx --dy /compiler build
     - name: test NPM (with compiler)
       run: mx --dy /compiler --jdk jvmci test-npm
+
+    - name: build with native image
+      run: |
+        cd ../graal/vm
+        mx --dy nodeprof,/substratevm --force-bash-launchers=true --disable-polyglot --skip-libraries=native-image-agent,jvmcicompiler,native-image-diagnostics-agent,polyglot build
+        cd -
+    - name: test with native image
+      run: mx test-specific --svm --all
