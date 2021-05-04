@@ -122,8 +122,15 @@ public class JalangiAdapter implements TruffleObject {
         return iid;
     }
 
-    @TruffleBoundary
     private static boolean checkArguments(int count, Object[] arguments, String funcName) throws ArityException {
+        if (arguments.length == count) {
+            return true;
+        }
+        return checkArgumentsSlow(count, arguments, funcName);
+    }
+
+    @TruffleBoundary
+    private static boolean checkArgumentsSlow(int count, Object[] arguments, String funcName) throws ArityException {
         if (arguments.length < count) {
             Logger.error("call to " + funcName + " expects " + count + " argument(s)");
             if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
@@ -149,15 +156,35 @@ public class JalangiAdapter implements TruffleObject {
         return obj;
     }
 
-    @ExportMessage
     @TruffleBoundary
-    final Object invokeMember(String identifier, Object[] arguments) throws ArityException, UnsupportedTypeException {
-        ApiMember api;
+    ApiMember lookupApiMethod(String identifier) {
         try {
-            api = ApiMember.valueOf(identifier.toUpperCase());
+            return ApiMember.valueOf(identifier.toUpperCase());
         } catch (IllegalArgumentException e) {
             Logger.warning("Unsupported NodeProf-Jalangi operation " + identifier);
-            return 0;
+        }
+        return null;
+    }
+
+    @ExportMessage
+    final Object invokeMember(String identifier, Object[] arguments) throws ArityException, UnsupportedTypeException {
+        ApiMember api;
+        switch (identifier) {
+            case "iidToLocation":
+                api = ApiMember.IIDTOLOCATION;
+                break;
+            case "iidToCode":
+                api = ApiMember.IIDTOCODE;
+                break;
+            case "nativeLog":
+                api = ApiMember.NATIVELOG;
+                break;
+            default:
+                api = lookupApiMethod(identifier);
+                if (api == null) {
+                    return null;
+                }
+                break;
         }
         switch (api) {
             case IIDTOLOCATION: {
