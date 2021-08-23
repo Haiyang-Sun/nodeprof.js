@@ -24,7 +24,6 @@ import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.MaterializedFrame;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
-import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.NodeLibrary;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
@@ -72,7 +71,7 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
         return context.getInstrumentedNode().getRootNode().getSourceSection();
     }
 
-    public Object getReceiver(VirtualFrame frame, TruffleInstrument.Env env) {
+    public Object getReceiver(VirtualFrame frame) {
         // cache the frame slot for `this`
         if (!thisSlotInitialized) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
@@ -89,11 +88,11 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
         }
 
         // otherwise, retrieve the current scope to look up this
-        return getReceiverFromScope(frame.materialize(), env);
+        return getReceiverFromScope(frame.materialize());
     }
 
     @TruffleBoundary
-    private Object getReceiverFromScope(MaterializedFrame frame, TruffleInstrument.Env env) {
+    private Object getReceiverFromScope(MaterializedFrame frame) {
         if (nodeLibrary == null) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
             nodeLibrary = NodeLibrary.getFactory().create(context.getInstrumentedNode());

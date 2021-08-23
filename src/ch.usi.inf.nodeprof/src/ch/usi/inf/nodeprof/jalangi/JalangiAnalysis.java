@@ -284,9 +284,9 @@ public class JalangiAnalysis {
 
         if (this.callbacks.containsKey("startStatement") || this.callbacks.containsKey("endStatement")) {
             this.instrument.onCallback(
-                    ProfiledTagEnum.STATEMENT,
-                    new StatementFactory(this.jsAnalysis,
-                            callbacks.get("startStatement"), callbacks.get("endStatement")));
+                            ProfiledTagEnum.STATEMENT,
+                            new StatementFactory(this.jsAnalysis,
+                                            callbacks.get("startStatement"), callbacks.get("endStatement")));
         }
 
         if (this.callbacks.containsKey("builtinEnter") || this.callbacks.containsKey("builtinExit")) {

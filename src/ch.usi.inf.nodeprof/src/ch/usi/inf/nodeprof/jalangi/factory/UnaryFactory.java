@@ -39,7 +39,7 @@ public class UnaryFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getOp(), getValue(inputs));
+                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getOp(), getValue(inputs, this));
                 }
             }
 
@@ -47,7 +47,7 @@ public class UnaryFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
-                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getOp(), getValue(inputs), convertResult(result));
+                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getOp(), getValue(inputs, this), convertResult(result));
                 }
             }
         };

@@ -123,10 +123,10 @@ public abstract class BaseEventHandlerNode extends Node {
 
     /**
      * Control flow exception that may be treated like executePost, thus includes inputs[]
-     * 
+     *
      * @throws Exception
      */
-    public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, @SuppressWarnings("unused")  Object[] inputs) throws Exception {
+    public void executeExceptionalCtrlFlow(VirtualFrame frame, Throwable exception, @SuppressWarnings("unused") Object[] inputs) throws Exception {
         executeExceptional(frame, exception);
     }
 
@@ -267,7 +267,7 @@ public abstract class BaseEventHandlerNode extends Node {
 
     /**
      * Allows handlers to ask for eventual replacement or removal.
-     * 
+     *
      * @return <code>null</code> to remove this handler, another instance of
      *         {@link BaseEventHandlerNode} to replace this handler with, or <code>this</code> to
      *         continue without change.

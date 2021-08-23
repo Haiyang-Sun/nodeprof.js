@@ -29,6 +29,7 @@ import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.runtime.Evaluator;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSOrdinary;
 import com.oracle.truffle.js.runtime.objects.JSObject;
@@ -105,15 +106,16 @@ public abstract class SourceMapping {
         }
 
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
+        JSRealm realm = JSRealm.get(null);
         Source source = section.getSource();
         DynamicObject o = getJSObjectForSource(source);
 
-        DynamicObject range = JSArray.createConstant(ctx, new Object[]{section.getCharIndex(), section.getCharEndIndex()});
+        DynamicObject range = JSArray.createConstant(ctx, realm, new Object[]{section.getCharIndex(), section.getCharEndIndex()});
         JSObject.set(o, "range", range);
 
-        DynamicObject loc = JSOrdinary.create(ctx);
-        DynamicObject start = JSOrdinary.create(ctx);
-        DynamicObject end = JSOrdinary.create(ctx);
+        DynamicObject loc = JSOrdinary.create(ctx, realm);
+        DynamicObject start = JSOrdinary.create(ctx, realm);
+        DynamicObject end = JSOrdinary.create(ctx, realm);
         JSObject.set(start, "line", section.getStartLine());
         JSObject.set(start, "column", section.getStartColumn());
         JSObject.set(end, "line", section.getEndLine());
@@ -133,7 +135,8 @@ public abstract class SourceMapping {
             return Undefined.instance;
         }
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
-        DynamicObject o = JSOrdinary.create(ctx);
+        JSRealm realm = JSRealm.get(null);
+        DynamicObject o = JSOrdinary.create(ctx, realm);
         String srcName = source.getName();
         if (isEval(source)) {
             String evalSrc = innerMostEvalSource(source.getName());

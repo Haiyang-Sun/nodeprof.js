@@ -41,6 +41,7 @@ import com.oracle.truffle.js.nodes.instrumentation.JSTags.ReadVariableTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.WritePropertyTag;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.WriteVariableTag;
 import com.oracle.truffle.js.runtime.JSConfig;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 
@@ -115,9 +116,8 @@ public class RawEventsTracingSupport {
                     @TruffleBoundary
                     @Override
                     public void onEnter(VirtualFrame frame) {
-                        DynamicObject func = (DynamicObject) frame.getArguments()[1];
                         try {
-                            dispatch.execute(JSFunction.createEmptyFunction(JSObject.getJSContext(func).getRealm()));
+                            dispatch.execute(JSFunction.createEmptyFunction(JSRealm.get(null)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

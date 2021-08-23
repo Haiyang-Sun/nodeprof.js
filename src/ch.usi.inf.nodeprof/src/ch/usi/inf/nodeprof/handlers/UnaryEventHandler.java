@@ -17,6 +17,8 @@
 package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -50,13 +52,13 @@ public abstract class UnaryEventHandler extends BaseSingleTagEventHandler {
         return this.isVoid;
     }
 
-    public Object getValue(Object[] inputs) {
+    public Object getValue(Object[] inputs, Node enclosingNode) {
         if (this.isVoid) {
             return Undefined.instance;
         } else if (isDelete) {
             Object target = assertGetInput(0, inputs, "delete target");
             Object key = assertGetInput(1, inputs, "delete key");
-            return JSArray.createConstant(GlobalObjectCache.getInstance().getJSContext(), new Object[]{target, key});
+            return JSArray.createConstant(GlobalObjectCache.getInstance().getJSContext(), JSRealm.get(enclosingNode), new Object[]{target, key});
         } else {
             return assertGetInput(0, inputs, "unaryValue");
         }

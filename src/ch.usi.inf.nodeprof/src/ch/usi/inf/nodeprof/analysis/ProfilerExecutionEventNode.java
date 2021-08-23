@@ -139,9 +139,9 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
     private void reportError(Object[] inputs, Throwable e) {
         if (e instanceof GraalJSException) {
             /*
-             * Dump JS exception messages in the analysis callback and avoid dumping full Graal.js stack
-             * trace. This helps to avoid showing the Graal.js internals when debugging a new dynamic
-             * analysis.
+             * Dump JS exception messages in the analysis callback and avoid dumping full Graal.js
+             * stack trace. This helps to avoid showing the Graal.js internals when debugging a new
+             * dynamic analysis.
              */
             Logger.reportJSException((GraalJSException) e);
             return;

@@ -22,6 +22,7 @@ import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
@@ -63,7 +64,7 @@ public abstract class MakeArgumentArrayNode extends Node {
     }
 
     private Object toJSArray() {
-        return JSArray.createConstantObjectArray(jsContext, arguments);
+        return JSArray.createConstantObjectArray(jsContext, JSRealm.get(this), arguments);
     }
 
     protected boolean notEnoughArgs(Object[] input) {
@@ -79,7 +80,7 @@ public abstract class MakeArgumentArrayNode extends Node {
      */
     @Specialization(guards = "notEnoughArgs(input)")
     public Object executeNull(Object[] input) {
-        return JSArray.createEmpty(jsContext, 0);
+        return JSArray.createEmpty(jsContext, JSRealm.get(this), 0);
     }
 
     @Specialization(guards = "argumentsMatch(input)")

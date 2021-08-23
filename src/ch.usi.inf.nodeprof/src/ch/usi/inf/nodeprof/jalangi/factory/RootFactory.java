@@ -45,13 +45,13 @@ public class RootFactory extends AbstractFactory {
             @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
-            public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
+            public void executePre(VirtualFrame frame, Object[] inputs) {
                 if (isRegularExpression()) {
                     return;
                 }
 
                 if (!this.isBuiltin && pre != null) {
-                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getFunction(frame), getReceiver(frame, env), makeArgs.executeArguments(getArguments(frame)));
+                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getFunction(frame), getReceiver(frame), makeArgs.executeArguments(getArguments(frame)));
                 }
             }
 

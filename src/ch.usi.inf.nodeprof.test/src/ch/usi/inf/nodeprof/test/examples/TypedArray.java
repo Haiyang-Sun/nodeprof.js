@@ -169,8 +169,6 @@ public class TypedArray extends TestableNodeProfAnalysis {
             }
         });
 
-        final Env outerEnv = this.getEnv();
-
         this.onCallback(ProfiledTagEnum.BUILTIN, new AnalysisFactory<BaseEventHandlerNode>() {
             @Override
             public BaseEventHandlerNode create(
@@ -186,7 +184,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
                     public void executePost(VirtualFrame frame,
                                     Object result, Object[] inputs) {
                         if (this.arrayPrototype) {
-                            int iid = getAllocation(getReceiver(frame, outerEnv));
+                            int iid = getAllocation(getReceiver(frame));
                             if (iid >= 0) {
                                 addDebugEvent("TA_ARRAY_OP", iid, ProfiledTagEnum.BUILTIN, this.funcName);
                                 TypedArrayReport report = (TypedArrayReport) getReportNode.execute(iid);
