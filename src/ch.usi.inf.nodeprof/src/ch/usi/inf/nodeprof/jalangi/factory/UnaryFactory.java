@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class UnaryFactory extends AbstractFactory {
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (pre != null) {
-                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getOp(), getValue(inputs));
+                    cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), getOp(), getValue(inputs, this));
                 }
             }
 
@@ -47,7 +47,7 @@ public class UnaryFactory extends AbstractFactory {
             public void executePost(VirtualFrame frame, Object result,
                             Object[] inputs) throws InteropException {
                 if (post != null) {
-                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getOp(), getValue(inputs), convertResult(result));
+                    cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(), getOp(), getValue(inputs, this), convertResult(result));
                 }
             }
         };

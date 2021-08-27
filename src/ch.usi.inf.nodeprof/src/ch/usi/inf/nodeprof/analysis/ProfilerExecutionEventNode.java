@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,9 +139,9 @@ public class ProfilerExecutionEventNode extends ExecutionEventNode {
     private void reportError(Object[] inputs, Throwable e) {
         if (e instanceof GraalJSException) {
             /*
-             * Dump JS exception messages in the analysis callback and avoid dumping full Graal.js stack
-             * trace. This helps to avoid showing the Graal.js internals when debugging a new dynamic
-             * analysis.
+             * Dump JS exception messages in the analysis callback and avoid dumping full Graal.js
+             * stack trace. This helps to avoid showing the Graal.js internals when debugging a new
+             * dynamic analysis.
              */
             Logger.reportJSException((GraalJSException) e);
             return;

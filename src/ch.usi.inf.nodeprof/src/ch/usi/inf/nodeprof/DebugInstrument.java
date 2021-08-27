@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,10 @@ import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Registration;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.nodes.Node;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.InputNodeTag;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
-import com.oracle.truffle.js.runtime.objects.JSObject;
 
 /**
  * TruffleInstrument for the profiler
@@ -99,9 +98,8 @@ public class DebugInstrument extends TruffleInstrument {
                          * include internal code for the registration of builtins like Promise. We
                          * skip all these internal events to ensure that tests are deterministic.
                          */
-                        DynamicObject func = (DynamicObject) frame.getArguments()[1];
                         try {
-                            dispatch.execute(JSFunction.createEmptyFunction(JSObject.getJSContext(func).getRealm()));
+                            dispatch.execute(JSFunction.createEmptyFunction(JSRealm.get(this)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

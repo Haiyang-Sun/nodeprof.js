@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -50,13 +52,13 @@ public abstract class UnaryEventHandler extends BaseSingleTagEventHandler {
         return this.isVoid;
     }
 
-    public Object getValue(Object[] inputs) {
+    public Object getValue(Object[] inputs, Node enclosingNode) {
         if (this.isVoid) {
             return Undefined.instance;
         } else if (isDelete) {
             Object target = assertGetInput(0, inputs, "delete target");
             Object key = assertGetInput(1, inputs, "delete key");
-            return JSArray.createConstant(GlobalObjectCache.getInstance().getJSContext(), new Object[]{target, key});
+            return JSArray.createConstant(GlobalObjectCache.getInstance().getJSContext(), JSRealm.get(enclosingNode), new Object[]{target, key});
         } else {
             return assertGetInput(0, inputs, "unaryValue");
         }

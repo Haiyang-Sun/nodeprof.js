@@ -31,6 +31,7 @@ import com.oracle.truffle.api.library.ExportLibrary;
 import com.oracle.truffle.api.library.ExportMessage;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSOrdinary;
@@ -102,7 +103,7 @@ public class JalangiAdapter implements TruffleObject {
     @SuppressWarnings({"static-method", "unused"})
     @ExportMessage
     final Object getMembers(boolean includeInternal) {
-        return JSArray.createConstantObjectArray(GlobalObjectCache.getInstance().getJSContext(), members);
+        return JSArray.createConstantObjectArray(GlobalObjectCache.getInstance().getJSContext(), JSRealm.get(null), members);
     }
 
     @TruffleBoundary
@@ -128,7 +129,7 @@ public class JalangiAdapter implements TruffleObject {
             Logger.error("call to " + funcName + " expects " + count + " argument(s)");
             if (!GlobalConfiguration.IGNORE_JALANGI_EXCEPTION) {
                 CompilerDirectives.transferToInterpreterAndInvalidate();
-                throw ArityException.create(count, arguments.length);
+                throw ArityException.create(count, count, arguments.length);
             }
             return false;
         } else if (arguments.length > count) {
@@ -140,9 +141,10 @@ public class JalangiAdapter implements TruffleObject {
     @TruffleBoundary
     private Object getConfig() {
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
-        DynamicObject obj = JSOrdinary.create(ctx);
+        JSRealm realm = JSRealm.get(null);
+        DynamicObject obj = JSOrdinary.create(ctx, realm);
         OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
-        for (OptionDescriptor o: NodeProfCLI.ods) {
+        for (OptionDescriptor o : NodeProfCLI.ods) {
             String shortKey = o.getName().replace("nodeprof.", "");
             JSObject.set(obj, shortKey, opts.get(o.getKey()));
         }

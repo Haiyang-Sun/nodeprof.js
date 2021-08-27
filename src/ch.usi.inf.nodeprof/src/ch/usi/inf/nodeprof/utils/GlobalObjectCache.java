@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSOrdinary;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 
@@ -83,10 +84,10 @@ public class GlobalObjectCache extends Node {
             CompilerDirectives.transferToInterpreterAndInvalidate();
             jscontext = JSObject.getJSContext(someObj);
             if (global == null) {
-                global = jscontext.getRealm().getGlobalObject();
+                global = JSRealm.get(null).getGlobalObject();
             }
             if (arrayConstructor == null) {
-                arrayConstructor = jscontext.getRealm().getArrayConstructor();
+                arrayConstructor = JSRealm.get(null).getArrayConstructor();
             }
         }
     }
@@ -107,7 +108,7 @@ public class GlobalObjectCache extends Node {
         if (this.emptyWrappedException == null) {
             assert (jscontext != null);
             CompilerDirectives.transferToInterpreterAndInvalidate();
-            this.emptyWrappedException = JSOrdinary.create(jscontext);
+            this.emptyWrappedException = JSOrdinary.create(jscontext, JSRealm.get(null));
         }
         return this.emptyWrappedException;
     }

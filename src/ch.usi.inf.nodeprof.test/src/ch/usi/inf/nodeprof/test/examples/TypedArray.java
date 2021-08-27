@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -169,8 +169,6 @@ public class TypedArray extends TestableNodeProfAnalysis {
             }
         });
 
-        final Env outerEnv = this.getEnv();
-
         this.onCallback(ProfiledTagEnum.BUILTIN, new AnalysisFactory<BaseEventHandlerNode>() {
             @Override
             public BaseEventHandlerNode create(
@@ -186,7 +184,7 @@ public class TypedArray extends TestableNodeProfAnalysis {
                     public void executePost(VirtualFrame frame,
                                     Object result, Object[] inputs) {
                         if (this.arrayPrototype) {
-                            int iid = getAllocation(getReceiver(frame, outerEnv));
+                            int iid = getAllocation(getReceiver(frame));
                             if (iid >= 0) {
                                 addDebugEvent("TA_ARRAY_OP", iid, ProfiledTagEnum.BUILTIN, this.funcName);
                                 TypedArrayReport report = (TypedArrayReport) getReportNode.execute(iid);

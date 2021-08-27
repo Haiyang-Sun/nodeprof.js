@@ -29,6 +29,7 @@ import com.oracle.truffle.js.nodes.control.YieldException;
 import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.JSCancelledExecutionException;
 import com.oracle.truffle.js.runtime.JSContext;
+import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
@@ -135,7 +136,8 @@ public abstract class AbstractFactory implements
             return GlobalObjectCache.getInstance().getEmptyWrappedException();
         } else {
             JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
-            DynamicObject wrapped = JSOrdinary.create(ctx);
+            JSRealm realm = JSRealm.get(null);
+            DynamicObject wrapped = JSOrdinary.create(ctx, realm);
             if (exception instanceof YieldException) {
                 JSObject.set(wrapped, "yield", true);
             } else {
