@@ -3,12 +3,16 @@ functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:{{:pro
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:{{module}})
 write (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2) binaryOnYield [GeneratorFunction: binaryOnYield]
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2)
-functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2) Object [Generator] {} {}
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2) undefined { yield: true }
 write (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:22:1:24:2) k 42
 42
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2)
 conditional (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:17:5:17:20) undefined
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2) undefined { yield: true }
 write (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:22:1:24:2) k 43
 43
+functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2)
 binary 1 + undefined = NaN
 conditional (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:19:5:19:11) 2
+functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:16:1:20:2) undefined {}
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/binaryOnYield.js:{{module}}) undefined {}
