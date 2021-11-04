@@ -248,7 +248,7 @@ class TestDownload:
         runJalangi(args + ['--analysis', 'test/npm-analysis.js', join(self.testRoot, testPath)])
 
 def testNpm(args):
-    lodash = TestDownload('lodash', 'https://github.com/lodash/lodash/archive/4.17.10.zip', 'lodash-4.17.10')
+    lodash = TestDownload('lodash', 'https://github.com/lodash/lodash/archive/4.17.21.zip', 'lodash-4.17.21')
     lodash.run(args, join('test', 'test-fp.js'))
 
 def test(args):
