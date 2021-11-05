@@ -67,7 +67,7 @@ public abstract class SourceMapping {
         return newIId;
     }
 
-    @TruffleBoundary
+    @TruffleBoundary(allowInlining = true)
     public static String getLocationForIID(int iid) {
         if (iidToLocationCache.containsKey(iid)) {
             return iidToLocationCache.get(iid);
@@ -80,7 +80,7 @@ public abstract class SourceMapping {
         }
     }
 
-    @TruffleBoundary
+    @TruffleBoundary(allowInlining = true)
     public static String getCodeForIID(int iid) {
         if (idToSource.containsKey(iid)) {
             return idToSource.get(iid).getCharacters().toString();
