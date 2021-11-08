@@ -40,7 +40,7 @@ suite = {
         "graal-js:GRAALJS"
       ],
       "annotationProcessors" : ["truffle:TRUFFLE_DSL_PROCESSOR"],
-      "javaCompliance" : "1.8",
+      "javaCompliance" : "8+",
       "workingSets" : "Truffle,JavaScript",
       "checkstyle" : "ch.usi.inf.nodeprof",
     },
@@ -52,7 +52,7 @@ suite = {
         "mx:JUNIT"
       ],
       "annotationProcessors" : ["truffle:TRUFFLE_DSL_PROCESSOR"],
-      "javaCompliance" : "1.8",
+      "javaCompliance" : "8+",
       "workingSets" : "Truffle,JavaScript,Test",
       "testProject": True,
       "checkstyle" : "ch.usi.inf.nodeprof",
