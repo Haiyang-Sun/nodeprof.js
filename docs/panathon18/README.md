@@ -51,8 +51,9 @@ Congratulations, you're all set to run NodeProf. You can now try to implement [y
 
 ### Advanced installation - Building NodeProf and GraalVM from source (Linux and MacOS)
 If you plan to customise NodeProf or the GraalVM, this is the option you need.
-1. Ensure that you have JDK >= 8 installed and set in your **JAVA_HOME**.
-    You can find a GraalVM compatible JDK [here](http://www.oracle.com/technetwork/oracle-labs/program-languages/downloads/index.html).
+1. Ensure that you have JDK >= 8 installed and set in your **JAVA_HOME** or,
+   ideally, see the top-level [README](/README.md) on how to use `mx` to
+   install a suggested JDK for building GraalVM.
 2. Get the  **mx**  build tool and put it in your  **PATH**:
 	```
 	git clone https://github.com/graalvm/mx.git
@@ -69,7 +70,7 @@ If you plan to customise NodeProf or the GraalVM, this is the option you need.
 	```
 4. Run tests:
 	```
-	mx test
+	mx test-all
 	```
 5. Run an analysis with **mx**:
 	```
