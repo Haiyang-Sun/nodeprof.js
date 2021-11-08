@@ -38,8 +38,8 @@ jobs:
       run: mx sversions
     - name: set up jdk
       run: |
-        mx fetch-jdk --java-distribution openjdk8 --config ../graal/common.json --to $GITHUB_WORKSPACE --alias openjdk1.8.0-jvmci
-        echo "JAVA_HOME=$GITHUB_WORKSPACE/openjdk1.8.0-jvmci" >> $GITHUB_ENV
+        mx fetch-jdk --java-distribution labsjdk-ce-11 --config ../graal/common.json --to $GITHUB_WORKSPACE --alias labsjdk-ce-11
+        echo "JAVA_HOME=$GITHUB_WORKSPACE/labsjdk-ce-11" >> $GITHUB_ENV
     - name: style checks
       run: |
         mx checkstyle --primary
