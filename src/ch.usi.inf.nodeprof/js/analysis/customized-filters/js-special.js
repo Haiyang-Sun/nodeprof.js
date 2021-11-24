@@ -34,7 +34,7 @@
     };
     this.endExecution = function () {
       mute = true;
-      console.log(analysis + ': internal source', internals);
+      console.log(analysis + ': internal source', [...internals].sort());
       assert(internalCalls.size >= 3, 'missing calls to internal functions');
     };
   }
