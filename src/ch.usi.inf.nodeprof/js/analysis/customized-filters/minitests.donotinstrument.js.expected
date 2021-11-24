@@ -1,18 +1,18 @@
-node-module: internal source Set(15) {
+node-module: internal source [
   'internal/main/run_main_module.js',
-  'internal/modules/cjs/loader.js',
   'internal/modules/cjs/helpers.js',
-  'internal/modules/package_json_reader.js',
-  'internal/modules/esm/loader.js',
-  'internal/modules/esm/module_map.js',
-  'internal/modules/esm/module_job.js',
-  'internal/modules/esm/resolve.js',
+  'internal/modules/cjs/loader.js',
+  'internal/modules/esm/create_dynamic_module.js',
   'internal/modules/esm/get_format.js',
   'internal/modules/esm/get_source.js',
+  'internal/modules/esm/loader.js',
+  'internal/modules/esm/module_job.js',
+  'internal/modules/esm/module_map.js',
+  'internal/modules/esm/resolve.js',
   'internal/modules/esm/translators.js',
-  'internal/modules/esm/create_dynamic_module.js',
-  'internal/vm/module.js',
+  'internal/modules/package_json_reader.js',
   'internal/modules/run_main.js',
+  'internal/vm/module.js',
   'module.js'
-}
+]
 [ 'Object.create' ]
