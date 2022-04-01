@@ -16,6 +16,8 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
+import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
@@ -82,17 +84,43 @@ public class AwaitFactory extends AbstractFactory {
 
     private void storeAwaitValue(VirtualFrame frame, Object input) {
         assert input != null;
-        int aux = frame.getFrameDescriptor().findOrAddAuxiliarySlot(AuxSlotKey);
-        if (!(frame.getAuxiliarySlot(aux) instanceof Stack)) {
-            frame.setAuxiliarySlot(aux, new Stack<>());
+        int aux = getAuxSlot(frame.getFrameDescriptor());
+        Object newStack = createIfNotStack(frame.getAuxiliarySlot(aux));
+        if (newStack != null) {
+            frame.setAuxiliarySlot(aux, newStack);
         }
-        Stack<Object> s = (Stack) frame.getAuxiliarySlot(aux);
-        s.push(input);
+        pushStackValue(frame.getAuxiliarySlot(aux), input);
     }
 
     private Object loadAwaitValue(VirtualFrame frame) {
-        int aux = frame.getFrameDescriptor().findOrAddAuxiliarySlot(AuxSlotKey);
-        Stack<Object> s = (Stack) frame.getAuxiliarySlot(aux);
+        int aux = getAuxSlot(frame.getFrameDescriptor());
+        return popStackValue(frame.getAuxiliarySlot(aux));
+    }
+
+    @TruffleBoundary
+    private int getAuxSlot(FrameDescriptor descriptor) {
+        return descriptor.findOrAddAuxiliarySlot(AuxSlotKey);
+    }
+
+    @TruffleBoundary
+    private Object createIfNotStack(Object maybeStack) {
+        if (!(maybeStack instanceof Stack)) {
+            return new Stack<>();
+        }
+        return null;
+    }
+
+    @TruffleBoundary
+    private void pushStackValue(Object stack, Object value) {
+        @SuppressWarnings("unchecked")
+        Stack<Object> s = (Stack<Object>) stack;
+        s.push(value);
+    }
+
+    @TruffleBoundary
+    private Object popStackValue(Object stack) {
+        @SuppressWarnings("unchecked")
+        Stack<Object> s = (Stack<Object>) stack;
         return s.pop();
     }
 }
