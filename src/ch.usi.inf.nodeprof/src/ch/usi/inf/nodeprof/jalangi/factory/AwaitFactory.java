@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import com.oracle.truffle.js.runtime.objects.Undefined;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
 
+import java.util.Stack;
+
 public class AwaitFactory extends AbstractFactory {
 
     public AwaitFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
@@ -38,7 +40,6 @@ public class AwaitFactory extends AbstractFactory {
             @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
-
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (!this.isAwaitNode()) {
                     return;
@@ -46,17 +47,21 @@ public class AwaitFactory extends AbstractFactory {
                 if (inputs == null || inputs.length == 0) {
                     return;
                 }
+
                 if (pre != null) {
                     if (inputs[0] == inputs[1] && JSPromise.isJSPromise(inputs[0])) {
                         // await some promise
+                        storePromise(frame, inputs[0]);
                         cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
                     } else if (inputs[0] != inputs[1] && JSPromise.isJSPromise(inputs[1])) {
                         // await some value, and inputs[1] is the internal promise
+                        storePromise(frame, inputs[0]);
                         cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
                     }
                 }
                 if (post != null) {
                     if (inputs[0] != inputs[1] && !JSPromise.isJSPromise((inputs[1]))) {
+                        inputs[0] = loadPromise(frame);
                         cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(),
                                         inputs[0] == null ? Undefined.instance : inputs[0],
                                         assertGetInput(1, inputs, "awaited ret"),
@@ -73,5 +78,22 @@ public class AwaitFactory extends AbstractFactory {
             }
 
         };
+    }
+
+    private static final String AuxSlotKey = ":nodeprof:promise";
+
+    private void storePromise(VirtualFrame frame, Object input) {
+        int aux = frame.getFrameDescriptor().findOrAddAuxiliarySlot(AuxSlotKey);
+        if (!(frame.getAuxiliarySlot(aux) instanceof Stack)) {
+            frame.setAuxiliarySlot(aux, new Stack<>());
+        }
+        Stack<Object> s = (Stack) frame.getAuxiliarySlot(aux);
+        s.push(input);
+    }
+
+    private Object loadPromise(VirtualFrame frame) {
+        int aux = frame.getFrameDescriptor().findOrAddAuxiliarySlot(AuxSlotKey);
+        Stack<Object> s = (Stack) frame.getAuxiliarySlot(aux);
+        return s.pop();
     }
 }
