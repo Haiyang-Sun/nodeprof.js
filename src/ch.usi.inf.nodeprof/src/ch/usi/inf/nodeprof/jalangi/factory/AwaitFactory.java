@@ -21,7 +21,6 @@ import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.builtins.JSPromise;
-import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
@@ -50,39 +49,39 @@ public class AwaitFactory extends AbstractFactory {
 
                 if (pre != null) {
                     if (inputs[0] == inputs[1] && JSPromise.isJSPromise(inputs[0])) {
-                        // await some promise
-                        storePromise(frame, inputs[0]);
+                        // both inputs are the same promise: await this promise
+                        storeAwaitValue(frame, inputs[0]);
                         cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                        return;
                     } else if (inputs[0] != inputs[1] && JSPromise.isJSPromise(inputs[1])) {
-                        // await some value, and inputs[1] is the internal promise
-                        storePromise(frame, inputs[0]);
+                        // inputs[0] is some value that is awaited, and inputs[1] is the internal promise
+                        storeAwaitValue(frame, inputs[0]);
                         cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                        return;
                     }
                 }
                 if (post != null) {
-                    if (inputs[0] != inputs[1] && !JSPromise.isJSPromise((inputs[1]))) {
-                        inputs[0] = loadPromise(frame);
+                    if (!JSPromise.isJSPromise((inputs[1]))) {
+                        // inputs[1] is the value returned by await
+                        assert inputs[0] == null : "await return inputs[0] expected to be null";
+                        Object awaitVal = loadAwaitValue(frame);
+                        assert awaitVal != null;
                         cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(),
-                                        inputs[0] == null ? Undefined.instance : inputs[0],
+                                        awaitVal,
                                         assertGetInput(1, inputs, "awaited ret"),
-                                        inputs[0] != null && JSPromise.isJSPromise(inputs[0]) && JSPromise.isRejected((DynamicObject) inputs[0]));
-                    } else if (inputs[0] == inputs[1] && !JSPromise.isJSPromise(inputs[0])) {
-                        // await some value
-                        cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(),
-                                        assertGetInput(0, inputs, "awaited val"),
-                                        assertGetInput(0, inputs, "awaited ret"),
-                                        false);
-
+                                        JSPromise.isJSPromise(awaitVal) && JSPromise.isRejected((DynamicObject) awaitVal));
+                        return;
                     }
                 }
+                assert false : "should not reach here";
             }
-
         };
     }
 
     private static final String AuxSlotKey = ":nodeprof:promise";
 
-    private void storePromise(VirtualFrame frame, Object input) {
+    private void storeAwaitValue(VirtualFrame frame, Object input) {
+        assert input != null;
         int aux = frame.getFrameDescriptor().findOrAddAuxiliarySlot(AuxSlotKey);
         if (!(frame.getAuxiliarySlot(aux) instanceof Stack)) {
             frame.setAuxiliarySlot(aux, new Stack<>());
@@ -91,7 +90,7 @@ public class AwaitFactory extends AbstractFactory {
         s.push(input);
     }
 
-    private Object loadPromise(VirtualFrame frame) {
+    private Object loadAwaitValue(VirtualFrame frame) {
         int aux = frame.getFrameDescriptor().findOrAddAuxiliarySlot(AuxSlotKey);
         Stack<Object> s = (Stack) frame.getAuxiliarySlot(aux);
         return s.pop();
