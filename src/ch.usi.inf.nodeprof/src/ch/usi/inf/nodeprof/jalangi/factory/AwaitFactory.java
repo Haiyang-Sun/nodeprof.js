@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,18 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
+import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
+import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.builtins.JSPromise;
-import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
+
+import java.util.Stack;
 
 public class AwaitFactory extends AbstractFactory {
 
@@ -38,7 +41,6 @@ public class AwaitFactory extends AbstractFactory {
             @Child CallbackNode cbNode = new CallbackNode();
 
             @Override
-
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {
                 if (!this.isAwaitNode()) {
                     return;
@@ -46,32 +48,79 @@ public class AwaitFactory extends AbstractFactory {
                 if (inputs == null || inputs.length == 0) {
                     return;
                 }
+
                 if (pre != null) {
                     if (inputs[0] == inputs[1] && JSPromise.isJSPromise(inputs[0])) {
-                        // await some promise
+                        // both inputs are the same promise: await this promise
+                        storeAwaitValue(frame, inputs[0]);
                         cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                        return;
                     } else if (inputs[0] != inputs[1] && JSPromise.isJSPromise(inputs[1])) {
-                        // await some value, and inputs[1] is the internal promise
+                        // inputs[0] is some value that is awaited, and inputs[1] is the internal promise
+                        storeAwaitValue(frame, inputs[0]);
                         cbNode.preCall(this, jalangiAnalysis, pre, getSourceIID(), assertGetInput(0, inputs, "awaited val"));
+                        return;
                     }
                 }
                 if (post != null) {
-                    if (inputs[0] != inputs[1] && !JSPromise.isJSPromise((inputs[1]))) {
+                    if (!JSPromise.isJSPromise((inputs[1]))) {
+                        // inputs[1] is the value returned by await
+                        assert inputs[0] == null : "await return inputs[0] expected to be null";
+                        Object awaitVal = loadAwaitValue(frame);
+                        assert awaitVal != null;
                         cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(),
-                                        inputs[0] == null ? Undefined.instance : inputs[0],
+                                        awaitVal,
                                         assertGetInput(1, inputs, "awaited ret"),
-                                        inputs[0] != null && JSPromise.isJSPromise(inputs[0]) && JSPromise.isRejected((DynamicObject) inputs[0]));
-                    } else if (inputs[0] == inputs[1] && !JSPromise.isJSPromise(inputs[0])) {
-                        // await some value
-                        cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(),
-                                        assertGetInput(0, inputs, "awaited val"),
-                                        assertGetInput(0, inputs, "awaited ret"),
-                                        false);
-
+                                        JSPromise.isJSPromise(awaitVal) && JSPromise.isRejected((DynamicObject) awaitVal));
+                        return;
                     }
                 }
+                assert false : "should not reach here";
             }
-
         };
+    }
+
+    private static final String AuxSlotKey = ":nodeprof:promise";
+
+    private void storeAwaitValue(VirtualFrame frame, Object input) {
+        assert input != null;
+        int aux = getAuxSlot(frame.getFrameDescriptor());
+        Object newStack = createIfNotStack(frame.getAuxiliarySlot(aux));
+        if (newStack != null) {
+            frame.setAuxiliarySlot(aux, newStack);
+        }
+        pushStackValue(frame.getAuxiliarySlot(aux), input);
+    }
+
+    private Object loadAwaitValue(VirtualFrame frame) {
+        int aux = getAuxSlot(frame.getFrameDescriptor());
+        return popStackValue(frame.getAuxiliarySlot(aux));
+    }
+
+    @TruffleBoundary
+    private int getAuxSlot(FrameDescriptor descriptor) {
+        return descriptor.findOrAddAuxiliarySlot(AuxSlotKey);
+    }
+
+    @TruffleBoundary
+    private Object createIfNotStack(Object maybeStack) {
+        if (!(maybeStack instanceof Stack)) {
+            return new Stack<>();
+        }
+        return null;
+    }
+
+    @TruffleBoundary
+    private void pushStackValue(Object stack, Object value) {
+        @SuppressWarnings("unchecked")
+        Stack<Object> s = (Stack<Object>) stack;
+        s.push(value);
+    }
+
+    @TruffleBoundary
+    private Object popStackValue(Object stack) {
+        @SuppressWarnings("unchecked")
+        Stack<Object> s = (Stack<Object>) stack;
+        return s.pop();
     }
 }

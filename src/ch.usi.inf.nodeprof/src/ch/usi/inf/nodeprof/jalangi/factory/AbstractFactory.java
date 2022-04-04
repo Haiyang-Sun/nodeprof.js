@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.YieldException;
 import com.oracle.truffle.js.runtime.GraalJSException;
-import com.oracle.truffle.js.runtime.JSCancelledExecutionException;
+import com.oracle.truffle.js.runtime.JSInterruptedExecutionException;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
@@ -201,7 +201,7 @@ public abstract class AbstractFactory implements
                     try {
                         Object ret = preCall.call(args);
                         checkDeactivate(ret, handler);
-                    } catch (JSCancelledExecutionException e) {
+                    } catch (JSInterruptedExecutionException e) {
                         Logger.error("execution cancelled probably due to timeout");
                     } finally {
                         afterCall();
@@ -216,7 +216,7 @@ public abstract class AbstractFactory implements
                     try {
                         Object ret = postCall.call(args);
                         checkDeactivate(ret, handler);
-                    } catch (JSCancelledExecutionException e) {
+                    } catch (JSInterruptedExecutionException e) {
                         Logger.error("execution cancelled probably due to timeout");
                     } finally {
                         afterCall();

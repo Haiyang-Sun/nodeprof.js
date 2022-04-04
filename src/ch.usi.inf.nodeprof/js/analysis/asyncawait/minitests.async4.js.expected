@@ -45,7 +45,7 @@ asyncExit (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:23:25:26:2) Promi
 awaitPre (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:20:5:20:19) <p3>
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:17:1:21:2) undefined { yield: true }
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:23:1:26:2)
-awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:25:12:25:26) undefined 5 resolved
+awaitPost (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:25:12:25:26) <p2> 5 resolved
 return (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:25:5:25:27) 5
 functionExit@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:23:1:26:2) 5 {}
 functionEnter@ (src/ch.usi.inf.nodeprof.test/js/minitests/async4.js:17:1:21:2)
