@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.js.nodes.function.FunctionBodyNode;
 import com.oracle.truffle.js.nodes.function.JSBuiltinNode;
-import com.oracle.truffle.js.runtime.objects.Undefined;
 import com.oracle.truffle.regex.RegexBodyNode;
 import com.oracle.truffle.regex.RegexRootNode;
 
@@ -45,18 +44,11 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
     protected final boolean isRegExp = context.getInstrumentedNode().getRootNode() instanceof RegexRootNode || context.getInstrumentedNode() instanceof RegexBodyNode;
     protected final boolean isBuiltin = context.getInstrumentedNode() instanceof JSBuiltinNode;
 
-    protected final String builtinName;
-
     @Child private NodeLibrary nodeLibrary;
     private static final InteropLibrary INTEROP = InteropLibrary.getUncached();
 
     public FunctionRootEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.ROOT);
-        if (isBuiltin) {
-            builtinName = getAttribute("name").toString();
-        } else {
-            builtinName = null;
-        }
     }
 
     @Override
@@ -95,10 +87,6 @@ public abstract class FunctionRootEventHandler extends BaseSingleTagEventHandler
 
     public boolean isBuiltin() {
         return this.isBuiltin;
-    }
-
-    public Object getBuiltinName() {
-        return this.isBuiltin ? this.builtinName : Undefined.instance;
     }
 
     public Object getFunction(VirtualFrame frame) {
