@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,9 @@ import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSOrdinary;
-import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
+
+import static ch.usi.inf.nodeprof.utils.ObjectHelper.setConfigProperty;
 
 public abstract class SourceMapping {
     private static int iidGen = 0;
@@ -111,20 +112,20 @@ public abstract class SourceMapping {
         DynamicObject o = getJSObjectForSource(source);
 
         DynamicObject range = JSArray.createConstant(ctx, realm, new Object[]{section.getCharIndex(), section.getCharEndIndex()});
-        JSObject.set(o, "range", range);
+        setConfigProperty(o, "range", range);
 
         DynamicObject loc = JSOrdinary.create(ctx, realm);
         DynamicObject start = JSOrdinary.create(ctx, realm);
         DynamicObject end = JSOrdinary.create(ctx, realm);
-        JSObject.set(start, "line", section.getStartLine());
-        JSObject.set(start, "column", section.getStartColumn());
-        JSObject.set(end, "line", section.getEndLine());
-        JSObject.set(end, "column", section.getEndColumn());
-        JSObject.set(loc, "start", start);
-        JSObject.set(loc, "end", end);
-        JSObject.set(o, "loc", loc);
+        setConfigProperty(start, "line", section.getStartLine());
+        setConfigProperty(start, "column", section.getStartColumn());
+        setConfigProperty(end, "line", section.getEndLine());
+        setConfigProperty(end, "column", section.getEndColumn());
+        setConfigProperty(loc, "start", start);
+        setConfigProperty(loc, "end", end);
+        setConfigProperty(o, "loc", loc);
         if (syntheticLocations.containsKey(section)) {
-            JSObject.set(o, "symbolic", syntheticLocations.get(section));
+            setConfigProperty(o, "symbolic", syntheticLocations.get(section));
         }
         return o;
     }
@@ -147,10 +148,10 @@ public abstract class SourceMapping {
                 Logger.error("Failed to parse eval source: " + source.getName());
             }
             // 'eval' property signals the source is an eval-string, it contains the full eval hint
-            JSObject.set(o, "eval", source.getName());
+            setConfigProperty(o, "eval", source.getName());
         }
-        JSObject.set(o, "name", shortPath(srcName));
-        JSObject.set(o, "internal", isInternal(source));
+        setConfigProperty(o, "name", shortPath(srcName));
+        setConfigProperty(o, "internal", isInternal(source));
         return o;
     }
 

@@ -25,11 +25,13 @@ import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.DirectCallNode;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.api.strings.TruffleString;
 import com.oracle.truffle.js.nodes.control.YieldException;
 import com.oracle.truffle.js.runtime.GraalJSException;
 import com.oracle.truffle.js.runtime.JSInterruptedExecutionException;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRealm;
+import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
@@ -53,6 +55,10 @@ public abstract class AbstractFactory implements
     protected final DynamicObject post;
 
     protected final String jalangiCallback;
+
+    private static final TruffleString YIELD_STR = Strings.constant("yield");
+    private static final TruffleString EXCEPTION_STR = Strings.constant("exception");
+    private static final TruffleString UNKNOWN_EXCEPTION_STR = Strings.constant("Unknown Exception");
 
     protected static boolean readBoolean(DynamicObject cb, String name) {
         Object ret = readCBProperty(cb, name);
@@ -127,7 +133,7 @@ public abstract class AbstractFactory implements
 
     @TruffleBoundary
     private static Object parseErrorObject(Throwable exception) {
-        return exception instanceof GraalJSException ? ((GraalJSException) exception).getErrorObject() : exception.getMessage();
+        return exception instanceof GraalJSException ? ((GraalJSException) exception).getErrorObject() : Strings.fromJavaString(exception.getMessage());
     }
 
     @TruffleBoundary
@@ -139,15 +145,13 @@ public abstract class AbstractFactory implements
             JSRealm realm = JSRealm.get(null);
             DynamicObject wrapped = JSOrdinary.create(ctx, realm);
             if (exception instanceof YieldException) {
-                JSObject.set(wrapped, "yield", true);
+                JSObject.set(wrapped, YIELD_STR, true);
             } else {
                 Object errObj = parseErrorObject(exception);
-                JSObject.set(wrapped, "exception", errObj == null ? "Unknown Exception" : errObj);
-
+                JSObject.set(wrapped, EXCEPTION_STR, errObj == null ? UNKNOWN_EXCEPTION_STR : errObj);
             }
             return wrapped;
         }
-
     }
 
     /**
@@ -196,6 +200,7 @@ public abstract class AbstractFactory implements
         }
 
         public void preCall(BaseEventHandlerNode handler, Object... args) {
+            assertNoStringLeak(args);
             if (pre != null) {
                 if (beforeCall()) {
                     try {
@@ -211,6 +216,7 @@ public abstract class AbstractFactory implements
         }
 
         public void postCall(BaseEventHandlerNode handler, Object... args) {
+            assertNoStringLeak(args);
             if (post != null) {
                 if (beforeCall()) {
                     try {
@@ -222,6 +228,12 @@ public abstract class AbstractFactory implements
                         afterCall();
                     }
                 }
+            }
+        }
+
+        private void assertNoStringLeak(Object[] args) {
+            for (Object arg : args) {
+                assert !(arg instanceof String);
             }
         }
     }

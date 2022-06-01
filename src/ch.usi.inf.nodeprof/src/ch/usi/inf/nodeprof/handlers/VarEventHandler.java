@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,19 +19,20 @@ package ch.usi.inf.nodeprof.handlers;
 import com.oracle.truffle.api.instrumentation.EventContext;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
+import com.oracle.truffle.api.strings.TruffleString;
 
 /**
  * Abstract event handler for variable writes
  */
 public abstract class VarEventHandler extends BaseSingleTagEventHandler {
-    private final String name;
+    private final TruffleString name;
 
     public VarEventHandler(EventContext context, ProfiledTagEnum tag) {
         super(context, tag);
-        this.name = (String) getAttribute("name");
+        this.name = getAttributeTString("name");
     }
 
-    public String getName() {
+    public Object getName() {
         return this.name;
     }
 }

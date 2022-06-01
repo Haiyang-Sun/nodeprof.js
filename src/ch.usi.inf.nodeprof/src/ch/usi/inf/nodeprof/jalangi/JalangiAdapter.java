@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package ch.usi.inf.nodeprof.jalangi;
 
 import java.util.Arrays;
 
+import com.oracle.truffle.api.strings.TruffleString;
+import com.oracle.truffle.js.runtime.Strings;
 import org.graalvm.options.OptionDescriptor;
 import org.graalvm.options.OptionValues;
 
@@ -35,7 +37,6 @@ import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSOrdinary;
-import com.oracle.truffle.js.runtime.objects.JSObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.NodeProfCLI;
@@ -44,6 +45,8 @@ import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
+
+import static ch.usi.inf.nodeprof.utils.ObjectHelper.setConfigProperty;
 
 /**
  * Java class exposed to the Jalangi framework
@@ -73,15 +76,14 @@ public class JalangiAdapter implements TruffleObject {
         public String toString() {
             return this.name;
         }
-
     }
 
     @TruffleBoundary
-    private static String[] getApiMembers() {
-        return Arrays.stream(ApiMember.values()).map(ApiMember::toString).toArray(String[]::new);
+    private static TruffleString[] getApiMembers() {
+        return Arrays.stream(ApiMember.values()).map(s -> Strings.fromJavaString(s.toString())).toArray(TruffleString[]::new);
     }
 
-    final String[] members = getApiMembers();
+    final TruffleString[] members = getApiMembers();
 
     @TruffleBoundary
     public JalangiAdapter(NodeProfJalangi nodeprofJalangi) {
@@ -146,7 +148,7 @@ public class JalangiAdapter implements TruffleObject {
         OptionValues opts = this.getNodeProfJalangi().getEnv().getOptions();
         for (OptionDescriptor o : NodeProfCLI.ods) {
             String shortKey = o.getName().replace("nodeprof.", "");
-            JSObject.set(obj, shortKey, opts.get(o.getKey()));
+            setConfigProperty(obj, shortKey, opts.get(o.getKey()));
         }
         return obj;
     }

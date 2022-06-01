@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,17 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.api.strings.TruffleString;
+import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.DeclareEventHandler;
 
 public class DeclareFactory extends AbstractFactory {
+
+    private static final TruffleString FUNC_DECL_STR = Strings.constant("FunctionDeclaration");
+
 
     @TruffleBoundary
     public DeclareFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
@@ -50,7 +55,7 @@ public class DeclareFactory extends AbstractFactory {
                                     getSourceIID(),
                                     getDeclareName(),
                                     getDeclareType(),
-                                    isFunctionDeclaration() ? "FunctionDeclaration" : Undefined.instance);
+                                    isFunctionDeclaration() ? FUNC_DECL_STR : Undefined.instance);
                 }
             }
 
@@ -67,7 +72,7 @@ public class DeclareFactory extends AbstractFactory {
                                     getSourceIID(),
                                     getDeclareName(),
                                     getDeclareType(),
-                                    isFunctionDeclaration() ? "FunctionDeclaration" : Undefined.instance);
+                                    isFunctionDeclaration() ? FUNC_DECL_STR : Undefined.instance);
                 }
             }
 

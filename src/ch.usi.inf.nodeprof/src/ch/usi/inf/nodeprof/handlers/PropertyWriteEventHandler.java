@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,17 @@ import com.oracle.truffle.api.instrumentation.EventContext;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
+import com.oracle.truffle.api.strings.TruffleString;
 
 /**
  * Abstract event handler for property write events, e.g., a.p = 1
  */
 public abstract class PropertyWriteEventHandler extends BaseSingleTagEventHandler {
-    private final String property;
+    private final TruffleString property;
 
     public PropertyWriteEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.PROPERTY_WRITE);
-        this.property = (String) getAttribute("key");
+        this.property = getAttributeTString("key");
     }
 
     public Object getReceiver(Object[] inputs) {
@@ -38,7 +39,7 @@ public abstract class PropertyWriteEventHandler extends BaseSingleTagEventHandle
         return result;
     }
 
-    public String getProperty() {
+    public Object getProperty() {
         return this.property;
     }
 
