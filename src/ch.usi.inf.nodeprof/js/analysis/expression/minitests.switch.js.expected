@@ -11,9 +11,9 @@ expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:19:16:32
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:19:16:32:2) type: ClosureFunctionExpression
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:20:11:20:12) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:20:11:20:12) type: JSReadCurrentFrameSlot
-statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:20:11:20:12) stmt: JSWriteScopeFrameSlot
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:20:11:20:12) type: JSReadScopeFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:20:11:20:12) type: JSReadScopeFrameSlot
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:20:11:20:12) stmt: JSWriteCurrentFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:20:11:20:12) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:20:11:20:12) type: JSReadCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:21:5:22:13) type: JSIdentical
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:21:5:22:13) type: JSConstantInteger
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:21:5:22:13) type: JSConstantInteger
@@ -60,9 +60,9 @@ expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:9:3
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:9:34:16) type: JSConstantInteger
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:9:34:16) type: JSConstantInteger
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:9:34:16) type: JSAdd
-statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:13:34:16) stmt: JSWriteScopeFrameSlot
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:13:34:16) type: JSReadScopeFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:13:34:16) type: JSReadScopeFrameSlot
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:13:34:16) stmt: JSWriteCurrentFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:13:34:16) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:34:13:34:16) type: JSReadCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:35:3:38:11) type: JSIdentical
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:35:3:38:11) type: JSConstantInteger
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/switch.js:35:3:38:11) type: JSConstantInteger

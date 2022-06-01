@@ -1,16 +1,16 @@
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:11:16:23) type: AutonomousFunctionExpression
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:11:16:23) type: AutonomousFunctionExpression
 write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:1:16:23) foo
-statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:1:16:23) stmt: JSWriteScopeFrameSlot
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:16:1:16:23) stmt: JSWriteCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:9:26:2) type: ObjectLiteral
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:18:10:25:4) type: AutonomousFunctionExpression
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:18:10:25:4) type: AutonomousFunctionExpression
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:9:26:2) type: ObjectLiteral
 write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:1:26:2) o
-statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:1:26:2) stmt: JSWriteScopeFrameSlot
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:17:1:26:2) stmt: JSWriteCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:27:1:27:10) type: Invoke0
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:27:1:27:2) type: JSReadScopeFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:27:1:27:2) type: JSReadScopeFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:27:1:27:2) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:27:1:27:2) type: JSReadCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:27:1:27:8) type: Property
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:27:1:27:8) type: Property
 declarePre name=func, type=var
@@ -20,15 +20,15 @@ write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:19:5:19:23) func
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:17:22:6) type: LexicalThisAutonomousFunctionExpression
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:17:22:6) type: LexicalThisAutonomousFunctionExpression
 write (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:5:22:6) arrow
-statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:5:22:6) stmt: JSWriteScopeFrameSlot
+statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:20:5:22:6) stmt: JSWriteCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:23:5:23:11) type: Call0
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:23:5:23:9) type: JSReadScopeFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:23:5:23:9) type: JSReadScopeFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:23:5:23:9) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:23:5:23:9) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:23:5:23:11) type: Call0
 statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:23:5:23:11) stmt: Call0
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:24:5:24:12) type: Call0
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:24:5:24:10) type: JSReadScopeFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:24:5:24:10) type: JSReadScopeFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:24:5:24:10) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:24:5:24:10) type: JSReadCurrentFrameSlot
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:21:7:21:19) type: Call1
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:21:7:21:13) type: GlobalProperty
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/invoke3.js:21:7:21:13) type: GlobalProperty
