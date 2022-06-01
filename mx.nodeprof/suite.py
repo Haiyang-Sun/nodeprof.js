@@ -42,6 +42,7 @@ suite = {
       "annotationProcessors" : ["truffle:TRUFFLE_DSL_PROCESSOR"],
       "javaCompliance" : "8+",
       "workingSets" : "Truffle,JavaScript",
+      "checkstyleVersion" : "8.36.1",
       "checkstyle" : "ch.usi.inf.nodeprof",
     },
     "ch.usi.inf.nodeprof.test" : {
