@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.nodes.Node;
+import com.oracle.truffle.api.strings.TruffleString;
 import com.oracle.truffle.js.runtime.JSRealm;
+import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
@@ -29,18 +31,19 @@ import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
  * Abstract event handler for unary operations
  */
 public abstract class UnaryEventHandler extends BaseSingleTagEventHandler {
-    private final String op;
+    private final TruffleString op;
     private final boolean isDelete;
     private final boolean isVoid;
 
     public UnaryEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.UNARY);
-        op = (String) getAttribute("operator");
+        String op = getAttributeInternalString("operator");
+        this.op = Strings.fromJavaString(op);
         this.isDelete = op.equals("delete");
         this.isVoid = op.equals("void");
     }
 
-    public String getOp() {
+    public Object getOp() {
         return this.op;
     }
 

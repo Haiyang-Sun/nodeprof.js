@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package ch.usi.inf.nodeprof.handlers;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
+import com.oracle.truffle.api.strings.TruffleString;
+import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
@@ -27,22 +29,23 @@ import ch.usi.inf.nodeprof.ProfiledTagEnum;
  */
 public abstract class BuiltinRootEventHandler extends BaseSingleTagEventHandler {
 
-    protected final String builtinName;
+    protected final TruffleString builtinName;
+    private static final TruffleString CONSTRUCT_STR = Strings.constant("[[Construct]]");
 
     public BuiltinRootEventHandler(EventContext context) {
         super(context, ProfiledTagEnum.BUILTIN);
-        this.builtinName = getAttribute("name").toString();
+        this.builtinName = getAttributeTString("name");
     }
 
     public Object getReceiver(VirtualFrame frame) {
         Object receiver = frame.getArguments()[0];
         if (receiver == JSFunction.CONSTRUCT) {
-            return "[[Construct]]";
+            return CONSTRUCT_STR;
         }
         return receiver;
     }
 
-    public Object getBuiltinName() {
+    public TruffleString getBuiltinName() {
         return this.builtinName;
     }
 

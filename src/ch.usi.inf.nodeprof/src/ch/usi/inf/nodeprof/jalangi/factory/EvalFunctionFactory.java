@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -38,7 +39,7 @@ public class EvalFunctionFactory extends AbstractFactory {
             @Child CallbackNode cbNode = new CallbackNode();
             @Child MakeArgumentArrayNode makeArgs = MakeArgumentArrayNodeGen.create(pre == null ? post : pre, 2, 0);
 
-            final boolean isTarget = getBuiltinName().equals("Function");
+            final boolean isTarget = getBuiltinName().equals(JSFunction.CLASS_NAME);
 
             @Override
             public void executePre(VirtualFrame frame, Object[] inputs) throws InteropException {

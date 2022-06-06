@@ -44,13 +44,13 @@ literal: literalType=FunctionLiteral
 statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:43:1:43:18) stmt: FunctionDeclaration
 write (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:43:1:43:18) bar
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:44:1:44:6) type: Call0
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:44:1:44:4) type: JSReadScopeFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:44:1:44:4) type: JSReadScopeFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:44:1:44:4) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:44:1:44:4) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:44:1:44:6) type: Call0
 statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:44:1:44:6) stmt: Call0
 expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:45:8:45:13) type: Call0
-expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:45:8:45:11) type: JSReadScopeFrameSlot
-expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:45:8:45:11) type: JSReadScopeFrameSlot
+expression starts: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:45:8:45:11) type: JSReadCurrentFrameSlot
+expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:45:8:45:11) type: JSReadCurrentFrameSlot
 expression finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:45:8:45:13) type: Call0
 statement finishes: (src/ch.usi.inf.nodeprof.test/js/minitests/expressions.js:45:1:45:14) stmt: TerminalPositionReturn
 Statements in lines: [ 18, 22, 23, 27, 28, 29, 33, 34, 38, 39, 43, 44, 45 ]

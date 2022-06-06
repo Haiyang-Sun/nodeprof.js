@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public abstract class AnalysisFilterBase implements SourceSectionFilter.SourcePr
      * @param source the Source object to filter
      * @param tag the type of tag to filter within source
      */
-    public abstract boolean testTag(final Source source, ProfiledTagEnum tag);
+    public abstract boolean testTag(Source source, ProfiledTagEnum tag);
 
     /**
      * check whether beginning of source file contains DO NOT INSTRUMENT
