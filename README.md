@@ -1,6 +1,7 @@
-[![Build Status](https://api.travis-ci.com/Haiyang-Sun/nodeprof.js.svg?branch=master)](https://travis-ci.com/Haiyang-Sun/nodeprof.js)
+## NodeProf is currenly unmaintained
+NodeProf is no longer compatible with the latest Graal.js code, the last supported GraalVM version is 22.1.0.
 
-An efficient instrumentation and profiling framework for [Graal.js](https://github.com/graalvm/graaljs).
+# NodeProf: An efficient instrumentation and profiling framework for [Graal.js](https://github.com/graalvm/graaljs).
 
 ## Getting Started
 Get the [mx](https://github.com/graalvm/mx) build tool:
