@@ -19,7 +19,7 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -28,8 +28,8 @@ import ch.usi.inf.nodeprof.handlers.FunctionCallEventHandler;
 public class InvokeFactory extends AbstractFactory {
     private final ProfiledTagEnum tag; // can be INVOKE or NEW
 
-    public InvokeFactory(Object jalangiAnalysis, ProfiledTagEnum tag, DynamicObject pre,
-                    DynamicObject post) {
+    public InvokeFactory(Object jalangiAnalysis, ProfiledTagEnum tag, JSDynamicObject pre,
+                         JSDynamicObject post) {
         super("invokeFun", jalangiAnalysis, pre, post);
         this.tag = tag;
     }

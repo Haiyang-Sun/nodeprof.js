@@ -19,15 +19,15 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.ElementReadEventHandler;
 
 public class GetElementFactory extends AbstractFactory {
 
-    public GetElementFactory(Object jalangiAnalysis, DynamicObject pre,
-                    DynamicObject post) {
+    public GetElementFactory(Object jalangiAnalysis, JSDynamicObject pre,
+                             JSDynamicObject post) {
         super("getField", jalangiAnalysis, pre, post);
     }
 

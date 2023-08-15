@@ -30,7 +30,6 @@ import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.UnknownIdentifierException;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.nodes.Node;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.JavaScriptNode;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.BuiltinRootTag;
@@ -43,6 +42,7 @@ import com.oracle.truffle.js.nodes.instrumentation.JSTags.WriteVariableTag;
 import com.oracle.truffle.js.runtime.JSConfig;
 import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
@@ -89,7 +89,7 @@ public class RawEventsTracingSupport {
                     @TruffleBoundary
                     private String getValueDescription(Object inputValue) {
                         if (JSFunction.isJSFunction(inputValue)) {
-                            return "JSFunction:'" + JSFunction.getName((DynamicObject) inputValue) + "'";
+                            return "JSFunction:'" + JSFunction.getName((JSDynamicObject) inputValue) + "'";
                         } else if (JSObject.isJSObject(inputValue)) {
                             return "JSObject: instance";
                         } else if (inputValue instanceof String) {

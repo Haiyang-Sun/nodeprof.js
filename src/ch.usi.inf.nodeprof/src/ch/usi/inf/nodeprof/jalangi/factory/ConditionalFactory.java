@@ -19,7 +19,7 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.BinaryEventHandler;
@@ -28,7 +28,7 @@ import ch.usi.inf.nodeprof.handlers.ConditionalEventHandler;
 public class ConditionalFactory extends AbstractFactory {
     private final boolean isBinary;
 
-    public ConditionalFactory(Object jalangiAnalysis, DynamicObject post,
+    public ConditionalFactory(Object jalangiAnalysis, JSDynamicObject post,
                     boolean isBinary) {
         super("conditional", jalangiAnalysis, null, post);
         this.isBinary = isBinary;

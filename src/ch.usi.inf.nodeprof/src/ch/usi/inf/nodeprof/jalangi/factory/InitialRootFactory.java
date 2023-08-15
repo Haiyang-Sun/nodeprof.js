@@ -23,18 +23,18 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.strings.TruffleString;
+import com.oracle.truffle.js.runtime.Strings;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.FunctionRootEventHandler;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
-import com.oracle.truffle.api.strings.TruffleString;
-import com.oracle.truffle.js.runtime.Strings;
 
 public class InitialRootFactory extends AbstractFactory {
 
-    public InitialRootFactory(Object jalangiAnalysis, DynamicObject post) {
+    public InitialRootFactory(Object jalangiAnalysis, JSDynamicObject post) {
         super("newSource", jalangiAnalysis, null, post);
     }
 

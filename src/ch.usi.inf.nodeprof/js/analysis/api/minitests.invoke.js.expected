@@ -5,12 +5,12 @@
 symbolic location ':program': (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:{{:program}})
 symbolic location 'module': (src/ch.usi.inf.nodeprof.test/js/minitests/invoke.js:{{module}})
 callback this arg is global: true
-[Object: null prototype] {
+{
   iidToLocation: undefined,
   iidToCode: undefined,
   iidToSourceObject: undefined,
   nativeLog: undefined,
-  valueOf: undefined,
+  valueOf: [Function: valueOf],
   onReady: undefined,
   registerCallback: undefined,
   instrumentationSwitch: undefined,

@@ -22,6 +22,7 @@ import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 /**
@@ -39,7 +40,7 @@ public abstract class IsArrayFunctionNode extends Node {
      */
     public abstract String executeIsArrayFunction(Object receiver, Object function);
 
-    protected String check(Object receiver, DynamicObject function) {
+    protected String check(Object receiver, JSDynamicObject function) {
         if (!JSArray.isJSArray(receiver)) {
             return null;
         }
@@ -65,14 +66,14 @@ public abstract class IsArrayFunctionNode extends Node {
      * @param cacheFunction
      */
     @Specialization(guards = "cacheFunction == function")
-    protected String executeIsFunction(Object receiver, DynamicObject function,
-                    @Cached(value = "function") DynamicObject cacheFunction,
+    protected String executeIsFunction(Object receiver, JSDynamicObject function,
+                                       @Cached(value = "function") JSDynamicObject cacheFunction,
                     @Cached(value = "check(receiver, cacheFunction)") String result) {
         return result;
     }
 
     @Specialization
-    protected String executeObject(Object receiver, DynamicObject input) {
+    protected String executeObject(Object receiver, JSDynamicObject input) {
         return check(receiver, input);
     }
 }

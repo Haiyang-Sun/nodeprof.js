@@ -19,15 +19,15 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.ReturnException;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
 
 public class ReturnFactory extends AbstractFactory {
-    public ReturnFactory(Object jalangiAnalysis, DynamicObject pre) {
+    public ReturnFactory(Object jalangiAnalysis, JSDynamicObject pre) {
         super("_return", jalangiAnalysis, pre, null);
     }
 

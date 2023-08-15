@@ -16,22 +16,22 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.jalangi.factory;
 
+import java.util.Stack;
+
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.FrameDescriptor;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.builtins.JSPromise;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
 import ch.usi.inf.nodeprof.handlers.CFBranchEventHandler;
 
-import java.util.Stack;
-
 public class AwaitFactory extends AbstractFactory {
 
-    public AwaitFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post) {
+    public AwaitFactory(Object jalangiAnalysis, JSDynamicObject pre, JSDynamicObject post) {
         super("await", jalangiAnalysis, pre, post);
     }
 
@@ -71,7 +71,7 @@ public class AwaitFactory extends AbstractFactory {
                         cbNode.postCall(this, jalangiAnalysis, post, getSourceIID(),
                                         awaitVal,
                                         assertGetInput(1, inputs, "awaited ret"),
-                                        JSPromise.isJSPromise(awaitVal) && JSPromise.isRejected((DynamicObject) awaitVal));
+                                        JSPromise.isJSPromise(awaitVal) && JSPromise.isRejected((JSDynamicObject) awaitVal));
                         return;
                     }
                 }

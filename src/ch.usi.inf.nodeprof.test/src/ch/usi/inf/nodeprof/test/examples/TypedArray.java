@@ -25,6 +25,7 @@ import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
 import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.analysis.AnalysisFactory;
@@ -129,8 +130,8 @@ public class TypedArray extends TestableNodeProfAnalysis {
                     public void executePost(VirtualFrame frame,
                                     Object result, Object[] inputs) {
                         Object funcObj = getFunction(inputs);
-                        if (funcObj instanceof DynamicObject) {
-                            Object constructor = GlobalObjectCache.getInstance().getArrayConstructor((DynamicObject) funcObj);
+                        if (funcObj instanceof JSDynamicObject) {
+                            Object constructor = GlobalObjectCache.getInstance().getArrayConstructor((JSDynamicObject) funcObj);
                             if (funcObj == constructor) {
                                 trackAllocation(result, getSourceIID());
                                 addDebugEvent("TA_ARRAY_ALLOC", getSourceIID(), tag);

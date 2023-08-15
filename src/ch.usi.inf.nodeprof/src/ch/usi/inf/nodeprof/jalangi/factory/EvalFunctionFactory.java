@@ -19,8 +19,8 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -28,8 +28,8 @@ import ch.usi.inf.nodeprof.handlers.BuiltinRootEventHandler;
 
 public class EvalFunctionFactory extends AbstractFactory {
 
-    public EvalFunctionFactory(Object jalangiAnalysis, DynamicObject pre,
-                    DynamicObject post) {
+    public EvalFunctionFactory(Object jalangiAnalysis, JSDynamicObject pre,
+                               JSDynamicObject post) {
         super("evalfunc", jalangiAnalysis, pre, post);
     }
 

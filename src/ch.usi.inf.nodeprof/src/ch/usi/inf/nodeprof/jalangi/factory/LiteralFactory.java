@@ -22,8 +22,8 @@ import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.instrumentation.JSTags.LiteralTag;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -35,7 +35,7 @@ public class LiteralFactory extends AbstractFactory {
     private final EnumSet<LiteralTag.Type> types = EnumSet.allOf(LiteralTag.Type.class);
 
     @TruffleBoundary
-    public LiteralFactory(Object jalangiAnalysis, DynamicObject post) {
+    public LiteralFactory(Object jalangiAnalysis, JSDynamicObject post) {
         super("literal", jalangiAnalysis, null, post);
 
         if (!isPropertyUndefined(post, "types")) {

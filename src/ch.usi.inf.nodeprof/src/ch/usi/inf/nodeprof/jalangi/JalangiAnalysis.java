@@ -46,7 +46,7 @@ import java.util.Set;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
-import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.jalangi.factory.AsyncRootFactory;
@@ -84,7 +84,7 @@ public class JalangiAnalysis {
     /**
      * mapping from the callback names to the function
      */
-    private final HashMap<String, DynamicObject> callbacks;
+    private final HashMap<String, JSDynamicObject> callbacks;
 
     /**
      * The Jalangi analysis object
@@ -379,15 +379,15 @@ public class JalangiAnalysis {
      */
     @TruffleBoundary
     public void registerCallback(Object name, Object callback) throws UnsupportedTypeException {
-        if (callback instanceof DynamicObject) {
+        if (callback instanceof JSDynamicObject) {
             if (GlobalConfiguration.DEBUG) {
                 Logger.debug("Jalangi analysis registering callback: " + name);
             }
             if (unimplementedCallbacks.contains(name)) {
                 Logger.warning("Jalangi analysis callback not implemented in NodeProf: " + name);
             }
-            GlobalObjectCache.getInstance().addDynamicObject((DynamicObject) callback);
-            this.callbacks.put(name.toString(), (DynamicObject) callback);
+            GlobalObjectCache.getInstance().addDynamicObject((JSDynamicObject) callback);
+            this.callbacks.put(name.toString(), (JSDynamicObject) callback);
         } else {
             throw UnsupportedTypeException.create(new Object[]{callback});
         }

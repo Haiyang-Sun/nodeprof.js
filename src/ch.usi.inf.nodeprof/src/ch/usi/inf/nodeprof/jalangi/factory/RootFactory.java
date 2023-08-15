@@ -20,9 +20,9 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.nodes.control.ReturnException;
 import com.oracle.truffle.js.nodes.control.YieldException;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -33,7 +33,7 @@ public class RootFactory extends AbstractFactory {
 
     protected final TruffleInstrument.Env env;
 
-    public RootFactory(Object jalangiAnalysis, DynamicObject pre, DynamicObject post, TruffleInstrument.Env env) {
+    public RootFactory(Object jalangiAnalysis, JSDynamicObject pre, JSDynamicObject post, TruffleInstrument.Env env) {
         super("function", jalangiAnalysis, pre, post);
         this.env = env;
     }

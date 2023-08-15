@@ -16,6 +16,8 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import static com.oracle.truffle.js.runtime.Strings.REQUIRE_PROPERTY_NAME;
+
 import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
@@ -27,18 +29,16 @@ import com.oracle.truffle.api.instrumentation.InstrumentableNode;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.RootNode;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.api.strings.TruffleString;
 import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
-
-import static com.oracle.truffle.js.runtime.Strings.REQUIRE_PROPERTY_NAME;
 
 /**
  *
@@ -308,7 +308,7 @@ public abstract class BaseEventHandlerNode extends Node {
             return false;
         }
         if (JSFunction.isJSFunction(args[3])) {
-            return REQUIRE_PROPERTY_NAME.equals(JSFunction.getName((DynamicObject) args[3]));
+            return REQUIRE_PROPERTY_NAME.equals(JSFunction.getName((JSDynamicObject) args[3]));
         }
         return false;
     }

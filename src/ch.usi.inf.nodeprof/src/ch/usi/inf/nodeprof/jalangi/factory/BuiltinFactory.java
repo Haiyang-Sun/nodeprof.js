@@ -19,7 +19,7 @@ package ch.usi.inf.nodeprof.jalangi.factory;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.interop.InteropException;
-import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.handlers.BaseEventHandlerNode;
@@ -29,8 +29,8 @@ public class BuiltinFactory extends AbstractFactory {
 
     final String builtinFilter;
 
-    public BuiltinFactory(Object jalangiAnalysis, DynamicObject pre,
-                    DynamicObject post, String builtinFilter) {
+    public BuiltinFactory(Object jalangiAnalysis, JSDynamicObject pre,
+                          JSDynamicObject post, String builtinFilter) {
         super("builtin", jalangiAnalysis, pre, post);
         this.builtinFilter = builtinFilter;
     }
