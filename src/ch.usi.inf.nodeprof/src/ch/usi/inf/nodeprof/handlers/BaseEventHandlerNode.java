@@ -22,7 +22,6 @@ import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
@@ -31,6 +30,7 @@ import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.api.strings.TruffleString;
+import com.oracle.truffle.js.runtime.JSFrameUtil;
 import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
 import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
@@ -47,16 +47,16 @@ import ch.usi.inf.nodeprof.utils.SourceMapping;
  */
 public abstract class BaseEventHandlerNode extends Node {
     protected final EventContext context;
-    @CompilationFinal private FrameSlot returnSlot;
+    @CompilationFinal private int returnSlot = -1;
     @CompilationFinal private boolean noReturnSlot = false;
     @CompilationFinal private boolean deactivated = false;
 
     public Object getReturnValueFromFrameOrDefault(VirtualFrame frame, Object defaultValue) {
         // cache the frame slot for the return value
-        if (returnSlot == null && !noReturnSlot) {
+        if (returnSlot == -1 && !noReturnSlot) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
-            returnSlot = frame.getFrameDescriptor().findFrameSlot("<return>");
-            if (returnSlot == null) {
+            returnSlot = JSFrameUtil.findOptionalFrameSlotIndex(frame.getFrameDescriptor(), "<return>").orElse(-1);
+            if (returnSlot == -1) {
                 Logger.warning("Could not find <return> slot");
                 noReturnSlot = true;
             }

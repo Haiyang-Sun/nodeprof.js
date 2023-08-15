@@ -1,2 +1,2 @@
 getField (src/ch.usi.inf.nodeprof.test/js/minitests/testFilter.js:19:7:19:10) in inclusion.js
-[ 'Object.create' ]
+[]

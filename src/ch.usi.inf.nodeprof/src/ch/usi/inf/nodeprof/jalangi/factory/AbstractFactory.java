@@ -210,7 +210,7 @@ public abstract class AbstractFactory implements
                         checkDeactivate(ret, handler);
                     } catch (JSInterruptedExecutionException e) {
                         Logger.error("execution cancelled probably due to timeout");
-                    } catch (Exception e) {
+                    } catch (ThreadDeath e) {
                         if (GraalJSAccess.get().tryCatchHasTerminated(e))
                             Logger.error("execution cancelled probably due to timeout");
                         else throw e;

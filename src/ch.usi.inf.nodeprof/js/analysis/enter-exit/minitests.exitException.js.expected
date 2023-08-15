@@ -1,5 +1,3 @@
-builtinEnter: Object.create / 4
-builtinExit: Object.create / 6
 functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:{{:program}}) / 3
 functionEnter: foo / (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:18:1:20:2) / 4
 functionExit with exception "this is an exception": (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:18:1:20:2) / 3
@@ -16,4 +14,4 @@ return (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:53:4:53:14) v
 return (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:55:4:55:14) val returns 43
 functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:48:2:58:2) / returnVal (number): 43
 functionExit: (src/ch.usi.inf.nodeprof.test/js/minitests/exitException.js:{{module}}) / 3
-[ 'Error', 'Object.create', 'foo' ]
+[ 'Error', 'foo' ]
