@@ -211,9 +211,11 @@ public abstract class AbstractFactory implements
                     } catch (JSInterruptedExecutionException e) {
                         Logger.error("execution cancelled probably due to timeout");
                     } catch (ThreadDeath e) {
-                        if (GraalJSAccess.get().tryCatchHasTerminated(e))
+                        if (GraalJSAccess.get().tryCatchHasTerminated(e)) {
                             Logger.error("execution cancelled probably due to timeout");
-                        else throw e;
+                        } else {
+                            throw e;
+                        }
                     } finally {
                         afterCall();
                     }

@@ -24,7 +24,6 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
