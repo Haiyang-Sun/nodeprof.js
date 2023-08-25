@@ -81,12 +81,13 @@ public abstract class AbstractFactory implements
         }
     }
 
-    public AbstractFactory(String jalangiCallback, Object jalangiAnalysis, JSDynamicObject pre,
-                           JSDynamicObject post) {
-        this.jalangiCallback = jalangiCallback;
-        this.jalangiAnalysis = jalangiAnalysis;
-        this.pre = pre;
-        this.post = post;
+    @TruffleBoundary
+    protected static Object[] readArray(DynamicObject cb, String name) {
+        Object ret = readCBProperty(cb, name);
+        if (JSArray.isJSArray(ret)) {
+            return JSAbstractArray.toArray((JSDynamicObject) ret);
+        }
+        return null;
     }
 
     @TruffleBoundary
@@ -111,13 +112,12 @@ public abstract class AbstractFactory implements
         }
     }
 
-    @TruffleBoundary
-    protected static Object[] readArray(DynamicObject cb, String name) {
-        Object ret = readCBProperty(cb, name);
-        if (JSArray.isJSArray(ret)) {
-            return JSAbstractArray.toArray((JSDynamicObject) ret);
-        }
-        return null;
+    public AbstractFactory(String jalangiCallback, Object jalangiAnalysis, JSDynamicObject pre,
+                           JSDynamicObject post) {
+        this.jalangiCallback = jalangiCallback;
+        this.jalangiAnalysis = jalangiAnalysis;
+        this.pre = pre;
+        this.post = post;
     }
 
     /**
