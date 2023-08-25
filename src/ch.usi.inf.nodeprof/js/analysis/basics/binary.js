@@ -13,7 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-var obj = {x:1};
-"x" in obj;
-delete obj.x;
-"x" in obj;
+ //DO NOT INSTRUMENT
+((function(sandbox){
+  function BinaryTest() {
+    function getLocation(sid, iid) {
+      if (typeof Graal === 'object')
+        return  J$.iidToLocation(iid);
+      else
+        return J$.iidToLocation(sid, iid);
+    }
+
+    this.binary = function (iid, op, left, right, result) {
+      console.log("binary "+getLocation(J$.sid, iid)+" "+op+" "+typeof left+" "+typeof right);
+      if (typeof result === "boolean")
+        console.log("result: " + result);
+    };
+  }
+  sandbox.analysis = new BinaryTest();
+}
+)(J$));

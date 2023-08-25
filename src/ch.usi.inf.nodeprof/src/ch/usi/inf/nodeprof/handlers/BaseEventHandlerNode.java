@@ -177,12 +177,13 @@ public abstract class BaseEventHandlerNode extends Node {
      * @return the value of this key or null if it does not exist
      */
     public Object getAttributeOrNull(String key) {
-        if (!InteropLibrary.getFactory().getUncached().isMemberReadable(((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(), key)) {
+        Object nodeObject = ((InstrumentableNode) context.getInstrumentedNode()).getNodeObject();
+        if (nodeObject == null || !InteropLibrary.getFactory().getUncached().isMemberReadable(nodeObject, key)) {
             return null;
         }
         Object result = null;
         try {
-            result = InteropLibrary.getFactory().getUncached().readMember(((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(), key);
+            result = InteropLibrary.getFactory().getUncached().readMember(nodeObject, key);
         } catch (Exception e) {
             reportAttributeMissingError(key, e);
         }

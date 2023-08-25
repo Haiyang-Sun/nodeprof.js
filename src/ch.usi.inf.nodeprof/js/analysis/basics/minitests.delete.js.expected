@@ -1,2 +1,6 @@
-unary (src/ch.usi.inf.nodeprof.test/js/minitests/delete.js:17:1:17:13) delete object
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/delete.js:17:1:17:11)  string object
+result: true
+unary (src/ch.usi.inf.nodeprof.test/js/minitests/delete.js:18:1:18:13) delete object
 delete key: x
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/delete.js:19:1:19:11)  string object
+result: false
