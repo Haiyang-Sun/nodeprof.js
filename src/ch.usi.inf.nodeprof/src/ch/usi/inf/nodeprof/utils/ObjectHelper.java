@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2022, 2022, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, 2023, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,26 @@
  * *****************************************************************************/
 package ch.usi.inf.nodeprof.utils;
 
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.Strings;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 
 public class ObjectHelper {
 
-    public static void setConfigProperty(DynamicObject obj, String key, Object value) {
+    public static void setConfigProperty(JSDynamicObject obj, String key, Object value) {
         Object safeValue = value instanceof String ? Strings.fromJavaString((String) value) : value;
         JSObject.set(obj, Strings.fromJavaString(key), safeValue);
     }
 
-    public static void setConfigProperty(DynamicObject obj, String key, String value) {
+    public static void setConfigProperty(JSDynamicObject obj, String key, String value) {
         JSObject.set(obj, Strings.fromJavaString(key), Strings.fromJavaString(value));
     }
 
-    public static void setConfigProperty(DynamicObject obj, String key, DynamicObject value) {
+    public static void setConfigProperty(JSDynamicObject obj, String key, JSDynamicObject value) {
         JSObject.set(obj, Strings.fromJavaString(key), value);
     }
 
-    public static void setConfigProperty(DynamicObject obj, String key, int value) {
+    public static void setConfigProperty(JSDynamicObject obj, String key, int value) {
         JSObject.set(obj, Strings.fromJavaString(key), value);
     }
 }

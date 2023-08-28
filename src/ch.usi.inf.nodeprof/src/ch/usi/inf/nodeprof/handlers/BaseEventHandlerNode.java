@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2019, 2022, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2023, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,29 @@
  *******************************************************************************/
 package ch.usi.inf.nodeprof.handlers;
 
+import static com.oracle.truffle.js.runtime.Strings.REQUIRE_PROPERTY_NAME;
+
 import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
-import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
 import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.nodes.Node;
 import com.oracle.truffle.api.nodes.RootNode;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.api.strings.TruffleString;
+import com.oracle.truffle.js.runtime.JSFrameUtil;
 import com.oracle.truffle.js.runtime.Strings;
 import com.oracle.truffle.js.runtime.builtins.JSFunction;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
 
 import ch.usi.inf.nodeprof.utils.GlobalConfiguration;
 import ch.usi.inf.nodeprof.utils.Logger;
 import ch.usi.inf.nodeprof.utils.SourceMapping;
-
-import static com.oracle.truffle.js.runtime.Strings.REQUIRE_PROPERTY_NAME;
 
 /**
  *
@@ -47,16 +47,16 @@ import static com.oracle.truffle.js.runtime.Strings.REQUIRE_PROPERTY_NAME;
  */
 public abstract class BaseEventHandlerNode extends Node {
     protected final EventContext context;
-    @CompilationFinal private FrameSlot returnSlot;
+    @CompilationFinal private int returnSlot = -1;
     @CompilationFinal private boolean noReturnSlot = false;
     @CompilationFinal private boolean deactivated = false;
 
     public Object getReturnValueFromFrameOrDefault(VirtualFrame frame, Object defaultValue) {
         // cache the frame slot for the return value
-        if (returnSlot == null && !noReturnSlot) {
+        if (returnSlot == -1 && !noReturnSlot) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
-            returnSlot = frame.getFrameDescriptor().findFrameSlot("<return>");
-            if (returnSlot == null) {
+            returnSlot = JSFrameUtil.findOptionalFrameSlotIndex(frame.getFrameDescriptor(), "<return>").orElse(-1);
+            if (returnSlot == -1) {
                 Logger.warning("Could not find <return> slot");
                 noReturnSlot = true;
             }
@@ -177,12 +177,13 @@ public abstract class BaseEventHandlerNode extends Node {
      * @return the value of this key or null if it does not exist
      */
     public Object getAttributeOrNull(String key) {
-        if (!InteropLibrary.getFactory().getUncached().isMemberReadable(((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(), key)) {
+        Object nodeObject = ((InstrumentableNode) context.getInstrumentedNode()).getNodeObject();
+        if (nodeObject == null || !InteropLibrary.getFactory().getUncached().isMemberReadable(nodeObject, key)) {
             return null;
         }
         Object result = null;
         try {
-            result = InteropLibrary.getFactory().getUncached().readMember(((InstrumentableNode) context.getInstrumentedNode()).getNodeObject(), key);
+            result = InteropLibrary.getFactory().getUncached().readMember(nodeObject, key);
         } catch (Exception e) {
             reportAttributeMissingError(key, e);
         }
@@ -308,7 +309,7 @@ public abstract class BaseEventHandlerNode extends Node {
             return false;
         }
         if (JSFunction.isJSFunction(args[3])) {
-            return REQUIRE_PROPERTY_NAME.equals(JSFunction.getName((DynamicObject) args[3]));
+            return REQUIRE_PROPERTY_NAME.equals(JSFunction.getName((JSDynamicObject) args[3]));
         }
         return false;
     }

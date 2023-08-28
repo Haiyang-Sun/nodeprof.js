@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2023, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package ch.usi.inf.nodeprof.utils;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.nodes.Node;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSOrdinary;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.JSObject;
 
 /**
@@ -32,10 +32,13 @@ import com.oracle.truffle.js.runtime.objects.JSObject;
  *
  */
 public class GlobalObjectCache extends Node {
-    @CompilationFinal private DynamicObject global = null;
+    @CompilationFinal
+    private JSDynamicObject global = null;
     @CompilationFinal private JSContext jscontext = null;
-    @CompilationFinal private DynamicObject arrayConstructor = null;
-    @CompilationFinal private DynamicObject emptyWrappedException = null;
+    @CompilationFinal
+    private JSDynamicObject arrayConstructor = null;
+    @CompilationFinal
+    private JSDynamicObject emptyWrappedException = null;
 
     private static GlobalObjectCache cache = new GlobalObjectCache();
 
@@ -48,11 +51,11 @@ public class GlobalObjectCache extends Node {
         cache = new GlobalObjectCache();
     }
 
-    public DynamicObject getGlobal() {
+    public JSDynamicObject getGlobal() {
         return global;
     }
 
-    public DynamicObject getArrayConstructor(DynamicObject option) {
+    public JSDynamicObject getArrayConstructor(JSDynamicObject option) {
         if (jscontext == null) {
             addDynamicObject(option);
         }
@@ -69,7 +72,7 @@ public class GlobalObjectCache extends Node {
      * @return The js context
      *
      */
-    public JSContext getJSContext(DynamicObject object) {
+    public JSContext getJSContext(JSDynamicObject object) {
         if (jscontext == null) {
             addDynamicObject(object);
         }
@@ -79,7 +82,7 @@ public class GlobalObjectCache extends Node {
     /**
      * @param someObj a dynamic object which could tell us the jsContext information
      */
-    public void addDynamicObject(DynamicObject someObj) {
+    public void addDynamicObject(JSDynamicObject someObj) {
         if (jscontext == null) {
             CompilerDirectives.transferToInterpreterAndInvalidate();
             jscontext = JSObject.getJSContext(someObj);
@@ -96,8 +99,8 @@ public class GlobalObjectCache extends Node {
      * @param someObj an object which could tell us the jsContext information
      */
     public void addObject(Object someObj) {
-        if (someObj instanceof DynamicObject) {
-            addDynamicObject((DynamicObject) someObj);
+        if (someObj instanceof JSDynamicObject) {
+            addDynamicObject((JSDynamicObject) someObj);
         }
     }
 

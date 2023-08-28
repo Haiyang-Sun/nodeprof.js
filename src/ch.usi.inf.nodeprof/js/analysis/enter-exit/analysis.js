@@ -66,6 +66,13 @@
     this.endExecution = function () {
       console.log([...allFuncs].filter(x => funcNameFilter.has(x)).sort());
     };
+
+    this.newSource = function (source) {
+      // Work-around for test failure.
+      // There's an implicit call to Object.create that only happens on SVM.
+      if (source.name.endsWith("exitException.js"))
+        funcNameFilter.delete("Object.create");
+    }
   }
   sandbox.addAnalysis(new MyAnalysis(), {includes:"<builtin>,enterExit.js,exitException"});
 })(J$);

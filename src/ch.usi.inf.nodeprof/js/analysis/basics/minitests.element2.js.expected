@@ -10,34 +10,42 @@ invokeFunPre @ undefined function (src/ch.usi.inf.nodeprof.test/js/minitests/ele
 invokeFun @ (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:17:61:17:72)
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:22:14:22:22)  base type: object  offset type: string  val type: number true elems[i]
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:22:23:33)  base type: object  offset type: string  val type: number false vals.length
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:18:23:33) % string number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:13:23:34)  base type: object  offset type: number  val type: number true vals[i % vals.length]
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:24:3:24:18)  base type: object  offset type: number  val type: number true obj[elem] = val
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:22:14:22:22)  base type: object  offset type: string  val type: string true elems[i]
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:22:23:33)  base type: object  offset type: string  val type: number false vals.length
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:18:23:33) % string number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:13:23:34)  base type: object  offset type: number  val type: object true vals[i % vals.length]
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:24:3:24:18)  base type: object  offset type: string  val type: object true obj[elem] = val
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:22:14:22:22)  base type: object  offset type: string  val type: string true elems[i]
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:22:23:33)  base type: object  offset type: string  val type: number false vals.length
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:18:23:33) % string number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:13:23:34)  base type: object  offset type: number  val type: undefined true vals[i % vals.length]
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:24:3:24:18)  base type: object  offset type: string  val type: undefined true obj[elem] = val
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:22:14:22:22)  base type: object  offset type: string  val type: string true elems[i]
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:22:23:33)  base type: object  offset type: string  val type: number false vals.length
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:18:23:33) % string number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:13:23:34)  base type: object  offset type: number  val type: object true vals[i % vals.length]
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:24:3:24:18)  base type: object  offset type: string  val type: object true obj[elem] = val
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:22:14:22:22)  base type: object  offset type: string  val type: undefined true elems[i]
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:22:23:33)  base type: object  offset type: string  val type: number false vals.length
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:18:23:33) % string number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:13:23:34)  base type: object  offset type: number  val type: string true vals[i % vals.length]
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:24:3:24:18)  base type: object  offset type: undefined  val type: string true obj[elem] = val
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:22:14:22:22)  base type: object  offset type: string  val type: object true elems[i]
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:22:23:33)  base type: object  offset type: string  val type: number false vals.length
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:18:23:33) % string number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:13:23:34)  base type: object  offset type: number  val type: symbol true vals[i % vals.length]
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:24:3:24:18)  base type: object  offset type: object  val type: symbol true obj[elem] = val
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:22:14:22:22)  base type: object  offset type: string  val type: symbol true elems[i]
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:22:23:33)  base type: object  offset type: string  val type: number false vals.length
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:18:23:33) % string number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:13:23:34)  base type: object  offset type: number  val type: boolean true vals[i % vals.length]
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:24:3:24:18)  base type: object  offset type: symbol  val type: boolean true obj[elem] = val
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:22:14:22:22)  base type: object  offset type: string  val type: boolean true elems[i]
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:22:23:33)  base type: object  offset type: string  val type: number false vals.length
+binary (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:18:23:33) % string number
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:23:13:23:34)  base type: object  offset type: number  val type: number true vals[i % vals.length]
 putField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:24:3:24:18)  base type: object  offset type: boolean  val type: number true obj[elem] = val
 getField @  (src/ch.usi.inf.nodeprof.test/js/minitests/element2.js:27:14:27:22)  base type: object  offset type: string  val type: number true elems[j]

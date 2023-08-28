@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2023, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
-import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.analysis.AnalysisFactory;
@@ -76,7 +76,7 @@ public class CountObjectAllocation extends TestableNodeProfAnalysis {
                             addDebugEvent("OBJ-NEW", getSourceIID(), tag);
                             report.incre();
                         } else {
-                            Object constructor = GlobalObjectCache.getInstance().getArrayConstructor((DynamicObject) getFunction(inputs));
+                            Object constructor = GlobalObjectCache.getInstance().getArrayConstructor((JSDynamicObject) getFunction(inputs));
                             if (getFunction(inputs) == constructor) {
                                 addDebugEvent("OBJ-ARRAY", getSourceIID(), tag);
                                 SimpleCounterReport report = (SimpleCounterReport) (getReport.execute(this.getSourceIID()));

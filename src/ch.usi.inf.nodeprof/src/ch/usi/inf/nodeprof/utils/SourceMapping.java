@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2022, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2023, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  *******************************************************************************/
 package ch.usi.inf.nodeprof.utils;
+
+import static ch.usi.inf.nodeprof.utils.ObjectHelper.setConfigProperty;
 
 import java.io.File;
 import java.util.HashMap;
@@ -32,9 +34,8 @@ import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
 import com.oracle.truffle.js.runtime.builtins.JSOrdinary;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 import com.oracle.truffle.js.runtime.objects.Undefined;
-
-import static ch.usi.inf.nodeprof.utils.ObjectHelper.setConfigProperty;
 
 public abstract class SourceMapping {
     private static int iidGen = 0;
@@ -109,14 +110,14 @@ public abstract class SourceMapping {
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
         JSRealm realm = JSRealm.get(null);
         Source source = section.getSource();
-        DynamicObject o = getJSObjectForSource(source);
+        var o = getJSObjectForSource(source);
 
-        DynamicObject range = JSArray.createConstant(ctx, realm, new Object[]{section.getCharIndex(), section.getCharEndIndex()});
+        var range = JSArray.createConstant(ctx, realm, new Object[]{section.getCharIndex(), section.getCharEndIndex()});
         setConfigProperty(o, "range", range);
 
-        DynamicObject loc = JSOrdinary.create(ctx, realm);
-        DynamicObject start = JSOrdinary.create(ctx, realm);
-        DynamicObject end = JSOrdinary.create(ctx, realm);
+        var loc = JSOrdinary.create(ctx, realm);
+        var start = JSOrdinary.create(ctx, realm);
+        var end = JSOrdinary.create(ctx, realm);
         setConfigProperty(start, "line", section.getStartLine());
         setConfigProperty(start, "column", section.getStartColumn());
         setConfigProperty(end, "line", section.getEndLine());
@@ -131,13 +132,13 @@ public abstract class SourceMapping {
     }
 
     @TruffleBoundary
-    public static DynamicObject getJSObjectForSource(Source source) {
+    public static JSDynamicObject getJSObjectForSource(Source source) {
         if (source == null) {
             return Undefined.instance;
         }
         JSContext ctx = GlobalObjectCache.getInstance().getJSContext();
         JSRealm realm = JSRealm.get(null);
-        DynamicObject o = JSOrdinary.create(ctx, realm);
+        var o = JSOrdinary.create(ctx, realm);
         String srcName = source.getName();
         if (isEval(source)) {
             String evalSrc = innerMostEvalSource(source.getName());

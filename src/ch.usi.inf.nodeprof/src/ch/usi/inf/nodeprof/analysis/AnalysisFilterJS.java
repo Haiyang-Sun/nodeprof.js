@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2020, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2023, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ import com.oracle.truffle.api.interop.InteropLibrary;
 import com.oracle.truffle.api.interop.TruffleObject;
 import com.oracle.truffle.api.interop.UnsupportedMessageException;
 import com.oracle.truffle.api.interop.UnsupportedTypeException;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.api.source.Source;
 import com.oracle.truffle.js.runtime.JSRuntime;
 import com.oracle.truffle.js.runtime.builtins.JSAbstractArray;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.jalangi.JalangiAnalysis;
@@ -99,8 +99,8 @@ public class AnalysisFilterJS extends AnalysisFilterBase {
             try {
                 Object ret = InteropLibrary.getFactory().getUncached().execute(jsPredicateFunc, SourceMapping.getJSObjectForSource(source));
                 if (JSArray.isJSArray(ret)) {
-                    include = JSAbstractArray.arrayGetLength((DynamicObject) ret) > 0;
-                    includeTags = mapToTags(JSAbstractArray.toArray((DynamicObject) ret));
+                    include = JSAbstractArray.arrayGetLength((JSDynamicObject) ret) > 0;
+                    includeTags = mapToTags(JSAbstractArray.toArray((JSDynamicObject) ret));
                 } else {
                     include = JSRuntime.toBoolean(ret);
                 }

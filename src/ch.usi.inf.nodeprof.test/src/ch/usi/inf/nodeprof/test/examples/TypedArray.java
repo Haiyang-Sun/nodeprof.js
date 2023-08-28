@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2023, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.EventContext;
 import com.oracle.truffle.api.instrumentation.Instrumenter;
 import com.oracle.truffle.api.instrumentation.TruffleInstrument.Env;
-import com.oracle.truffle.api.object.DynamicObject;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.ProfiledTagEnum;
 import ch.usi.inf.nodeprof.analysis.AnalysisFactory;
@@ -129,8 +129,8 @@ public class TypedArray extends TestableNodeProfAnalysis {
                     public void executePost(VirtualFrame frame,
                                     Object result, Object[] inputs) {
                         Object funcObj = getFunction(inputs);
-                        if (funcObj instanceof DynamicObject) {
-                            Object constructor = GlobalObjectCache.getInstance().getArrayConstructor((DynamicObject) funcObj);
+                        if (funcObj instanceof JSDynamicObject) {
+                            Object constructor = GlobalObjectCache.getInstance().getArrayConstructor((JSDynamicObject) funcObj);
                             if (funcObj == constructor) {
                                 trackAllocation(result, getSourceIID());
                                 addDebugEvent("TA_ARRAY_ALLOC", getSourceIID(), tag);

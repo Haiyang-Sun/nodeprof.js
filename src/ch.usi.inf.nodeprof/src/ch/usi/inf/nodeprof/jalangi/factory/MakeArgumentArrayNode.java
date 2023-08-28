@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Copyright 2018 Dynamic Analysis Group, Università della Svizzera Italiana (USI)
- * Copyright (c) 2018, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2023, Oracle and/or its affiliates. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.dsl.Specialization;
 import com.oracle.truffle.api.nodes.Node;
-import com.oracle.truffle.api.object.DynamicObject;
 import com.oracle.truffle.js.runtime.JSContext;
 import com.oracle.truffle.js.runtime.JSRealm;
 import com.oracle.truffle.js.runtime.builtins.JSArray;
+import com.oracle.truffle.js.runtime.objects.JSDynamicObject;
 
 import ch.usi.inf.nodeprof.utils.GlobalObjectCache;
 
@@ -45,7 +45,7 @@ public abstract class MakeArgumentArrayNode extends Node {
      */
     private final int tillEnd;
 
-    public MakeArgumentArrayNode(DynamicObject function, int offset, int tillEnd) {
+    public MakeArgumentArrayNode(JSDynamicObject function, int offset, int tillEnd) {
         this.jsContext = GlobalObjectCache.getInstance().getJSContext(function);
         this.offset = offset;
         this.tillEnd = tillEnd;
