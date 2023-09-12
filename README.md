@@ -3,7 +3,7 @@ The tool is open source.
 Please feel free to report [issues](https://github.com/Haiyang-Sun/nodeprof.js/issues) or [contribute directly](https://github.com/Haiyang-Sun/nodeprof.js/pulls).
 
 ## GraalJS version
-The latest supported GraalVM version is 22.3.3.
+The latest supported GraalVM JavaScript version is 23.0.1.
 
 ## Getting Started
 Get the [mx](https://github.com/graalvm/mx) build tool:

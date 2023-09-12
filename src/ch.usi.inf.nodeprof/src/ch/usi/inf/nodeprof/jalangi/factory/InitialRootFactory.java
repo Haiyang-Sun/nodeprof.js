@@ -53,7 +53,7 @@ public class InitialRootFactory extends AbstractFactory {
         }
         if (seenSources.add(source)) {
             // getCharacters() needs to be behind boundary
-            return Strings.fromCharSequence(source.getCharacters());
+            return Strings.fromJavaString(source.getCharacters().toString());
         }
         return null;
     }
