@@ -15,7 +15,7 @@ git clone https://github.com/graalvm/mx.git
 Use mx to download a JDK for building GraalVM and set the JAVA_HOME environment variable accordingly:
 
 ```
-mx fetch-jdk --java-distribution labsjdk-ce-11
+mx fetch-jdk --java-distribution labsjdk-ce-17
 export JAVA_HOME=PATH_TO_THE_DOWNLOADED_JDK
 ```
 
