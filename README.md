@@ -3,7 +3,7 @@ The tool is open source.
 Please feel free to report [issues](https://github.com/Haiyang-Sun/nodeprof.js/issues) or [contribute directly](https://github.com/Haiyang-Sun/nodeprof.js/pulls).
 
 ## GraalJS version
-The latest supported GraalVM version is 22.3.3.
+The latest supported GraalVM JavaScript version is 23.0.1.
 
 ## Getting Started
 Get the [mx](https://github.com/graalvm/mx) build tool:
@@ -15,7 +15,7 @@ git clone https://github.com/graalvm/mx.git
 Use mx to download a JDK for building GraalVM and set the JAVA_HOME environment variable accordingly:
 
 ```
-mx fetch-jdk --java-distribution labsjdk-ce-11
+mx fetch-jdk --java-distribution labsjdk-ce-17
 export JAVA_HOME=PATH_TO_THE_DOWNLOADED_JDK
 ```
 
