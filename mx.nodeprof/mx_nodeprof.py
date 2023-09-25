@@ -22,66 +22,66 @@ def prepareJalangiCmdLine(args):
 
 class OutputCapture:
     def __init__(self, outFile):
-        self.outFile = outFile;
+        self.outFile = outFile
         if self.outFile:
             self.fout = open(self.outFile, 'w')
         else:
-            self.fout = None;
+            self.fout = None
     def __call__(self, data):
         if self.fout :
-            self.fout.write(data);
+            self.fout.write(data)
 
 def runJNode(args):
-    cmdArgs = prepareJalangiCmdLine(['--jvm']+args);
-    mx.run(cmdArgs, nonZeroIsFatal=True);
+    cmdArgs = prepareJalangiCmdLine(['--jvm']+args)
+    mx.run(cmdArgs, nonZeroIsFatal=True)
 
 
 def _runJalangi(args, svm=False, debug=False, outFile=None, trace=False):
     from mx_graal_nodejs import run_nodejs
     jalangiArgs = ['--vm.ea', '--experimental-options', '--engine.InstrumentExceptionsAreThrown=true', '--nodeprof', '--nodeprof.Analysis=NodeProfJalangi']
     if debug:
-        jalangiArgs += ["--nodeprof.Debug"];
+        jalangiArgs += ["--nodeprof.Debug"]
     if trace:
-        jalangiArgs += ["--nodeprof.TraceEvents"];
+        jalangiArgs += ["--nodeprof.TraceEvents"]
 
-    cmdArgs = [];
+    cmdArgs = []
     if svm:
         from subprocess import call
         if outFile:
-            return call(["./svm.sh"]+ jalangiArgs+args, stdout=open(outFile,'w'));
+            return call(["./svm.sh"]+ jalangiArgs+args, stdout=open(outFile,'w'))
         else:
-            return call(["./svm.sh"]+ jalangiArgs+args);
+            return call(["./svm.sh"]+ jalangiArgs+args)
     else:
-        cmdArgs = prepareJalangiCmdLine(['--jvm']+jalangiArgs + args);
+        cmdArgs = prepareJalangiCmdLine(['--jvm']+jalangiArgs + args)
         if outFile:
-            out=OutputCapture(outFile);
+            out=OutputCapture(outFile)
         else:
-            out=None;
-        ret = mx.run(cmdArgs, nonZeroIsFatal=True, out=out);
-        return ret;
+            out=None
+        ret = mx.run(cmdArgs, nonZeroIsFatal=True, out=out)
+        return ret
 
 def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[], keepGoing=True):
-    analysisOpt = [];
-    if os.path.exists (join(analysisHome, "config")):
-        config = open (join(analysisHome, "config"));
+    analysisOpt = []
+    if os.path.exists(join(analysisHome, "config")):
+        config = open(join(analysisHome, "config"))
         for line in config:
             line = line.rstrip()
-            words = line.split(" ");
-            f = words[0];
-            if not os.path.exists (join(analysisHome, f)):
+            words = line.split(" ")
+            f = words[0]
+            if not os.path.exists(join(analysisHome, f)):
                 if len(line.split(" ")) == 1:
                     print("analysis file "+f + " doesn't exist!")
-                    continue;
+                    continue
                 elif len(line.split(" ")) > 1:
                     url = line.split(" ")[-1]
                     mx.download(join(analysisHome, f), [url])
                     if not os.path.exists (join(analysisHome, f)):
                         print("analysis file "+f + " doesn't exist and cannot download it from "+url)
-                        continue;
+                        continue
                     else:
                         print("downloaded analysis file "+f + " from "+url)
                 else:
-                    continue;
+                    continue
 
             mx.logv("analysis parameters from config: " + str(words[1:]))
 
@@ -97,91 +97,84 @@ def _testJalangi(args, analysisHome, analysis, force=False, testsuites=[], keepG
                 else:
                     analysisOpt += [w]
 
-            analysisOpt += ["--analysis"];
-            analysisOpt += [join(analysisHome, f)];
+            analysisOpt += ["--analysis", join(analysisHome, f)]
     else:
         for analysisJS in os.listdir(analysisHome):
             if analysisJS.endswith(".js"):
-                analysisOpt += ["--analysis"];
-                analysisOpt += [join(analysisHome, analysisJS)];
+                analysisOpt += ["--analysis", join(analysisHome, analysisJS)]
     if not analysisOpt:
-        return;
+        return
     testdir = join(_suite.dir, 'src/ch.usi.inf.nodeprof.test/js')
     if not testsuites:
         testsuites = os.listdir(testdir)
     for testSuite in testsuites:
-        testHome = join(testdir, testSuite);
+        testHome = join(testdir, testSuite)
         for testfile in os.listdir(testHome):
             if testfile.endswith('.js') and not(testfile.endswith('_jalangi_.js')):
 
-                fn = join(analysisHome, testSuite+"."+testfile+".expected");
-                expectExist = os.path.exists(fn);
+                fn = join(analysisHome, testSuite+"."+testfile+".expected")
+                expectExist = os.path.exists(fn)
                 if not force and not expectExist:
-                    continue;
+                    continue
                 print('Testing ' + testfile + " in " + testSuite+" with analysis "+analysis)
-                outFile = join(analysisHome,testSuite+"."+testfile+".output");
-                runJalangi(args + analysisOpt+[join(testHome,testfile)], outFile=outFile, tracable=False);
+                outFile = join(analysisHome,testSuite+"."+testfile+".output")
+                runJalangi(args + analysisOpt+[join(testHome,testfile)], outFile=outFile, tracable=False)
                 if not expectExist:
-                    print("Ignored @"+analysis);
-                    continue;
+                    print("Ignored @"+analysis)
+                    continue
                 with open(fn) as fexp:
                     with open(outFile) as foutput:
                         if(foutput.read() == fexp.read()):
-                            print("Pass @"+analysis);
+                            print("Pass @"+analysis)
                         else:
-                            print("Fail @"+analysis);
+                            print("Fail @"+analysis)
                             from subprocess import call
                             call(["diff", fn, outFile])
                             if not (force or keepGoing):
-                                sys.exit(1);
+                                sys.exit(1)
 
 def testJalangi(args):
     import sys
     import os.path
     """test jalangi"""
-    print ("Testing NodoProf Jalangi API");
+    print("Testing NodeProf Jalangi API")
 
-    analysisdir = join(_suite.dir, 'src/ch.usi.inf.nodeprof/js/analysis');
-    testdir = join(_suite.dir, 'src/ch.usi.inf.nodeprof.test/js');
-    vmArgs = ["--symbolic-locs"];
-    all = False;
-    analyses = [];
-    force = False;
-    keepGoing = False;
-    testsuites = [];
+    analysisdir = join(_suite.dir, 'src/ch.usi.inf.nodeprof/js/analysis')
+    testdir = join(_suite.dir, 'src/ch.usi.inf.nodeprof.test/js')
+    vmArgs = ["--symbolic-locs"]
+    all = False
+    analyses = []
+    force = False
+    keepGoing = False
+    testsuites = []
     for arg in args:
         if arg == "--all":
-            all = True;
-            continue;
+            analyses = sorted(os.listdir(analysisdir))
         elif arg == "--force":
-            force = True;
-            continue;
+            force = True
         elif arg == "--keep-going":
-            keepGoing = True;
-        elif os.path.exists (join(analysisdir, arg)) :
-            analyses += [arg];
-            print ("Adding analysis "+arg)
-        elif os.path.exists (join(testdir, arg)) :
-            testsuites += [arg];
-            print ("Adding testsuite "+arg)
+            keepGoing = True
+        elif os.path.exists(join(analysisdir, arg)):
+            analyses += [arg]
+            print("Adding analysis "+arg)
+        elif os.path.exists(join(testdir, arg)):
+            testsuites += [arg]
+            print("Adding testsuite "+arg)
         else:
-            vmArgs += [arg];
+            vmArgs += [arg]
 
-    if all:
-        for analysis in sorted(os.listdir(analysisdir)):
-            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites, keepGoing);
-    elif analyses:
+    if analyses:
         for analysis in analyses:
-            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites, keepGoing);
+            _testJalangi(vmArgs, join(analysisdir, analysis), analysis, force, testsuites, keepGoing)
     else:
-        print ("Usage: mx test-specific [analysis-names...] [--all]")
+        print("Usage: mx test-specific [analysis-names...] [--all]")
 
 def runJalangi(args, excl="", outFile=None, tracable=True):
     """run jalangi"""
     jalangiArgs = [join(_suite.dir, "src/ch.usi.inf.nodeprof/js/jalangi.js")]
 
     if not os.path.exists(join(_suite.dir, "src/ch.usi.inf.nodeprof/js/bundle.js")):
-        npmDeps(args);
+        npmDeps(args)
 
     # jalangi arg parser (accepts GraalVM '--nodeprof.' options for convenience)
     parser = ArgumentParser(prog="mx jalangi", description="Run NodeProf-Jalangi")
@@ -202,10 +195,10 @@ def runJalangi(args, excl="", outFile=None, tracable=True):
     # process analysis args
     for analysis_arg in parsed.analysis:
         # check if analysis file exists
-        analysisPath = os.path.abspath(analysis_arg);
+        analysisPath = os.path.abspath(analysis_arg)
         if not os.path.exists(analysis_arg):
             mx.log_error("analysis file "+analysis_arg+" ("+analysisPath+") does not exist")
-            sys.exit(1);
+            sys.exit(1)
 
     if len(parsed.analysis) == 0:
         mx.log("Warning: no Jalangi --analysis specified")
@@ -216,13 +209,12 @@ def runJalangi(args, excl="", outFile=None, tracable=True):
     excl = ','.join([i for i in parsed.excl.split(',') if i != ''] + [os.path.abspath(i) for i in parsed.analysis])
 
     jalangiArgs = (["--vm.Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000"] if parsed.debugger else []) + ["--nodeprof.Scope="+parsed.scope] + (["--nodeprof.ExcludeSource="+excl] if len(excl) else []) + (["--nodeprof.SymbolicLocations=true"] if parsed.symbolic_locs else []) + jalangiArgs + jalangiAnalysisArg
-    _runJalangi(jalangiArgs, outFile=outFile, svm=parsed.svm, debug=parsed.debug, trace=(tracable and parsed.trace));
+    _runJalangi(jalangiArgs, outFile=outFile, svm=parsed.svm, debug=parsed.debug, trace=(tracable and parsed.trace))
 
 def unitTests(args):
     """run tests for the example analysis"""
     print("Starting JUnit Test")
-    uArgs = [];
-    commonArgs = uArgs + ['-ea', 'ch.usi.inf.nodeprof.test']
+    commonArgs = ['-ea', 'ch.usi.inf.nodeprof.test']
     unittest(commonArgs)
     print("JUnit Test Finishes")
 
@@ -253,7 +245,7 @@ def testNpm(args):
 
 def test(args):
     unitTests(args)
-    testJalangi(args +["--all"]);
+    testJalangi(args +["--all"])
 
 def checkCopyrightHeaders(args):
     # create list of Java sources to check
